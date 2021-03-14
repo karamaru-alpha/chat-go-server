@@ -1,0 +1,29 @@
+version: "3"
+services:
+  db:
+    container_name: chat-go-server-db
+    image: mysql
+    volumes:
+      - ./docker/mysql/db/mysql_data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/mysql/db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: chat_go_server
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+    command: mysqld
+
+  api:
+    container_name: chat-go-server-api
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile
+    volumes:
+      - ./:/go/src/github.com/karamaru-alpha/chat-go-server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
