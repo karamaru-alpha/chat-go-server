@@ -1,4 +1,4 @@
 DELETE FROM `rooms`;
-INSERT INTO `rooms` (`title`) VALUES ("ルームA");
-INSERT INTO `rooms` (`title`) VALUES ("ルームB");
-INSERT INTO `rooms` (`title`) VALUES ("ルームC");
+INSERT INTO `rooms` (`id`, `title`) VALUES ("00000000000000000000000001", "ルームA");
+INSERT INTO `rooms` (`id`, `title`) VALUES ("00000000000000000000000002", "ルームB");
+INSERT INTO `rooms` (`id`, `title`) VALUES ("00000000000000000000000003", "ルームC");
