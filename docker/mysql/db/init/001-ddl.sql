@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS `chat_go_server`;
-USE `chat_go_server`;
-
 DROP TABLE IF EXISTS `rooms`;
 
 CREATE TABLE IF NOT EXISTS `rooms` (
