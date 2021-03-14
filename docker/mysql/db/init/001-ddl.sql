@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS `rooms`;
 
 CREATE TABLE IF NOT EXISTS `rooms` (
-  `id`    INT AUTO_INCREMENT NOT NULL COMMENT 'トークルームID',
+  `id`    CHAR(26)    NOT NULL        COMMENT 'トークルームULID',
   `title` VARCHAR(64) NOT NULL UNIQUE COMMENT 'トークルーム名',
   PRIMARY KEY (`id`))
 ENGINE=InnoDB
