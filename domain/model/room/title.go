@@ -15,7 +15,7 @@ func NewTitle(v string) (*Title, error) {
 		return nil, errors.New("RoomTitle is null")
 	}
 
-	if utf8.RuneCountInString(v) < 3 || utf8.RuneCountInString(v) > 20 {
+	if utf8.RuneCountInString(v) < 3 || utf8.RuneCountInString(v) > 50 {
 		return nil, errors.New("RoomTitle should be Three to twenty characters")
 	}
 
