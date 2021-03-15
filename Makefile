@@ -6,3 +6,7 @@ run:
 
 reset_migration:
 	$(ENV_LOCAL) sh ./docker/mysql/db/init/init-mysql.sh
+
+lint:
+	go mod tidy
+	golangci-lint run ./...
