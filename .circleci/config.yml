@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.16.0
+    steps:
+      - checkout
+      - run:
+          name: Install golangci-lint@v1.30.0
+          command: go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.30.0
+      - run:
+          name: Run golangci-lint
+          command: golangci-lint run
+      - run:
+          name: Run test
+          command: go test ./...
