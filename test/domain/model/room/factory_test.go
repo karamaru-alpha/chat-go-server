@@ -6,11 +6,15 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	testdata "github.com/karamaru-alpha/chat-go-server/test/testdata"
 )
 
 // TestCreate トークルーム生成処理を担うファクトリのテスト
 func TestCreate(t *testing.T) {
 	t.Parallel()
+
+	roomTitle, err := domainModel.NewTitle(testdata.Room.Title.Valid)
+	assert.NoError(t, err)
 
 	tests := []struct {
 		title      string
@@ -19,11 +23,8 @@ func TestCreate(t *testing.T) {
 		expected2  error
 	}{
 		{
-			title: "【正常系】",
-			input: (func(v string) *domainModel.Title {
-				title := domainModel.Title(v)
-				return &title
-			})(testData.title.valid),
+			title:      "【正常系】",
+			input:      roomTitle,
 			expected1T: new(domainModel.Room),
 			expected2:  nil,
 		},

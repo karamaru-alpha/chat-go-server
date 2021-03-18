@@ -25,5 +25,10 @@ services:
       - ./:/go/src/github.com/karamaru-alpha/chat-go-server
     ports:
       - "8080:8080"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     depends_on:
       - db
