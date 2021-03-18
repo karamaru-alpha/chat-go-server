@@ -7,14 +7,18 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	testdata "github.com/karamaru-alpha/chat-go-server/test/testdata"
 )
 
 // TestNewRoom トークルームコンストラクタのテスト
 func TestNewRoom(t *testing.T) {
 	t.Parallel()
 
-	roomID := domainModel.ID(testData.id.valid)
-	roomTitle := domainModel.Title(testData.title.valid)
+	roomID, err := domainModel.NewID(&testdata.Room.ID.Valid)
+	assert.NoError(t, err)
+
+	roomTitle, err := domainModel.NewTitle(testdata.Room.Title.Valid)
+	assert.NoError(t, err)
 
 	tests := []struct {
 		title     string
@@ -25,23 +29,23 @@ func TestNewRoom(t *testing.T) {
 	}{
 		{
 			title:     "【正常系】",
-			input1:    &roomID,
-			input2:    &roomTitle,
-			expected1: &domainModel.Room{ID: roomID, Title: roomTitle},
+			input1:    roomID,
+			input2:    roomTitle,
+			expected1: &domainModel.Room{ID: *roomID, Title: *roomTitle},
 			expected2: nil,
 		},
 		{
 			title:     "【異常系】IDがnil",
 			input1:    nil,
-			input2:    &roomTitle,
-			expected1: &domainModel.Room{ID: roomID, Title: roomTitle},
+			input2:    roomTitle,
+			expected1: &domainModel.Room{ID: *roomID, Title: *roomTitle},
 			expected2: errors.New("RoomID is null"),
 		},
 		{
 			title:     "【異常系】Titleがnil",
-			input1:    &roomID,
+			input1:    roomID,
 			input2:    nil,
-			expected1: &domainModel.Room{ID: roomID, Title: roomTitle},
+			expected1: &domainModel.Room{ID: *roomID, Title: *roomTitle},
 			expected2: errors.New("RoomTitle is null"),
 		},
 	}
