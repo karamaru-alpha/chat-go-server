@@ -41,6 +41,7 @@ func TestToDTO(t *testing.T) {
 	}
 }
 
+// TestToEntity DB情報を持ったトークルームDTOをEntityに変換する処理のテスト
 func TestToEntity(t *testing.T) {
 	t.Parallel()
 
@@ -102,6 +103,7 @@ func TestToEntity(t *testing.T) {
 	}
 }
 
+// TestToEntities DB情報を持ったトークルームDTOをEntityのリストに変換する処理のテスト
 func TestToEntities(t *testing.T) {
 	t.Parallel()
 
