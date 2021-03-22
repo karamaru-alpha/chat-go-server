@@ -11,6 +11,7 @@ import (
 	testdata "github.com/karamaru-alpha/chat-go-server/test/testdata"
 )
 
+// TestToDTO トークルームEntityをDB情報を持つDTOに変換する処理のテスト
 func TestToDTO(t *testing.T) {
 	t.Parallel()
 
