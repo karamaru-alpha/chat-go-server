@@ -49,6 +49,33 @@ func TestSave(t *testing.T) {
 	test.TeardownTest(t)
 }
 
+// TestFindAll トークルームの全件検索+再構築を行う処理のテスト
+func TestFindAll(t *testing.T) {
+
+	// 再構築したいトークルームの準備
+	roomTitle, err := domainModel.NewTitle(testdata.Room.Title.Valid)
+	assert.NoError(t, err)
+	room, err := domainModel.Create(roomTitle)
+	assert.NoError(t, err)
+
+	// モックの作成
+	test := repositoryImplTest{}
+	test.setupTest(t)
+
+	test.mock.ExpectQuery(("SELECT")).WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(ulid.ULID(room.ID).String(), string(room.Title)))
+
+	// 実行
+	output, err := test.repositoryImpl.FindAll()
+	assert.NoError(t, err)
+
+	assert.Equal(t, &[]domainModel.Room{*room}, output)
+
+	err = test.mock.ExpectationsWereMet()
+	assert.NoError(t, err)
+
+	test.TeardownTest(t)
+}
+
 func (r *repositoryImplTest) setupTest(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
