@@ -11,6 +11,7 @@ import (
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	infra "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
+	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
 	testdata "github.com/karamaru-alpha/chat-go-server/test/testdata"
 )
 
@@ -26,7 +27,10 @@ func TestSave(t *testing.T) {
 	// 永続化したいトークルームの準備
 	roomTitle, err := domainModel.NewTitle(testdata.Room.Title.Valid)
 	assert.NoError(t, err)
-	room, err := domainModel.Create(roomTitle)
+
+	factory := domainModel.NewFactory(mockUtil.GenerateULID)
+
+	room, err := factory.Create(roomTitle)
 	assert.NoError(t, err)
 
 	// モックの作成
@@ -55,7 +59,10 @@ func TestFindAll(t *testing.T) {
 	// 再構築したいトークルームの準備
 	roomTitle, err := domainModel.NewTitle(testdata.Room.Title.Valid)
 	assert.NoError(t, err)
-	room, err := domainModel.Create(roomTitle)
+
+	factory := domainModel.NewFactory(mockUtil.GenerateULID)
+
+	room, err := factory.Create(roomTitle)
 	assert.NoError(t, err)
 
 	// モックの作成
