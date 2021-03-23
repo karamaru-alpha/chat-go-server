@@ -4,8 +4,8 @@ import (
 	"github.com/oklog/ulid"
 )
 
-// iFactory Roomエンティティの生成処理を担うFactoryのインターフェース
-type iFactory interface {
+// IFactory Roomエンティティの生成処理を担うFactoryのインターフェース
+type IFactory interface {
 	Create(*Title) (*Room, error)
 }
 
@@ -14,7 +14,7 @@ type factory struct {
 }
 
 // NewFactory Roomエンティティの生成処理を担うFactoryのコンストラクタ
-func NewFactory(generateULID func() ulid.ULID) iFactory {
+func NewFactory(generateULID func() ulid.ULID) IFactory {
 	return &factory{
 		generateULID,
 	}
