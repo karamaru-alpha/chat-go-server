@@ -1,16 +1,29 @@
 package room
 
 import (
-	"math/rand"
-	"time"
-
 	"github.com/oklog/ulid"
 )
 
-// Create Roomエンティティの生成処理を担うファクトリ
-func Create(title *Title) (*Room, error) {
+// iFactory Roomエンティティの生成処理を担うFactoryのインターフェース
+type iFactory interface {
+	Create(*Title) (*Room, error)
+}
 
-	ulid := generateULID()
+type factory struct {
+	generateULID func() ulid.ULID
+}
+
+// NewFactory Roomエンティティの生成処理を担うFactoryのコンストラクタ
+func NewFactory(generateULID func() ulid.ULID) iFactory {
+	return &factory{
+		generateULID,
+	}
+}
+
+// Create Roomエンティティの生成処理を担うファクトリ
+func (f factory) Create(title *Title) (*Room, error) {
+
+	ulid := f.generateULID()
 
 	roomID, err := NewID(&ulid)
 	if err != nil {
@@ -18,10 +31,4 @@ func Create(title *Title) (*Room, error) {
 	}
 
 	return NewRoom(roomID, title)
-}
-
-func generateULID() ulid.ULID {
-	t := time.Now()
-	entropy := ulid.Monotonic(rand.New(rand.NewSource(t.UnixNano())), 0)
-	return ulid.MustNew(ulid.Timestamp(t), entropy)
 }

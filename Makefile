@@ -11,7 +11,7 @@ reset_migration:
 
 .PHONY:test
 test:
-	go test ./...
+	go test ./test/...
 
 .PHONY:lint
 lint:

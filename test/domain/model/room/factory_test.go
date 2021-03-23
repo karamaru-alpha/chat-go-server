@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
 	testdata "github.com/karamaru-alpha/chat-go-server/test/testdata"
 )
 
@@ -16,17 +17,19 @@ func TestCreate(t *testing.T) {
 	roomTitle, err := domainModel.NewTitle(testdata.Room.Title.Valid)
 	assert.NoError(t, err)
 
+	factory := domainModel.NewFactory(mockUtil.GenerateULID)
+
 	tests := []struct {
-		title      string
-		input      *domainModel.Title
-		expected1T interface{} // uuidのモックが大変なので型のみで判定
-		expected2  error
+		title     string
+		input     *domainModel.Title
+		expected1 *domainModel.Room
+		expected2 error
 	}{
 		{
-			title:      "【正常系】",
-			input:      roomTitle,
-			expected1T: new(domainModel.Room),
-			expected2:  nil,
+			title:     "【正常系】",
+			input:     roomTitle,
+			expected1: &domainModel.Room{ID: domainModel.ID(testdata.Room.ID.Valid), Title: *roomTitle},
+			expected2: nil,
 		},
 	}
 
@@ -35,9 +38,9 @@ func TestCreate(t *testing.T) {
 
 		t.Run("Create:"+td.title, func(t *testing.T) {
 
-			output1, output2 := domainModel.Create(td.input)
+			output1, output2 := factory.Create(td.input)
 
-			assert.IsType(t, td.expected1T, output1)
+			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
 		})
 	}
