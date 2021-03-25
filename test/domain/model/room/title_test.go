@@ -7,7 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
-	testdata "github.com/karamaru-alpha/chat-go-server/test/testdata"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 
 // TestNewTitle トークルーム名値オブジェクトコンストラクタのテスト
@@ -21,12 +22,9 @@ func TestNewTitle(t *testing.T) {
 		expected2 error
 	}{
 		{
-			title: "【正常系】",
-			input: testdata.Room.Title.Valid,
-			expected1: (func(v string) *domainModel.Title {
-				title := domainModel.Title(v)
-				return &title
-			})(testdata.Room.Title.Valid),
+			title:     "【正常系】",
+			input:     tdString.Room.Title.Valid,
+			expected1: &tdDomain.Room.Title.Valid,
 			expected2: nil,
 		},
 		{
@@ -37,13 +35,13 @@ func TestNewTitle(t *testing.T) {
 		},
 		{
 			title:     "【異常系】タイトルが短い",
-			input:     testdata.Room.Title.TooShort,
+			input:     tdString.Room.Title.TooShort,
 			expected1: nil,
 			expected2: errors.New("RoomTitle should be Three to twenty characters"),
 		},
 		{
 			title:     "【異常系】タイトルが長い",
-			input:     testdata.Room.Title.TooLong,
+			input:     tdString.Room.Title.TooLong,
 			expected1: nil,
 			expected2: errors.New("RoomTitle should be Three to twenty characters"),
 		},

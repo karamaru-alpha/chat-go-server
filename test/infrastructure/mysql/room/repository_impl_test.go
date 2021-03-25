@@ -6,16 +6,15 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jinzhu/gorm"
-	"github.com/oklog/ulid"
 	"github.com/stretchr/testify/assert"
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	infra "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
-	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
-	testdata "github.com/karamaru-alpha/chat-go-server/test/testdata"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 
-type repositoryImplTest struct {
+type repositoryImplTester struct {
 	repositoryImpl domainModel.IRepository
 	db             *gorm.DB
 	mock           sqlmock.Sqlmock
@@ -23,59 +22,39 @@ type repositoryImplTest struct {
 
 // TestSave トークルームを永続化させる処理のテスト
 func TestSave(t *testing.T) {
-
-	// 永続化したいトークルームの準備
-	roomTitle, err := domainModel.NewTitle(testdata.Room.Title.Valid)
-	assert.NoError(t, err)
-
-	factory := domainModel.NewFactory(mockUtil.GenerateULID)
-
-	room, err := factory.Create(roomTitle)
-	assert.NoError(t, err)
-
 	// モックの作成
-	test := repositoryImplTest{}
-	test.setupTest(t)
+	tester := repositoryImplTester{}
+	tester.setupTest(t)
 
-	test.mock.ExpectBegin()
-	test.mock.ExpectExec(
+	tester.mock.ExpectBegin()
+	tester.mock.ExpectExec(
 		regexp.QuoteMeta("INSERT INTO `rooms` (`id`,`title`)"),
-	).WithArgs(ulid.ULID(room.ID).String(), string(room.Title)).WillReturnResult(sqlmock.NewResult(1, 1))
-	test.mock.ExpectCommit()
+	).WithArgs(tdString.Room.ID.Valid, tdString.Room.Title.Valid).WillReturnResult(sqlmock.NewResult(1, 1))
+	tester.mock.ExpectCommit()
 
 	// 実行
-	err = test.repositoryImpl.Save(room)
+	err := tester.repositoryImpl.Save(&tdDomain.Room.Entity.Valid)
 	assert.NoError(t, err)
 
-	err = test.mock.ExpectationsWereMet()
+	err = tester.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
 
-	test.TeardownTest(t)
+	tester.TeardownTest(t)
 }
 
 // TestFindAll トークルームの全件検索+再構築を行う処理のテスト
 func TestFindAll(t *testing.T) {
-
-	// 再構築したいトークルームの準備
-	roomTitle, err := domainModel.NewTitle(testdata.Room.Title.Valid)
-	assert.NoError(t, err)
-
-	factory := domainModel.NewFactory(mockUtil.GenerateULID)
-
-	room, err := factory.Create(roomTitle)
-	assert.NoError(t, err)
-
 	// モックの作成
-	test := repositoryImplTest{}
+	test := repositoryImplTester{}
 	test.setupTest(t)
 
-	test.mock.ExpectQuery(("SELECT")).WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(ulid.ULID(room.ID).String(), string(room.Title)))
+	test.mock.ExpectQuery("SELECT").WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdString.Room.ID.Valid, tdString.Room.Title.Valid))
 
 	// 実行
 	output, err := test.repositoryImpl.FindAll()
 	assert.NoError(t, err)
 
-	assert.Equal(t, &[]domainModel.Room{*room}, output)
+	assert.Equal(t, &[]domainModel.Room{tdDomain.Room.Entity.Valid}, output)
 
 	err = test.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
@@ -83,7 +62,7 @@ func TestFindAll(t *testing.T) {
 	test.TeardownTest(t)
 }
 
-func (r *repositoryImplTest) setupTest(t *testing.T) {
+func (r *repositoryImplTester) setupTest(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 
@@ -98,6 +77,6 @@ func (r *repositoryImplTest) setupTest(t *testing.T) {
 	r.repositoryImpl = repositoryImpl
 }
 
-func (r *repositoryImplTest) TeardownTest(t *testing.T) {
+func (r *repositoryImplTester) TeardownTest(t *testing.T) {
 	r.db.Close()
 }

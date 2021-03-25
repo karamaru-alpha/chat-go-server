@@ -7,15 +7,12 @@ import (
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
-	testdata "github.com/karamaru-alpha/chat-go-server/test/testdata"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
 )
 
 // TestCreate トークルーム生成処理を担うファクトリのテスト
 func TestCreate(t *testing.T) {
 	t.Parallel()
-
-	roomTitle, err := domainModel.NewTitle(testdata.Room.Title.Valid)
-	assert.NoError(t, err)
 
 	factory := domainModel.NewFactory(mockUtil.GenerateULID)
 
@@ -27,8 +24,8 @@ func TestCreate(t *testing.T) {
 	}{
 		{
 			title:     "【正常系】",
-			input:     roomTitle,
-			expected1: &domainModel.Room{ID: domainModel.ID(testdata.Room.ID.Valid), Title: *roomTitle},
+			input:     &tdDomain.Room.Title.Valid,
+			expected1: &tdDomain.Room.Entity.Valid,
 			expected2: nil,
 		},
 	}

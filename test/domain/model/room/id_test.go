@@ -8,7 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
-	testdata "github.com/karamaru-alpha/chat-go-server/test/testdata"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdULID "github.com/karamaru-alpha/chat-go-server/test/testdata/ulid"
 )
 
 // TestNewID トークルームIDの値オブジェクトコンストラクタテスト
@@ -22,12 +23,9 @@ func TestNewID(t *testing.T) {
 		expected2 error
 	}{
 		{
-			title: "【正常系】",
-			input: &testdata.Room.ID.Valid,
-			expected1: (func(v *ulid.ULID) *domainModel.ID {
-				id := domainModel.ID(*v)
-				return &id
-			})(&testdata.Room.ID.Valid),
+			title:     "【正常系】",
+			input:     &tdULID.Room.ID.Valid,
+			expected1: &tdDomain.Room.ID.Valid,
 			expected2: nil,
 		},
 		{
