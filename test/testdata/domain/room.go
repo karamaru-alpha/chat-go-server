@@ -6,7 +6,7 @@ import (
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
-	tdUlid "github.com/karamaru-alpha/chat-go-server/test/testdata/ulid"
+	tdULID "github.com/karamaru-alpha/chat-go-server/test/testdata/ulid"
 )
 
 var Room = struct {
@@ -50,7 +50,7 @@ func genRoom() domainModel.Room {
 }
 
 func genRoomID() domainModel.ID {
-	id, err := domainModel.NewID(&tdUlid.Room.ID.Valid)
+	id, err := domainModel.NewID(&tdULID.Room.ID.Valid)
 	if err != nil {
 		log.Fatal(err)
 	}
