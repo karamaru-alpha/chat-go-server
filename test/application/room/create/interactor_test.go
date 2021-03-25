@@ -11,7 +11,8 @@ import (
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	mockDomainModel "github.com/karamaru-alpha/chat-go-server/mock/domain/model/room"
 	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
-	"github.com/karamaru-alpha/chat-go-server/test/testdata"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 
 // TestHandle トークルームを作成するアプリケーションサービスのテスト
@@ -22,17 +23,11 @@ func TestHandle(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	// 正常なリクエストが来た場合に永続化したいRoomEntityを作成
-	roomTitle, err := domainModel.NewTitle(testdata.Room.Title.Valid)
-	assert.NoError(t, err)
-	factory := domainModel.NewFactory(mockUtil.GenerateULID)
-	room, err := factory.Create(roomTitle)
-	assert.NoError(t, err)
-
 	// reposityをモック
 	repository := mockDomainModel.NewMockIRepository(ctrl)
-	repository.EXPECT().Save(room).Return(nil)
+	repository.EXPECT().Save(&tdDomain.Room.Entity.Valid).Return(nil)
 
+	factory := domainModel.NewFactory(mockUtil.GenerateULID)
 	interactor := application.NewInteractor(factory, repository)
 
 	tests := []struct {
@@ -43,17 +38,17 @@ func TestHandle(t *testing.T) {
 		{
 			title: "【正常系】",
 			input: application.InputData{
-				Title: testdata.Room.Title.Valid,
+				Title: tdString.Room.Title.Valid,
 			},
 			expected: application.OutputData{
-				Room: room,
+				Room: &tdDomain.Room.Entity.Valid,
 				Err:  nil,
 			},
 		},
 		{
 			title: "【異常系】タイトルが短い",
 			input: application.InputData{
-				Title: testdata.Room.Title.TooShort,
+				Title: tdString.Room.Title.TooShort,
 			},
 			expected: application.OutputData{
 				Room: nil,
@@ -63,7 +58,7 @@ func TestHandle(t *testing.T) {
 		{
 			title: "【異常系】タイトルが長い",
 			input: application.InputData{
-				Title: testdata.Room.Title.TooLong,
+				Title: tdString.Room.Title.TooLong,
 			},
 			expected: application.OutputData{
 				Room: nil,

@@ -2,8 +2,6 @@ package testdata
 
 import (
 	"strings"
-
-	"github.com/oklog/ulid"
 )
 
 var Room = struct {
@@ -11,9 +9,8 @@ var Room = struct {
 	Title roomTitle
 }{
 	ID: roomID{
-		ValidPlain:   "01D0KDBRASGD5HRSNDCKA0AH53",
-		InvalidPlain: "invalid_ulid",
-		Valid:        ulid.MustParse("01D0KDBRASGD5HRSNDCKA0AH53"),
+		Valid:   "01D0KDBRASGD5HRSNDCKA0AH53",
+		Invalid: "invalid_ulid",
 	},
 	Title: roomTitle{
 		Valid:    "valid_title",
@@ -23,9 +20,8 @@ var Room = struct {
 }
 
 type roomID struct {
-	ValidPlain   string
-	InvalidPlain string
-	Valid        ulid.ULID
+	Valid   string
+	Invalid string
 }
 
 type roomTitle struct {

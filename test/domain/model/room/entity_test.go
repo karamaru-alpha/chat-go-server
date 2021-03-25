@@ -7,18 +7,12 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
-	testdata "github.com/karamaru-alpha/chat-go-server/test/testdata"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
 )
 
 // TestNewRoom トークルームコンストラクタのテスト
 func TestNewRoom(t *testing.T) {
 	t.Parallel()
-
-	roomID, err := domainModel.NewID(&testdata.Room.ID.Valid)
-	assert.NoError(t, err)
-
-	roomTitle, err := domainModel.NewTitle(testdata.Room.Title.Valid)
-	assert.NoError(t, err)
 
 	tests := []struct {
 		title     string
@@ -29,23 +23,23 @@ func TestNewRoom(t *testing.T) {
 	}{
 		{
 			title:     "【正常系】",
-			input1:    roomID,
-			input2:    roomTitle,
-			expected1: &domainModel.Room{ID: *roomID, Title: *roomTitle},
+			input1:    &tdDomain.Room.ID.Valid,
+			input2:    &tdDomain.Room.Title.Valid,
+			expected1: &tdDomain.Room.Entity.Valid,
 			expected2: nil,
 		},
 		{
 			title:     "【異常系】IDがnil",
 			input1:    nil,
-			input2:    roomTitle,
-			expected1: &domainModel.Room{ID: *roomID, Title: *roomTitle},
+			input2:    &tdDomain.Room.Title.Valid,
+			expected1: nil,
 			expected2: errors.New("RoomID is null"),
 		},
 		{
 			title:     "【異常系】Titleがnil",
-			input1:    roomID,
+			input1:    &tdDomain.Room.ID.Valid,
 			input2:    nil,
-			expected1: &domainModel.Room{ID: *roomID, Title: *roomTitle},
+			expected1: nil,
 			expected2: errors.New("RoomTitle is null"),
 		},
 	}
@@ -57,7 +51,7 @@ func TestNewRoom(t *testing.T) {
 
 			output1, output2 := domainModel.NewRoom(td.input1, td.input2)
 
-			assert.IsType(t, td.expected1, output1)
+			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
 		})
 	}
