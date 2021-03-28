@@ -20,8 +20,8 @@ lint:
 
 .PHONY: gen_proto
 gen_proto:
-	protoc -I ./proto \
-	--go-grpc_out=./proto/pb \
+	protoc -I ./interfaces/proto \
+	--go-grpc_out=./interfaces/proto/pb \
 	--go-grpc_opt=require_unimplemented_servers=false \
-	--go_out=./proto/pb \
-	./proto/*.proto
+	--go_out=./interfaces/proto/pb \
+	./interfaces/proto/*.proto
