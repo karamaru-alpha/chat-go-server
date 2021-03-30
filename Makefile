@@ -17,3 +17,11 @@ test:
 lint:
 	go mod tidy
 	golangci-lint run ./...
+
+.PHONY: gen_proto
+gen_proto:
+	protoc -I ./interfaces/proto \
+	--go-grpc_out=./interfaces/proto/pb \
+	--go-grpc_opt=require_unimplemented_servers=false \
+	--go_out=./interfaces/proto/pb \
+	./interfaces/proto/*.proto
