@@ -14,7 +14,7 @@ import (
 func TestCreate(t *testing.T) {
 	t.Parallel()
 
-	factory := domainModel.NewFactory(mockUtil.GenerateULID)
+	factory := domainModel.NewFactory(mockUtil.NewULIDGenerator())
 
 	tests := []struct {
 		title     string

@@ -38,7 +38,7 @@ type title struct {
 }
 
 func genRoom() domainModel.Room {
-	factory := domainModel.NewFactory(mockUtil.GenerateULID)
+	factory := domainModel.NewFactory(mockUtil.NewULIDGenerator())
 
 	roomTitle := genRoomTitle()
 	room, err := factory.Create(&roomTitle)

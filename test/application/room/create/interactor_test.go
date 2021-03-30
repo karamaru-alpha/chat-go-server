@@ -27,7 +27,7 @@ func TestHandle(t *testing.T) {
 	repository := mockDomainModel.NewMockIRepository(ctrl)
 	repository.EXPECT().Save(&tdDomain.Room.Entity.Valid).Return(nil)
 
-	factory := domainModel.NewFactory(mockUtil.GenerateULID)
+	factory := domainModel.NewFactory(mockUtil.NewULIDGenerator())
 	interactor := application.NewInteractor(factory, repository)
 
 	tests := []struct {

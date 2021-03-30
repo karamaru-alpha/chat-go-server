@@ -1,7 +1,7 @@
 package room
 
 import (
-	"github.com/oklog/ulid"
+	"github.com/karamaru-alpha/chat-go-server/mock/util"
 )
 
 // IFactory Roomエンティティの生成処理を担うFactoryのインターフェース
@@ -10,20 +10,20 @@ type IFactory interface {
 }
 
 type factory struct {
-	generateULID func() ulid.ULID
+	ulidGenerator util.IULIDGenerator
 }
 
 // NewFactory Roomエンティティの生成処理を担うFactoryのコンストラクタ
-func NewFactory(generateULID func() ulid.ULID) IFactory {
+func NewFactory(ulidGenerator util.IULIDGenerator) IFactory {
 	return &factory{
-		generateULID,
+		ulidGenerator,
 	}
 }
 
 // Create Roomエンティティの生成処理を担うファクトリ
 func (f factory) Create(title *Title) (*Room, error) {
 
-	ulid := f.generateULID()
+	ulid := f.ulidGenerator.Generate()
 
 	roomID, err := NewID(&ulid)
 	if err != nil {
