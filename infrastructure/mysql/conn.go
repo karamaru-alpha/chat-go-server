@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -38,9 +39,7 @@ func ConnectGorm() *gorm.DB {
 			time.Sleep(time.Second)
 			count++
 			if count > 180 {
-				fmt.Println("")
-				fmt.Println("DB接続失敗")
-				panic(err)
+				log.Fatal("接続失敗", err)
 			}
 			connection, err = gorm.Open(DBMS, CONNECT)
 		}
