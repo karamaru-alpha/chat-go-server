@@ -1,7 +1,7 @@
 package room
 
 import (
-	"github.com/karamaru-alpha/chat-go-server/mock/util"
+	"github.com/karamaru-alpha/chat-go-server/util"
 )
 
 // IFactory Roomエンティティの生成処理を担うFactoryのインターフェース
