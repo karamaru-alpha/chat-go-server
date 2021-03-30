@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package chatserver;
+
+
+service RoomServices {
+    rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse){};
+    rpc GetRooms(GetRoomsRequest) returns (GetRoomsResponse){};
+}
+
+message Room {
+    string id = 1;
+    string title = 2;
+}
+
+message CreateRoomRequest {
+    string title = 1;
+}
+
+message CreateRoomResponse {
+    Room room = 1;
+}
+
+message GetRoomsRequest {
+}
+
+message GetRoomsResponse {
+    repeated Room rooms = 1;
+}
