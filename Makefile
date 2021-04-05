@@ -23,5 +23,7 @@ gen_proto:
 	protoc -I ./interfaces/proto \
 	--go-grpc_out=./interfaces/proto/pb \
 	--go-grpc_opt=require_unimplemented_servers=false \
+	--go-grpc_opt=module=github.com/karamaru-alpha/chat-go-server/interfaces/proto \
 	--go_out=./interfaces/proto/pb \
+	--go_opt=module=github.com/karamaru-alpha/chat-go-server/interfaces/proto \
 	./interfaces/proto/*.proto

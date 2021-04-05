@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package chatserver;
+package proto;
+
+option go_package = "github.com/karamaru-alpha/chat-go-server/interfaces/proto";
 
 
 service RoomServices {
