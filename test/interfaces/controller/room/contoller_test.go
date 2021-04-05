@@ -14,7 +14,7 @@ import (
 	pb "github.com/karamaru-alpha/chat-go-server/interfaces/proto/pb"
 	mockCreateApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/create"
 	mockFindAllApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/find_all"
-	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 

@@ -2,16 +2,12 @@ package testdata
 
 import (
 	"github.com/oklog/ulid"
+
+	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 
 var Room = struct {
-	ID roomID
+	ID ulid.ULID
 }{
-	ID: roomID{
-		Valid: ulid.MustParse("01D0KDBRASGD5HRSNDCKA0AH53"),
-	},
-}
-
-type roomID struct {
-	Valid ulid.ULID
+	ID: ulid.MustParse(tdString.Room.ID.Valid),
 }

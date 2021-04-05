@@ -20,5 +20,5 @@ func NewULIDGenerator() IULIDGenerator {
 
 // Generate ULID生成処理を固定値でモックした関数
 func (ulidGenerator) Generate() ulid.ULID {
-	return tdULID.Room.ID.Valid
+	return tdULID.Room.ID
 }
