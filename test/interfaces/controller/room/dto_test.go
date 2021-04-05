@@ -8,7 +8,7 @@ import (
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	controller "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
 	pb "github.com/karamaru-alpha/chat-go-server/interfaces/proto/pb"
-	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 

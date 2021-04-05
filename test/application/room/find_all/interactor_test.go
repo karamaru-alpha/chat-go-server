@@ -9,7 +9,7 @@ import (
 	application "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	mockDomainModel "github.com/karamaru-alpha/chat-go-server/mock/domain/model/room"
-	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 )
 
 // TestHandle トークルームを全件取得するアプリケーションサービスのテスト

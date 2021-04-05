@@ -4,11 +4,19 @@ import (
 	"strings"
 )
 
+type ulid struct {
+	Valid, Invalid string
+}
+
+type roomTitle struct {
+	Valid, TooShort, TooLong string
+}
+
 var Room = struct {
-	ID    roomID
+	ID    ulid
 	Title roomTitle
 }{
-	ID: roomID{
+	ID: ulid{
 		Valid:   "01D0KDBRASGD5HRSNDCKA0AH53",
 		Invalid: "invalid_ulid",
 	},
@@ -17,15 +25,4 @@ var Room = struct {
 		TooShort: ".",
 		TooLong:  strings.Repeat("a", 100),
 	},
-}
-
-type roomID struct {
-	Valid   string
-	Invalid string
-}
-
-type roomTitle struct {
-	Valid    string
-	TooShort string
-	TooLong  string
 }

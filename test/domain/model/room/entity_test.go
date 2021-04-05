@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
-	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 )
 
 // TestNewRoom トークルームコンストラクタのテスト

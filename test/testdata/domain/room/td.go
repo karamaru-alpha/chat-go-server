@@ -9,22 +9,6 @@ import (
 	tdULID "github.com/karamaru-alpha/chat-go-server/test/testdata/ulid"
 )
 
-var Room = struct {
-	Entity entity
-	ID     id
-	Title  title
-}{
-	Entity: entity{
-		Valid: genRoom(),
-	},
-	ID: id{
-		Valid: genRoomID(),
-	},
-	Title: title{
-		Valid: genRoomTitle(),
-	},
-}
-
 type entity struct {
 	Valid domainModel.Room
 }
@@ -37,10 +21,26 @@ type title struct {
 	Valid domainModel.Title
 }
 
-func genRoom() domainModel.Room {
+var Room = struct {
+	Entity entity
+	ID     id
+	Title  title
+}{
+	Entity: entity{
+		Valid: genEntity(),
+	},
+	ID: id{
+		Valid: genID(),
+	},
+	Title: title{
+		Valid: genTitle(),
+	},
+}
+
+func genEntity() domainModel.Room {
 	factory := domainModel.NewFactory(mockUtil.NewULIDGenerator())
 
-	roomTitle := genRoomTitle()
+	roomTitle := genTitle()
 	room, err := factory.Create(&roomTitle)
 	if err != nil {
 		log.Fatal(err)
@@ -49,8 +49,8 @@ func genRoom() domainModel.Room {
 	return *room
 }
 
-func genRoomID() domainModel.ID {
-	id, err := domainModel.NewID(&tdULID.Room.ID.Valid)
+func genID() domainModel.ID {
+	id, err := domainModel.NewID(&tdULID.Room.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,7 +58,7 @@ func genRoomID() domainModel.ID {
 	return *id
 }
 
-func genRoomTitle() domainModel.Title {
+func genTitle() domainModel.Title {
 	title, err := domainModel.NewTitle(tdString.Room.Title.Valid)
 	if err != nil {
 		log.Fatal(err)

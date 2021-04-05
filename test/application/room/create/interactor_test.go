@@ -11,7 +11,7 @@ import (
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	mockDomainModel "github.com/karamaru-alpha/chat-go-server/mock/domain/model/room"
 	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
-	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 

@@ -10,7 +10,7 @@ import (
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	infra "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
-	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 

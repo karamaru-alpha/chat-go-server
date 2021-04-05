@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
-	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdULID "github.com/karamaru-alpha/chat-go-server/test/testdata/ulid"
 )
 
@@ -24,7 +24,7 @@ func TestNewID(t *testing.T) {
 	}{
 		{
 			title:     "【正常系】",
-			input:     &tdULID.Room.ID.Valid,
+			input:     &tdULID.Room.ID,
 			expected1: &tdDomain.Room.ID.Valid,
 			expected2: nil,
 		},

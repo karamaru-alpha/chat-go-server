@@ -7,7 +7,7 @@ import (
 
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
-	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain"
+	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 )
 
 // TestCreate トークルーム生成処理を担うファクトリのテスト
