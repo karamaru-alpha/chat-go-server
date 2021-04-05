@@ -19,7 +19,7 @@ import (
 // Injectors from wire.go:
 
 // DI dependency injection about room
-func DI() chatserver.RoomServicesServer {
+func DI() proto.RoomServicesServer {
 	iulidGenerator := util.NewULIDGenerator()
 	iFactory := room.NewFactory(iulidGenerator)
 	db := mysql.ConnectGorm()
