@@ -62,6 +62,26 @@ func TestFindAll(t *testing.T) {
 	test.TeardownTest(t)
 }
 
+// TestFindByTitle トークルームをタイトルから一件取得・再構築する処理のテスト
+func TestFindByTitle(t *testing.T) {
+	// モックの作成
+	test := repositoryImplTester{}
+	test.setupTest(t)
+
+	test.mock.ExpectQuery("SELECT").WithArgs(tdString.Room.Title.Valid).WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdString.Room.ID.Valid, tdString.Room.Title.Valid))
+
+	// 実行
+	output, err := test.repositoryImpl.FindByTitle(&tdDomain.Room.Title)
+	assert.NoError(t, err)
+
+	assert.Equal(t, &tdDomain.Room.Entity, output)
+
+	err = test.mock.ExpectationsWereMet()
+	assert.NoError(t, err)
+
+	test.TeardownTest(t)
+}
+
 func (r *repositoryImplTester) setupTest(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)

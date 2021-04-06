@@ -38,3 +38,17 @@ func (r repositoryImpl) FindAll() (*[]domainModel.Room, error) {
 
 	return ToEntities(&dtos)
 }
+
+// FindByTitle トークルームをタイトルから一件取得する
+func (r repositoryImpl) FindByTitle(title *domainModel.Title) (*domainModel.Room, error) {
+	var dto Room
+
+	if err := r.db.Where("title = ?", string(*title)).First(&dto).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return ToEntity(&dto)
+}
