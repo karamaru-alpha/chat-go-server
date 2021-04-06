@@ -6,12 +6,13 @@
 package room
 
 import (
-	room3 "github.com/karamaru-alpha/chat-go-server/application/room/create"
-	room4 "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
+	room4 "github.com/karamaru-alpha/chat-go-server/application/room/create"
+	room5 "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
 	"github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	room3 "github.com/karamaru-alpha/chat-go-server/domain/service/room"
 	"github.com/karamaru-alpha/chat-go-server/infrastructure/mysql"
 	room2 "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
-	room5 "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
+	room6 "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
 	"github.com/karamaru-alpha/chat-go-server/interfaces/proto/pb"
 	"github.com/karamaru-alpha/chat-go-server/util"
 )
@@ -24,8 +25,9 @@ func DI() proto.RoomServicesServer {
 	iFactory := room.NewFactory(iulidGenerator)
 	db := mysql.ConnectGorm()
 	iRepository := room2.NewRepositoryImpl(db)
-	iInputPort := room3.NewInteractor(iFactory, iRepository)
-	roomIInputPort := room4.NewInteractor(iRepository)
-	roomServicesServer := room5.NewController(iInputPort, roomIInputPort)
+	iDomainService := room3.NewDomainService(iRepository)
+	iInputPort := room4.NewInteractor(iFactory, iRepository, iDomainService)
+	roomIInputPort := room5.NewInteractor(iRepository)
+	roomServicesServer := room6.NewController(iInputPort, roomIInputPort)
 	return roomServicesServer
 }
