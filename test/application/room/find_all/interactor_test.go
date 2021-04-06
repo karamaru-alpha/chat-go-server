@@ -22,16 +22,18 @@ func TestHandle(t *testing.T) {
 
 	// reposityをモック
 	repository := mockDomainModel.NewMockIRepository(ctrl)
-	repository.EXPECT().FindAll().Return(&[]domainModel.Room{tdDomain.Room.Entity}, nil)
-
 	interactor := application.NewInteractor(repository)
 
 	tests := []struct {
 		title    string
+		before   func()
 		expected application.OutputData
 	}{
 		{
 			title: "【正常系】",
+			before: func() {
+				repository.EXPECT().FindAll().Return(&[]domainModel.Room{tdDomain.Room.Entity}, nil)
+			},
 			expected: application.OutputData{
 				Rooms: &[]domainModel.Room{tdDomain.Room.Entity},
 				Err:   nil,
@@ -41,6 +43,8 @@ func TestHandle(t *testing.T) {
 
 	for _, td := range tests {
 		td := td
+
+		td.before()
 
 		t.Run("Handle:"+td.title, func(t *testing.T) {
 			output := interactor.Handle()

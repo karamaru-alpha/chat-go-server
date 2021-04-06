@@ -49,6 +49,21 @@ func (mr *MockIRepositoryMockRecorder) FindAll() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockIRepository)(nil).FindAll))
 }
 
+// FindByTitle mocks base method.
+func (m *MockIRepository) FindByTitle(arg0 *room.Title) (*room.Room, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByTitle", arg0)
+	ret0, _ := ret[0].(*room.Room)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByTitle indicates an expected call of FindByTitle.
+func (mr *MockIRepositoryMockRecorder) FindByTitle(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByTitle", reflect.TypeOf((*MockIRepository)(nil).FindByTitle), arg0)
+}
+
 // Save mocks base method.
 func (m *MockIRepository) Save(arg0 *room.Room) error {
 	m.ctrl.T.Helper()

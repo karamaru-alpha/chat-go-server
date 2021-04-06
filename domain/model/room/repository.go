@@ -4,4 +4,5 @@ package room
 type IRepository interface {
 	Save(*Room) error
 	FindAll() (*[]Room, error)
+	FindByTitle(*Title) (*Room, error)
 }
