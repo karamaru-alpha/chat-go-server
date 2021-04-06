@@ -1,15 +1,12 @@
 package testdata
 
 import (
-	"log"
-
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/message"
-	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 	tdULID "github.com/karamaru-alpha/chat-go-server/test/testdata/ulid"
 )
 
-// Message メッセージエンティティのテストデータ
+// Message メッセージエンティティにまつわるテストデータ
 var Message = struct {
 	Entity domainModel.Message
 	ID     domainModel.ID
@@ -23,41 +20,21 @@ var Message = struct {
 }
 
 func genEntity() domainModel.Message {
-	factory := domainModel.NewFactory(mockUtil.NewULIDGenerator())
-
-	roomID := genRoomID()
-	body := genBody()
-	message, err := factory.Create(&roomID, &body)
-	if err != nil {
-		log.Fatal(err)
+	return domainModel.Message{
+		ID:     genID(),
+		RoomID: genRoomID(),
+		Body:   genBody(),
 	}
-
-	return *message
 }
 
 func genID() domainModel.ID {
-	id, err := domainModel.NewID(&tdULID.Message.ID)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return *id
+	return domainModel.ID(tdULID.Message.ID)
 }
 
 func genRoomID() domainModel.RoomID {
-	roomID, err := domainModel.NewRoomID(&tdULID.Room.ID)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return *roomID
+	return domainModel.RoomID(tdULID.Room.ID)
 }
 
 func genBody() domainModel.Body {
-	body, err := domainModel.NewBody(tdString.Message.Body.Valid)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return *body
+	return domainModel.Body(tdString.Message.Body.Valid)
 }
