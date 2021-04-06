@@ -23,7 +23,7 @@ func TestToProto(t *testing.T) {
 	}{
 		{
 			title: "【正常系】",
-			input: &tdDomain.Room.Entity.Valid,
+			input: &tdDomain.Room.Entity,
 			expected: &pb.Room{
 				Id:    tdString.Room.ID.Valid,
 				Title: tdString.Room.Title.Valid,
@@ -51,7 +51,7 @@ func TestToProtos(t *testing.T) {
 	}{
 		{
 			title: "【正常系】",
-			input: &[]domainModel.Room{tdDomain.Room.Entity.Valid, tdDomain.Room.Entity.Valid},
+			input: &[]domainModel.Room{tdDomain.Room.Entity, tdDomain.Room.Entity},
 			expected: []*pb.Room{
 				{
 					Id:    tdString.Room.ID.Valid,

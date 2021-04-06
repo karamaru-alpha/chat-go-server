@@ -33,7 +33,7 @@ func TestSave(t *testing.T) {
 	tester.mock.ExpectCommit()
 
 	// 実行
-	err := tester.repositoryImpl.Save(&tdDomain.Room.Entity.Valid)
+	err := tester.repositoryImpl.Save(&tdDomain.Room.Entity)
 	assert.NoError(t, err)
 
 	err = tester.mock.ExpectationsWereMet()
@@ -54,7 +54,7 @@ func TestFindAll(t *testing.T) {
 	output, err := test.repositoryImpl.FindAll()
 	assert.NoError(t, err)
 
-	assert.Equal(t, &[]domainModel.Room{tdDomain.Room.Entity.Valid}, output)
+	assert.Equal(t, &[]domainModel.Room{tdDomain.Room.Entity}, output)
 
 	err = test.mock.ExpectationsWereMet()
 	assert.NoError(t, err)

@@ -23,7 +23,7 @@ func TestToDTO(t *testing.T) {
 	}{
 		{
 			title:    "【正常系】",
-			input:    &tdDomain.Room.Entity.Valid,
+			input:    &tdDomain.Room.Entity,
 			expected: &infra.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.Valid},
 		},
 	}
@@ -50,7 +50,7 @@ func TestToEntity(t *testing.T) {
 		{
 			title:     "【正常系】",
 			input:     &infra.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.Valid},
-			expected1: &tdDomain.Room.Entity.Valid,
+			expected1: &tdDomain.Room.Entity,
 			expected2: nil,
 		},
 		{
@@ -93,13 +93,13 @@ func TestToEntities(t *testing.T) {
 		{
 			title:     "【正常系】1つのDTOをEntityに変換",
 			input:     &[]infra.Room{dto},
-			expected1: &[]domainModel.Room{tdDomain.Room.Entity.Valid},
+			expected1: &[]domainModel.Room{tdDomain.Room.Entity},
 			expected2: nil,
 		},
 		{
 			title:     "【正常系】2つのDTOをEntityに変換",
 			input:     &[]infra.Room{dto, dto},
-			expected1: &[]domainModel.Room{tdDomain.Room.Entity.Valid, tdDomain.Room.Entity.Valid},
+			expected1: &[]domainModel.Room{tdDomain.Room.Entity, tdDomain.Room.Entity},
 			expected2: nil,
 		},
 		{

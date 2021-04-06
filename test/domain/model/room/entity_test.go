@@ -23,21 +23,21 @@ func TestNewRoom(t *testing.T) {
 	}{
 		{
 			title:     "【正常系】",
-			input1:    &tdDomain.Room.ID.Valid,
-			input2:    &tdDomain.Room.Title.Valid,
-			expected1: &tdDomain.Room.Entity.Valid,
+			input1:    &tdDomain.Room.ID,
+			input2:    &tdDomain.Room.Title,
+			expected1: &tdDomain.Room.Entity,
 			expected2: nil,
 		},
 		{
 			title:     "【異常系】IDがnil",
 			input1:    nil,
-			input2:    &tdDomain.Room.Title.Valid,
+			input2:    &tdDomain.Room.Title,
 			expected1: nil,
 			expected2: errors.New("RoomID is null"),
 		},
 		{
 			title:     "【異常系】Titleがnil",
-			input1:    &tdDomain.Room.ID.Valid,
+			input1:    &tdDomain.Room.ID,
 			input2:    nil,
 			expected1: nil,
 			expected2: errors.New("RoomTitle is null"),

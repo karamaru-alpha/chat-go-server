@@ -25,7 +25,7 @@ func TestHandle(t *testing.T) {
 
 	// reposityをモック
 	repository := mockDomainModel.NewMockIRepository(ctrl)
-	repository.EXPECT().Save(&tdDomain.Room.Entity.Valid).Return(nil)
+	repository.EXPECT().Save(&tdDomain.Room.Entity).Return(nil)
 
 	factory := domainModel.NewFactory(mockUtil.NewULIDGenerator())
 	interactor := application.NewInteractor(factory, repository)
@@ -41,7 +41,7 @@ func TestHandle(t *testing.T) {
 				Title: tdString.Room.Title.Valid,
 			},
 			expected: application.OutputData{
-				Room: &tdDomain.Room.Entity.Valid,
+				Room: &tdDomain.Room.Entity,
 				Err:  nil,
 			},
 		},

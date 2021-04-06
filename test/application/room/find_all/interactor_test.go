@@ -22,7 +22,7 @@ func TestHandle(t *testing.T) {
 
 	// reposityをモック
 	repository := mockDomainModel.NewMockIRepository(ctrl)
-	repository.EXPECT().FindAll().Return(&[]domainModel.Room{tdDomain.Room.Entity.Valid}, nil)
+	repository.EXPECT().FindAll().Return(&[]domainModel.Room{tdDomain.Room.Entity}, nil)
 
 	interactor := application.NewInteractor(repository)
 
@@ -33,7 +33,7 @@ func TestHandle(t *testing.T) {
 		{
 			title: "【正常系】",
 			expected: application.OutputData{
-				Rooms: &[]domainModel.Room{tdDomain.Room.Entity.Valid},
+				Rooms: &[]domainModel.Room{tdDomain.Room.Entity},
 				Err:   nil,
 			},
 		},

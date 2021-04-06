@@ -31,7 +31,7 @@ func TestGetRooms(t *testing.T) {
 	findAllUsecase := mockFindAllApplication.NewMockIInputPort(ctrl)
 	findAllUsecase.EXPECT().Handle().Return(
 		findAllApplication.OutputData{
-			Rooms: &[]domainModel.Room{tdDomain.Room.Entity.Valid}, Err: nil,
+			Rooms: &[]domainModel.Room{tdDomain.Room.Entity}, Err: nil,
 		},
 	)
 
@@ -44,7 +44,7 @@ func TestGetRooms(t *testing.T) {
 	}{
 		{
 			title:     "【正常系】",
-			expected1: &pb.GetRoomsResponse{Rooms: controller.ToProtos(&[]domainModel.Room{tdDomain.Room.Entity.Valid})},
+			expected1: &pb.GetRoomsResponse{Rooms: controller.ToProtos(&[]domainModel.Room{tdDomain.Room.Entity})},
 			expected2: nil,
 		},
 	}
@@ -74,7 +74,7 @@ func TestCreateRoom(t *testing.T) {
 	createUsecase.EXPECT().Handle(
 		createApplication.InputData{Title: tdString.Room.Title.Valid},
 	).Return(
-		createApplication.OutputData{Room: &tdDomain.Room.Entity.Valid, Err: nil},
+		createApplication.OutputData{Room: &tdDomain.Room.Entity, Err: nil},
 	)
 
 	handler := controller.NewController(createUsecase, findAllUsecase)
@@ -88,7 +88,7 @@ func TestCreateRoom(t *testing.T) {
 		{
 			title:     "【正常系】",
 			input:     &pb.CreateRoomRequest{Title: tdString.Room.Title.Valid},
-			expected1: &pb.CreateRoomResponse{Room: controller.ToProto(&tdDomain.Room.Entity.Valid)},
+			expected1: &pb.CreateRoomResponse{Room: controller.ToProto(&tdDomain.Room.Entity)},
 			expected2: nil,
 		},
 	}

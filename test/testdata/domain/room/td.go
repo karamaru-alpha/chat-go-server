@@ -9,32 +9,14 @@ import (
 	tdULID "github.com/karamaru-alpha/chat-go-server/test/testdata/ulid"
 )
 
-type entity struct {
-	Valid domainModel.Room
-}
-
-type id struct {
-	Valid domainModel.ID
-}
-
-type title struct {
-	Valid domainModel.Title
-}
-
 var Room = struct {
-	Entity entity
-	ID     id
-	Title  title
+	Entity domainModel.Room
+	ID     domainModel.ID
+	Title  domainModel.Title
 }{
-	Entity: entity{
-		Valid: genEntity(),
-	},
-	ID: id{
-		Valid: genID(),
-	},
-	Title: title{
-		Valid: genTitle(),
-	},
+	Entity: genEntity(),
+	ID:     genID(),
+	Title:  genTitle(),
 }
 
 func genEntity() domainModel.Room {

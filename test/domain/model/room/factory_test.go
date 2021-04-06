@@ -24,8 +24,8 @@ func TestCreate(t *testing.T) {
 	}{
 		{
 			title:     "【正常系】",
-			input:     &tdDomain.Room.Title.Valid,
-			expected1: &tdDomain.Room.Entity.Valid,
+			input:     &tdDomain.Room.Title,
+			expected1: &tdDomain.Room.Entity,
 			expected2: nil,
 		},
 	}

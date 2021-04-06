@@ -24,7 +24,7 @@ func TestNewTitle(t *testing.T) {
 		{
 			title:     "【正常系】",
 			input:     tdString.Room.Title.Valid,
-			expected1: &tdDomain.Room.Title.Valid,
+			expected1: &tdDomain.Room.Title,
 			expected2: nil,
 		},
 		{

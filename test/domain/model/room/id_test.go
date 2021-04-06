@@ -25,7 +25,7 @@ func TestNewID(t *testing.T) {
 		{
 			title:     "【正常系】",
 			input:     &tdULID.Room.ID,
-			expected1: &tdDomain.Room.ID.Valid,
+			expected1: &tdDomain.Room.ID,
 			expected2: nil,
 		},
 		{
