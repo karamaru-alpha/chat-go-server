@@ -24,5 +24,5 @@ func NewMessage(id *ID, roomID *RoomID, body *Body) (*Message, error) {
 		return nil, errors.New("MessageBody is null")
 	}
 
-	return &Message{RoomID: *roomID, Body: *body}, nil
+	return &Message{ID: *id, RoomID: *roomID, Body: *body}, nil
 }
