@@ -5,29 +5,31 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/message"
+	messageDomainModel "github.com/karamaru-alpha/chat-go-server/domain/model/message"
+	roomDomainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
-	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
+	tdMessageDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
+	tdRoomDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 )
 
 // TestCreate メッセージの生成処理を担うファクトリのテスト
 func TestCreate(t *testing.T) {
 	t.Parallel()
 
-	factory := domainModel.NewFactory(mockUtil.NewULIDGenerator())
+	factory := messageDomainModel.NewFactory(mockUtil.NewULIDGenerator())
 
 	tests := []struct {
 		body      string
-		input1    *domainModel.RoomID
-		input2    *domainModel.Body
-		expected1 *domainModel.Message
+		input1    *roomDomainModel.ID
+		input2    *messageDomainModel.Body
+		expected1 *messageDomainModel.Message
 		expected2 error
 	}{
 		{
 			body:      "【正常系】",
-			input1:    &tdDomain.Message.RoomID,
-			input2:    &tdDomain.Message.Body,
-			expected1: &tdDomain.Message.Entity,
+			input1:    &tdRoomDomain.Room.ID,
+			input2:    &tdMessageDomain.Message.Body,
+			expected1: &tdMessageDomain.Message.Entity,
 			expected2: nil,
 		},
 	}
