@@ -55,7 +55,7 @@ func TestToEntity(t *testing.T) {
 		expected2 error
 	}{
 		{
-			title:     "【正常系】DB情報を持った構造体をメッセージエンティティに変換",
+			title:     "【正常系】DB情報を持った構造体をトークルームエンティティに変換",
 			input:     &infra.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.Valid},
 			expected1: &tdDomain.Room.Entity,
 			expected2: nil,
@@ -65,6 +65,18 @@ func TestToEntity(t *testing.T) {
 			input:     nil,
 			expected1: nil,
 			expected2: nil,
+		},
+		{
+			title:     "【異常系】IDが不正値",
+			input:     &infra.Room{ID: tdString.Room.ID.Invalid, Title: tdString.Room.Title.Valid},
+			expected1: nil,
+			expected2: errors.New("ulid: bad data size when unmarshaling"),
+		},
+		{
+			title:     "【異常系】タイトルが空文字列",
+			input:     &infra.Room{ID: tdString.Room.ID.Valid, Title: ""},
+			expected1: nil,
+			expected2: errors.New("RoomTitle is null"),
 		},
 		{
 			title:     "【異常系】タイトルが不正値(short)",
