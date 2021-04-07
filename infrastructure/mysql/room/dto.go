@@ -42,8 +42,7 @@ func ToEntity(dto *Room) (*domain.Room, error) {
 }
 
 func ToEntities(dtos *[]Room) (*[]domain.Room, error) {
-	var entities []domain.Room
-
+	entities := make([]domain.Room, 0, len(*dtos))
 	for _, v := range *dtos {
 		entity, err := ToEntity(&v)
 		if err != nil {
@@ -51,6 +50,5 @@ func ToEntities(dtos *[]Room) (*[]domain.Room, error) {
 		}
 		entities = append(entities, *entity)
 	}
-
 	return &entities, nil
 }

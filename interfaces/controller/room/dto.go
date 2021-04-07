@@ -17,7 +17,7 @@ func ToProto(entity *domain.Room) *pb.Room {
 
 // ToProtos トークルームエンティティのスライスをｇRPCの型に変換
 func ToProtos(entities *[]domain.Room) []*pb.Room {
-	var rooms []*pb.Room
+	rooms := make([]*pb.Room, 0, len(*entities))
 	for _, v := range *entities {
 		rooms = append(rooms, ToProto(&v))
 	}
