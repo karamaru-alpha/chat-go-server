@@ -34,7 +34,6 @@ func TestCreate(t *testing.T) {
 		td := td
 
 		t.Run("Create:"+td.title, func(t *testing.T) {
-
 			output1, output2 := factory.Create(td.input)
 
 			assert.Equal(t, td.expected1, output1)

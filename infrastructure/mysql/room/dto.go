@@ -13,6 +13,10 @@ type Room struct {
 }
 
 func ToDTO(entity *domain.Room) *Room {
+	if entity == nil {
+		return nil
+	}
+
 	return &Room{
 		ID:    ulid.ULID(entity.ID).String(),
 		Title: string(entity.Title),
@@ -20,6 +24,10 @@ func ToDTO(entity *domain.Room) *Room {
 }
 
 func ToEntity(dto *Room) (*domain.Room, error) {
+	if dto == nil {
+		return nil, nil
+	}
+
 	parsedULID, err := ulid.Parse(dto.ID)
 	if err != nil {
 		return nil, err
@@ -42,6 +50,10 @@ func ToEntity(dto *Room) (*domain.Room, error) {
 }
 
 func ToEntities(dtos *[]Room) (*[]domain.Room, error) {
+	if dtos == nil {
+		return nil, nil
+	}
+
 	entities := make([]domain.Room, 0, len(*dtos))
 	for _, v := range *dtos {
 		entity, err := ToEntity(&v)

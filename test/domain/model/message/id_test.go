@@ -40,7 +40,6 @@ func TestNewID(t *testing.T) {
 		td := td
 
 		t.Run("NewID:"+td.title, func(t *testing.T) {
-
 			output1, output2 := domain.NewID(td.input)
 
 			assert.Equal(t, td.expected1, output1)

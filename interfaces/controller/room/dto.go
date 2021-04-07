@@ -9,6 +9,10 @@ import (
 
 // ToProto トークルームエンティティをｇRPCの型に変換
 func ToProto(entity *domain.Room) *pb.Room {
+	if entity == nil {
+		return nil
+	}
+
 	return &pb.Room{
 		Id:    ulid.ULID(entity.ID).String(),
 		Title: string(entity.Title),
@@ -17,6 +21,10 @@ func ToProto(entity *domain.Room) *pb.Room {
 
 // ToProtos トークルームエンティティのスライスをｇRPCの型に変換
 func ToProtos(entities *[]domain.Room) []*pb.Room {
+	if entities == nil {
+		return nil
+	}
+
 	rooms := make([]*pb.Room, 0, len(*entities))
 	for _, v := range *entities {
 		rooms = append(rooms, ToProto(&v))

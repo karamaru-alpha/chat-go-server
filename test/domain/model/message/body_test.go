@@ -43,8 +43,8 @@ func TestNewBody(t *testing.T) {
 
 	for _, td := range tests {
 		td := td
-		t.Run("NewBody:"+td.body, func(t *testing.T) {
 
+		t.Run("NewBody:"+td.body, func(t *testing.T) {
 			output1, output2 := domain.NewBody(td.input)
 
 			assert.Equal(t, td.expected1, output1)

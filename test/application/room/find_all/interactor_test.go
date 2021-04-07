@@ -44,10 +44,11 @@ func TestHandle(t *testing.T) {
 	for _, td := range tests {
 		td := td
 
-		td.before()
-
 		t.Run("Handle:"+td.title, func(t *testing.T) {
+			td.before()
+
 			output := interactor.Handle()
+
 			assert.Equal(t, td.expected, output)
 		})
 	}

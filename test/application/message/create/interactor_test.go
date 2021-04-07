@@ -122,12 +122,13 @@ func TestHandle(t *testing.T) {
 	for _, td := range tests {
 		td := td
 
-		if td.before != nil {
-			td.before()
-		}
-
 		t.Run("Handle:"+td.title, func(t *testing.T) {
+			if td.before != nil {
+				td.before()
+			}
+
 			output := interactor.Handle(td.input)
+
 			assert.Equal(t, td.expected, output)
 		})
 	}

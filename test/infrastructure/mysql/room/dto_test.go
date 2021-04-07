@@ -22,18 +22,25 @@ func TestToDTO(t *testing.T) {
 		expected *infra.Room
 	}{
 		{
-			title:    "【正常系】",
+			title:    "【正常系】メッセージエンティティをDB情報を持った構造体に変換",
 			input:    &tdDomain.Room.Entity,
 			expected: &infra.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.Valid},
+		},
+		{
+			title:    "【正常系】nilが来たらnilを返す",
+			input:    nil,
+			expected: nil,
 		},
 	}
 
 	for _, td := range tests {
 		td := td
 
-		output := infra.ToDTO(td.input)
+		t.Run("ToDTO:"+td.title, func(t *testing.T) {
+			output := infra.ToDTO(td.input)
 
-		assert.Equal(t, td.expected, output)
+			assert.Equal(t, td.expected, output)
+		})
 	}
 }
 
@@ -48,9 +55,15 @@ func TestToEntity(t *testing.T) {
 		expected2 error
 	}{
 		{
-			title:     "【正常系】",
+			title:     "【正常系】DB情報を持った構造体をメッセージエンティティに変換",
 			input:     &infra.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.Valid},
 			expected1: &tdDomain.Room.Entity,
+			expected2: nil,
+		},
+		{
+			title:     "【正常系】nilが来たらnilを返す",
+			input:     nil,
+			expected1: nil,
 			expected2: nil,
 		},
 		{
@@ -70,10 +83,12 @@ func TestToEntity(t *testing.T) {
 	for _, td := range tests {
 		td := td
 
-		output1, output2 := infra.ToEntity(td.input)
+		t.Run("ToEntity:"+td.title, func(t *testing.T) {
+			output1, output2 := infra.ToEntity(td.input)
 
-		assert.Equal(t, td.expected1, output1)
-		assert.Equal(t, td.expected2, output2)
+			assert.Equal(t, td.expected1, output1)
+			assert.Equal(t, td.expected2, output2)
+		})
 	}
 }
 
@@ -103,6 +118,12 @@ func TestToEntities(t *testing.T) {
 			expected2: nil,
 		},
 		{
+			title:     "【正常系】nilが来たらnilを返す",
+			input:     nil,
+			expected1: nil,
+			expected2: nil,
+		},
+		{
 			title:     "【異常系】タイトルが不正値(short)",
 			input:     &[]infra.Room{{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.TooShort}},
 			expected1: nil,
@@ -119,9 +140,11 @@ func TestToEntities(t *testing.T) {
 	for _, td := range tests {
 		td := td
 
-		output1, output2 := infra.ToEntities(td.input)
+		t.Run("ToEntities:"+td.title, func(t *testing.T) {
+			output1, output2 := infra.ToEntities(td.input)
 
-		assert.Equal(t, td.expected1, output1)
-		assert.Equal(t, td.expected2, output2)
+			assert.Equal(t, td.expected1, output1)
+			assert.Equal(t, td.expected2, output2)
+		})
 	}
 }

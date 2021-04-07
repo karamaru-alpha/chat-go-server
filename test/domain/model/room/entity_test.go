@@ -48,7 +48,6 @@ func TestNewRoom(t *testing.T) {
 		td := td
 
 		t.Run("NewRoom:"+td.title, func(t *testing.T) {
-
 			output1, output2 := domain.NewRoom(td.input1, td.input2)
 
 			assert.Equal(t, td.expected1, output1)

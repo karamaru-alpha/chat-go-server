@@ -99,12 +99,12 @@ func TestHandle(t *testing.T) {
 		td := td
 
 		t.Run("Handle:"+td.title, func(t *testing.T) {
-
 			if td.before != nil {
 				td.before()
 			}
 
 			output := interactor.Handle(td.input)
+
 			assert.Equal(t, td.expected, output)
 		})
 	}

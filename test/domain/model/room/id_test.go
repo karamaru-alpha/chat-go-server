@@ -38,8 +38,8 @@ func TestNewID(t *testing.T) {
 
 	for _, td := range tests {
 		td := td
-		t.Run("NewID:"+td.title, func(t *testing.T) {
 
+		t.Run("NewID:"+td.title, func(t *testing.T) {
 			output1, output2 := domain.NewID(td.input)
 
 			assert.Equal(t, td.expected1, output1)

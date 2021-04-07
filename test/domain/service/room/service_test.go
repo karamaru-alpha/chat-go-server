@@ -55,7 +55,6 @@ func TestExists(t *testing.T) {
 		td := td
 
 		t.Run("Exists:"+td.title, func(t *testing.T) {
-
 			td.before()
 
 			output1, output2 := domainService.Exists(td.input)

@@ -29,22 +29,39 @@ func TestGetRooms(t *testing.T) {
 	// applicationをモック
 	createUsecase := mockCreateApplication.NewMockIInputPort(ctrl)
 	findAllUsecase := mockFindAllApplication.NewMockIInputPort(ctrl)
-	findAllUsecase.EXPECT().Handle().Return(
-		findAllApplication.OutputData{
-			Rooms: &[]domain.Room{tdDomain.Room.Entity}, Err: nil,
-		},
-	)
 
 	handler := controller.NewController(createUsecase, findAllUsecase)
 
 	tests := []struct {
 		title     string
+		before    func()
+		input1    context.Context
+		input2    *pb.GetRoomsRequest
 		expected1 *pb.GetRoomsResponse
 		expected2 error
 	}{
 		{
-			title:     "【正常系】",
+			title: "【正常系】トークルームが1つ",
+			before: func() {
+				findAllUsecase.EXPECT().Handle().Return(findAllApplication.OutputData{
+					Rooms: &[]domain.Room{tdDomain.Room.Entity}, Err: nil,
+				})
+			},
+			input1:    context.TODO(),
+			input2:    &pb.GetRoomsRequest{},
 			expected1: &pb.GetRoomsResponse{Rooms: controller.ToProtos(&[]domain.Room{tdDomain.Room.Entity})},
+			expected2: nil,
+		},
+		{
+			title: "【正常系】トークルームがまだない",
+			before: func() {
+				findAllUsecase.EXPECT().Handle().Return(findAllApplication.OutputData{
+					Rooms: nil, Err: nil,
+				})
+			},
+			input1:    context.TODO(),
+			input2:    &pb.GetRoomsRequest{},
+			expected1: &pb.GetRoomsResponse{Rooms: nil},
 			expected2: nil,
 		},
 	}
@@ -53,7 +70,10 @@ func TestGetRooms(t *testing.T) {
 		td := td
 
 		t.Run("GetRooms:"+td.title, func(t *testing.T) {
-			output1, output2 := handler.GetRooms(context.TODO(), &pb.GetRoomsRequest{})
+			td.before()
+
+			output1, output2 := handler.GetRooms(td.input1, td.input2)
+
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
 		})
@@ -98,6 +118,7 @@ func TestCreateRoom(t *testing.T) {
 
 		t.Run("CreateRoom:"+td.title, func(t *testing.T) {
 			output1, output2 := handler.CreateRoom(context.TODO(), td.input)
+
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
 		})

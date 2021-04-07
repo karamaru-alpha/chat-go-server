@@ -62,7 +62,6 @@ func TestNewMessage(t *testing.T) {
 		td := td
 
 		t.Run("NewMessage:"+td.body, func(t *testing.T) {
-
 			output1, output2 := messageDomain.NewMessage(td.input1, td.input2, td.input3)
 
 			assert.Equal(t, td.expected1, output1)

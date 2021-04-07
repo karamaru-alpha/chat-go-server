@@ -22,21 +22,28 @@ func TestToProto(t *testing.T) {
 		expected *pb.Room
 	}{
 		{
-			title: "【正常系】",
+			title: "【正常系】トークルームエンティティをDB情報を持った構造体に変換する",
 			input: &tdDomain.Room.Entity,
 			expected: &pb.Room{
 				Id:    tdString.Room.ID.Valid,
 				Title: tdString.Room.Title.Valid,
 			},
 		},
+		{
+			title:    "【正常系】nilが来たらnilを返す",
+			input:    nil,
+			expected: nil,
+		},
 	}
 
 	for _, td := range tests {
 		td := td
 
-		output := controller.ToProto(td.input)
+		t.Run("ToProto:"+td.title, func(t *testing.T) {
+			output := controller.ToProto(td.input)
 
-		assert.Equal(t, td.expected, output)
+			assert.Equal(t, td.expected, output)
+		})
 	}
 }
 
@@ -50,7 +57,7 @@ func TestToProtos(t *testing.T) {
 		expected []*pb.Room
 	}{
 		{
-			title: "【正常系】",
+			title: "【正常系】トークルームエンティティのスライスをDB情報を持った構造体に変換する",
 			input: &[]domain.Room{tdDomain.Room.Entity, tdDomain.Room.Entity},
 			expected: []*pb.Room{
 				{
@@ -63,13 +70,20 @@ func TestToProtos(t *testing.T) {
 				},
 			},
 		},
+		{
+			title:    "【正常系】nilが来たらnilを返す",
+			input:    nil,
+			expected: nil,
+		},
 	}
 
 	for _, td := range tests {
 		td := td
 
-		output := controller.ToProtos(td.input)
+		t.Run("ToProtos:"+td.title, func(t *testing.T) {
+			output := controller.ToProtos(td.input)
 
-		assert.Equal(t, td.expected, output)
+			assert.Equal(t, td.expected, output)
+		})
 	}
 }
