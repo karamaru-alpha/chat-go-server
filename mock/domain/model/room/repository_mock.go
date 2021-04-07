@@ -34,6 +34,21 @@ func (m *MockIRepository) EXPECT() *MockIRepositoryMockRecorder {
 	return m.recorder
 }
 
+// Find mocks base method.
+func (m *MockIRepository) Find(arg0 *room.ID) (*room.Room, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Find", arg0)
+	ret0, _ := ret[0].(*room.Room)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Find indicates an expected call of Find.
+func (mr *MockIRepositoryMockRecorder) Find(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockIRepository)(nil).Find), arg0)
+}
+
 // FindAll mocks base method.
 func (m *MockIRepository) FindAll() (*[]room.Room, error) {
 	m.ctrl.T.Helper()

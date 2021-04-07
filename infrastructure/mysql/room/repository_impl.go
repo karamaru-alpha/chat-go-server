@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/jinzhu/gorm"
+	"github.com/oklog/ulid"
 
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 )
@@ -37,6 +38,20 @@ func (r repositoryImpl) FindAll() (*[]domain.Room, error) {
 	}
 
 	return ToEntities(&dtos)
+}
+
+// Find トークルームをIDから１件検索・再構成する
+func (r repositoryImpl) Find(id *domain.ID) (*domain.Room, error) {
+	var dto Room
+
+	if err := r.db.Where("id = ?", ulid.ULID(*id).String()).First(&dto).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return ToEntity(&dto)
 }
 
 // FindByTitle トークルームをタイトルから一件取得する

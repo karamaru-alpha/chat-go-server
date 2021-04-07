@@ -20,14 +20,14 @@ func TestCreate(t *testing.T) {
 
 	tests := []struct {
 		body      string
-		input1    *roomDomain.ID
+		input1    *roomDomain.Room
 		input2    *messageDomain.Body
 		expected1 *messageDomain.Message
 		expected2 error
 	}{
 		{
 			body:      "【正常系】",
-			input1:    &tdRoomDomain.Room.ID,
+			input1:    &tdRoomDomain.Room.Entity,
 			input2:    &tdMessageDomain.Message.Body,
 			expected1: &tdMessageDomain.Message.Entity,
 			expected2: nil,
