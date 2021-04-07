@@ -22,6 +22,8 @@ type repositoryImplTester struct {
 
 // TestSave トークルームを永続化させる処理のテスト
 func TestSave(t *testing.T) {
+	t.Parallel()
+
 	// モックの作成
 	tester := repositoryImplTester{}
 	tester.setupTest(t)
@@ -44,6 +46,8 @@ func TestSave(t *testing.T) {
 
 // TestFindAll トークルームの全件検索+再構築を行う処理のテスト
 func TestFindAll(t *testing.T) {
+	t.Parallel()
+
 	// モックの作成
 	test := repositoryImplTester{}
 	test.setupTest(t)
@@ -64,6 +68,8 @@ func TestFindAll(t *testing.T) {
 
 // TestFind トークルームをIDから一件取得・再構築する処理のテスト
 func TestFind(t *testing.T) {
+	t.Parallel()
+
 	// モックの作成
 	test := repositoryImplTester{}
 	test.setupTest(t)
@@ -84,6 +90,8 @@ func TestFind(t *testing.T) {
 
 // TestFindByTitle トークルームをタイトルから一件取得・再構築する処理のテスト
 func TestFindByTitle(t *testing.T) {
+	t.Parallel()
+
 	// モックの作成
 	test := repositoryImplTester{}
 	test.setupTest(t)
