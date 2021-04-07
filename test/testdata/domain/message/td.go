@@ -1,18 +1,18 @@
 package testdata
 
 import (
-	"github.com/karamaru-alpha/chat-go-server/domain/model/message"
-	"github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
+	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 	tdULID "github.com/karamaru-alpha/chat-go-server/test/testdata/ulid"
 )
 
 // Message メッセージエンティティにまつわるテストデータ
 var Message = struct {
-	Entity message.Message
-	ID     message.ID
-	RoomID room.ID
-	Body   message.Body
+	Entity messageDomain.Message
+	ID     messageDomain.ID
+	RoomID roomDomain.ID
+	Body   messageDomain.Body
 }{
 	Entity: genEntity(),
 	ID:     genID(),
@@ -20,22 +20,22 @@ var Message = struct {
 	Body:   genBody(),
 }
 
-func genEntity() message.Message {
-	return message.Message{
+func genEntity() messageDomain.Message {
+	return messageDomain.Message{
 		ID:     genID(),
 		RoomID: genRoomID(),
 		Body:   genBody(),
 	}
 }
 
-func genID() message.ID {
-	return message.ID(tdULID.Message.ID)
+func genID() messageDomain.ID {
+	return messageDomain.ID(tdULID.Message.ID)
 }
 
-func genRoomID() room.ID {
-	return room.ID(tdULID.Room.ID)
+func genRoomID() roomDomain.ID {
+	return roomDomain.ID(tdULID.Room.ID)
 }
 
-func genBody() message.Body {
-	return message.Body(tdString.Message.Body.Valid)
+func genBody() messageDomain.Body {
+	return messageDomain.Body(tdString.Message.Body.Valid)
 }
