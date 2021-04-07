@@ -12,6 +12,7 @@ type Room struct {
 	Title string
 }
 
+// ToDTO トークルームエンティティをDB情報を持ったDTOに変換する
 func ToDTO(entity *domain.Room) *Room {
 	if entity == nil {
 		return nil
@@ -23,6 +24,7 @@ func ToDTO(entity *domain.Room) *Room {
 	}
 }
 
+// ToEntity DB情報を持った構造体をトークルームエンティティに変換する
 func ToEntity(dto *Room) (*domain.Room, error) {
 	if dto == nil {
 		return nil, nil
@@ -49,6 +51,7 @@ func ToEntity(dto *Room) (*domain.Room, error) {
 	)
 }
 
+// ToEntities DB情報を持った複数の構造体をトークルームエンティティに変換する
 func ToEntities(dtos *[]Room) (*[]domain.Room, error) {
 	if dtos == nil {
 		return nil, nil
