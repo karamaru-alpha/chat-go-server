@@ -1,16 +1,20 @@
 package message
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/karamaru-alpha/chat-go-server/domain/model/room"
+)
 
 // Message メッセージエンティティ
 type Message struct {
 	ID     ID
-	RoomID RoomID
+	RoomID room.ID
 	Body   Body
 }
 
 // Message メッセージエンティティのコンストラクタ
-func NewMessage(id *ID, roomID *RoomID, body *Body) (*Message, error) {
+func NewMessage(id *ID, roomID *room.ID, body *Body) (*Message, error) {
 
 	if id == nil {
 		return nil, errors.New("MessageID is null")

@@ -6,8 +6,10 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/message"
-	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
+	messageDomainModel "github.com/karamaru-alpha/chat-go-server/domain/model/message"
+	roomDomainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	tdMessageDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
+	tdRoomDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 )
 
 // TestNewMessage メッセージエンティティコンストラクタのテスト
@@ -16,40 +18,40 @@ func TestNewMessage(t *testing.T) {
 
 	tests := []struct {
 		body      string
-		input1    *domainModel.ID
-		input2    *domainModel.RoomID
-		input3    *domainModel.Body
-		expected1 *domainModel.Message
+		input1    *messageDomainModel.ID
+		input2    *roomDomainModel.ID
+		input3    *messageDomainModel.Body
+		expected1 *messageDomainModel.Message
 		expected2 error
 	}{
 		{
 			body:      "【正常系】",
-			input1:    &tdDomain.Message.ID,
-			input2:    &tdDomain.Message.RoomID,
-			input3:    &tdDomain.Message.Body,
-			expected1: &tdDomain.Message.Entity,
+			input1:    &tdMessageDomain.Message.ID,
+			input2:    &tdRoomDomain.Room.ID,
+			input3:    &tdMessageDomain.Message.Body,
+			expected1: &tdMessageDomain.Message.Entity,
 			expected2: nil,
 		},
 		{
 			body:      "【異常系】IDがnil",
 			input1:    nil,
-			input2:    &tdDomain.Message.RoomID,
-			input3:    &tdDomain.Message.Body,
+			input2:    &tdRoomDomain.Room.ID,
+			input3:    &tdMessageDomain.Message.Body,
 			expected1: nil,
 			expected2: errors.New("MessageID is null"),
 		},
 		{
 			body:      "【異常系】RoomIDがnil",
-			input1:    &tdDomain.Message.ID,
+			input1:    &tdMessageDomain.Message.ID,
 			input2:    nil,
-			input3:    &tdDomain.Message.Body,
+			input3:    &tdMessageDomain.Message.Body,
 			expected1: nil,
 			expected2: errors.New("MessageRoomID is null"),
 		},
 		{
 			body:      "【異常系】Bodyがnil",
-			input1:    &tdDomain.Message.ID,
-			input2:    &tdDomain.Message.RoomID,
+			input1:    &tdMessageDomain.Message.ID,
+			input2:    &tdRoomDomain.Room.ID,
 			input3:    nil,
 			expected1: nil,
 			expected2: errors.New("MessageBody is null"),
@@ -61,7 +63,7 @@ func TestNewMessage(t *testing.T) {
 
 		t.Run("NewMessage:"+td.body, func(t *testing.T) {
 
-			output1, output2 := domainModel.NewMessage(td.input1, td.input2, td.input3)
+			output1, output2 := messageDomainModel.NewMessage(td.input1, td.input2, td.input3)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
