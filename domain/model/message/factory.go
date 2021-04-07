@@ -1,10 +1,13 @@
 package message
 
-import "github.com/karamaru-alpha/chat-go-server/util"
+import (
+	"github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	"github.com/karamaru-alpha/chat-go-server/util"
+)
 
 // IFactory メッセージファクトリのインターフェース
 type IFactory interface {
-	Create(*RoomID, *Body) (*Message, error)
+	Create(*room.ID, *Body) (*Message, error)
 }
 
 type factory struct {
@@ -19,7 +22,7 @@ func NewFactory(ulidGenerator util.IULIDGenerator) IFactory {
 }
 
 // Create メッセージエンティティの生成処理を担うファクトリ
-func (f factory) Create(roomID *RoomID, body *Body) (*Message, error) {
+func (f factory) Create(roomID *room.ID, body *Body) (*Message, error) {
 
 	ulid := f.ulidGenerator.Generate()
 
