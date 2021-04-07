@@ -3,18 +3,18 @@ package room
 import (
 	"errors"
 
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	domainService "github.com/karamaru-alpha/chat-go-server/domain/service/room"
 )
 
 type interactor struct {
-	factory       domainModel.IFactory
-	repository    domainModel.IRepository
+	factory       domain.IFactory
+	repository    domain.IRepository
 	domainService domainService.IDomainService
 }
 
 // NewInteractor トークルームを新規作成するアプリケーションサービスのコンストラクタ
-func NewInteractor(f domainModel.IFactory, r domainModel.IRepository, s domainService.IDomainService) IInputPort {
+func NewInteractor(f domain.IFactory, r domain.IRepository, s domainService.IDomainService) IInputPort {
 	return &interactor{
 		factory:       f,
 		repository:    r,
@@ -25,7 +25,7 @@ func NewInteractor(f domainModel.IFactory, r domainModel.IRepository, s domainSe
 // Handle トークルームを新規作成するアプリケーションサービス
 func (i interactor) Handle(input InputData) OutputData {
 
-	roomTitle, err := domainModel.NewTitle(input.Title)
+	roomTitle, err := domain.NewTitle(input.Title)
 	if err != nil {
 		return OutputData{Err: err}
 	}

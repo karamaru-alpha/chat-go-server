@@ -1,15 +1,15 @@
 package room
 
 import (
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 )
 
 type interactor struct {
-	repository domainModel.IRepository
+	repository domain.IRepository
 }
 
 // NewInteractor トークルームを全件取得するアプリケーションサービスのコンストラクタ
-func NewInteractor(repository domainModel.IRepository) IInputPort {
+func NewInteractor(repository domain.IRepository) IInputPort {
 	return &interactor{
 		repository,
 	}

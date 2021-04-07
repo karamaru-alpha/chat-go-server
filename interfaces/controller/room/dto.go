@@ -3,12 +3,12 @@ package room
 import (
 	"github.com/oklog/ulid"
 
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	pb "github.com/karamaru-alpha/chat-go-server/interfaces/proto/pb"
 )
 
 // ToProto トークルームエンティティをｇRPCの型に変換
-func ToProto(entity *domainModel.Room) *pb.Room {
+func ToProto(entity *domain.Room) *pb.Room {
 	return &pb.Room{
 		Id:    ulid.ULID(entity.ID).String(),
 		Title: string(entity.Title),
@@ -16,7 +16,7 @@ func ToProto(entity *domainModel.Room) *pb.Room {
 }
 
 // ToProtos トークルームエンティティのスライスをｇRPCの型に変換
-func ToProtos(entities *[]domainModel.Room) []*pb.Room {
+func ToProtos(entities *[]domain.Room) []*pb.Room {
 	var rooms []*pb.Room
 	for _, v := range *entities {
 		rooms = append(rooms, ToProto(&v))

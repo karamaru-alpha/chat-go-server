@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/message"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
@@ -18,7 +18,7 @@ func TestNewBody(t *testing.T) {
 	tests := []struct {
 		body      string
 		input     string
-		expected1 *domainModel.Body
+		expected1 *domain.Body
 		expected2 error
 	}{
 		{
@@ -45,7 +45,7 @@ func TestNewBody(t *testing.T) {
 		td := td
 		t.Run("NewBody:"+td.body, func(t *testing.T) {
 
-			output1, output2 := domainModel.NewBody(td.input)
+			output1, output2 := domain.NewBody(td.input)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)

@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	infra "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
@@ -18,7 +18,7 @@ func TestToDTO(t *testing.T) {
 
 	tests := []struct {
 		title    string
-		input    *domainModel.Room
+		input    *domain.Room
 		expected *infra.Room
 	}{
 		{
@@ -44,7 +44,7 @@ func TestToEntity(t *testing.T) {
 	tests := []struct {
 		title     string
 		input     *infra.Room
-		expected1 *domainModel.Room
+		expected1 *domain.Room
 		expected2 error
 	}{
 		{
@@ -87,19 +87,19 @@ func TestToEntities(t *testing.T) {
 	tests := []struct {
 		title     string
 		input     *[]infra.Room
-		expected1 *[]domainModel.Room
+		expected1 *[]domain.Room
 		expected2 error
 	}{
 		{
 			title:     "【正常系】1つのDTOをEntityに変換",
 			input:     &[]infra.Room{dto},
-			expected1: &[]domainModel.Room{tdDomain.Room.Entity},
+			expected1: &[]domain.Room{tdDomain.Room.Entity},
 			expected2: nil,
 		},
 		{
 			title:     "【正常系】2つのDTOをEntityに変換",
 			input:     &[]infra.Room{dto, dto},
-			expected1: &[]domainModel.Room{tdDomain.Room.Entity, tdDomain.Room.Entity},
+			expected1: &[]domain.Room{tdDomain.Room.Entity, tdDomain.Room.Entity},
 			expected2: nil,
 		},
 		{

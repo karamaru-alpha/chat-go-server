@@ -7,7 +7,7 @@ import (
 	"github.com/oklog/ulid"
 	"github.com/stretchr/testify/assert"
 
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdULID "github.com/karamaru-alpha/chat-go-server/test/testdata/ulid"
 )
@@ -19,7 +19,7 @@ func TestNewID(t *testing.T) {
 	tests := []struct {
 		title     string
 		input     *ulid.ULID
-		expected1 *domainModel.ID
+		expected1 *domain.ID
 		expected2 error
 	}{
 		{
@@ -40,7 +40,7 @@ func TestNewID(t *testing.T) {
 		td := td
 		t.Run("NewID:"+td.title, func(t *testing.T) {
 
-			output1, output2 := domainModel.NewID(td.input)
+			output1, output2 := domain.NewID(td.input)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)

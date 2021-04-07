@@ -8,14 +8,14 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	infra "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 
 type repositoryImplTester struct {
-	repositoryImpl domainModel.IRepository
+	repositoryImpl domain.IRepository
 	db             *gorm.DB
 	mock           sqlmock.Sqlmock
 }
@@ -54,7 +54,7 @@ func TestFindAll(t *testing.T) {
 	output, err := test.repositoryImpl.FindAll()
 	assert.NoError(t, err)
 
-	assert.Equal(t, &[]domainModel.Room{tdDomain.Room.Entity}, output)
+	assert.Equal(t, &[]domain.Room{tdDomain.Room.Entity}, output)
 
 	err = test.mock.ExpectationsWereMet()
 	assert.NoError(t, err)

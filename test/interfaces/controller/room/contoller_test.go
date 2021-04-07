@@ -9,7 +9,7 @@ import (
 
 	createApplication "github.com/karamaru-alpha/chat-go-server/application/room/create"
 	findAllApplication "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	controller "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
 	pb "github.com/karamaru-alpha/chat-go-server/interfaces/proto/pb"
 	mockCreateApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/create"
@@ -31,7 +31,7 @@ func TestGetRooms(t *testing.T) {
 	findAllUsecase := mockFindAllApplication.NewMockIInputPort(ctrl)
 	findAllUsecase.EXPECT().Handle().Return(
 		findAllApplication.OutputData{
-			Rooms: &[]domainModel.Room{tdDomain.Room.Entity}, Err: nil,
+			Rooms: &[]domain.Room{tdDomain.Room.Entity}, Err: nil,
 		},
 	)
 
@@ -44,7 +44,7 @@ func TestGetRooms(t *testing.T) {
 	}{
 		{
 			title:     "【正常系】",
-			expected1: &pb.GetRoomsResponse{Rooms: controller.ToProtos(&[]domainModel.Room{tdDomain.Room.Entity})},
+			expected1: &pb.GetRoomsResponse{Rooms: controller.ToProtos(&[]domain.Room{tdDomain.Room.Entity})},
 			expected2: nil,
 		},
 	}

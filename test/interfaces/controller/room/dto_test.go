@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	controller "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
 	pb "github.com/karamaru-alpha/chat-go-server/interfaces/proto/pb"
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
@@ -18,7 +18,7 @@ func TestToProto(t *testing.T) {
 
 	tests := []struct {
 		title    string
-		input    *domainModel.Room
+		input    *domain.Room
 		expected *pb.Room
 	}{
 		{
@@ -46,12 +46,12 @@ func TestToProtos(t *testing.T) {
 
 	tests := []struct {
 		title    string
-		input    *[]domainModel.Room
+		input    *[]domain.Room
 		expected []*pb.Room
 	}{
 		{
 			title: "【正常系】",
-			input: &[]domainModel.Room{tdDomain.Room.Entity, tdDomain.Room.Entity},
+			input: &[]domain.Room{tdDomain.Room.Entity, tdDomain.Room.Entity},
 			expected: []*pb.Room{
 				{
 					Id:    tdString.Room.ID.Valid,

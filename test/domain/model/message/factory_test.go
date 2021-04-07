@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	messageDomainModel "github.com/karamaru-alpha/chat-go-server/domain/model/message"
-	roomDomainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
+	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
 	tdMessageDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
 	tdRoomDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
@@ -16,13 +16,13 @@ import (
 func TestCreate(t *testing.T) {
 	t.Parallel()
 
-	factory := messageDomainModel.NewFactory(mockUtil.NewULIDGenerator())
+	factory := messageDomain.NewFactory(mockUtil.NewULIDGenerator())
 
 	tests := []struct {
 		body      string
-		input1    *roomDomainModel.ID
-		input2    *messageDomainModel.Body
-		expected1 *messageDomainModel.Message
+		input1    *roomDomain.ID
+		input2    *messageDomain.Body
+		expected1 *messageDomain.Message
 		expected2 error
 	}{
 		{

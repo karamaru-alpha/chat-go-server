@@ -5,7 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 )
 
 type repositoryImpl struct {
@@ -13,20 +13,20 @@ type repositoryImpl struct {
 }
 
 // NewRepositoryImpl リポジトリを実現するimplを生成するコンストラクタ
-func NewRepositoryImpl(db *gorm.DB) domainModel.IRepository {
+func NewRepositoryImpl(db *gorm.DB) domain.IRepository {
 	return &repositoryImpl{
 		db,
 	}
 }
 
 // Save トークルームをDBに保存し永続化させる
-func (r repositoryImpl) Save(entity *domainModel.Room) error {
+func (r repositoryImpl) Save(entity *domain.Room) error {
 	dto := ToDTO(entity)
 	return r.db.Create(dto).Error
 }
 
 // FindAll トークルーム一覧をDBから再構築する
-func (r repositoryImpl) FindAll() (*[]domainModel.Room, error) {
+func (r repositoryImpl) FindAll() (*[]domain.Room, error) {
 	var dtos []Room
 
 	if err := r.db.Find(&dtos).Error; err != nil {
@@ -40,7 +40,7 @@ func (r repositoryImpl) FindAll() (*[]domainModel.Room, error) {
 }
 
 // FindByTitle トークルームをタイトルから一件取得する
-func (r repositoryImpl) FindByTitle(title *domainModel.Title) (*domainModel.Room, error) {
+func (r repositoryImpl) FindByTitle(title *domain.Title) (*domain.Room, error) {
 	var dto Room
 
 	if err := r.db.Where("title = ?", string(*title)).First(&dto).Error; err != nil {

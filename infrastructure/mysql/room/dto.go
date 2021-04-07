@@ -3,7 +3,7 @@ package room
 import (
 	"github.com/oklog/ulid"
 
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 )
 
 // Room トークルームエンティティにDB属性を加えたDTO
@@ -12,37 +12,37 @@ type Room struct {
 	Title string
 }
 
-func ToDTO(entity *domainModel.Room) *Room {
+func ToDTO(entity *domain.Room) *Room {
 	return &Room{
 		ID:    ulid.ULID(entity.ID).String(),
 		Title: string(entity.Title),
 	}
 }
 
-func ToEntity(dto *Room) (*domainModel.Room, error) {
+func ToEntity(dto *Room) (*domain.Room, error) {
 	parsedULID, err := ulid.Parse(dto.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	entityID, err := domainModel.NewID(&parsedULID)
+	entityID, err := domain.NewID(&parsedULID)
 	if err != nil {
 		return nil, err
 	}
 
-	entityTitle, err := domainModel.NewTitle(dto.Title)
+	entityTitle, err := domain.NewTitle(dto.Title)
 	if err != nil {
 		return nil, err
 	}
 
-	return domainModel.NewRoom(
+	return domain.NewRoom(
 		entityID,
 		entityTitle,
 	)
 }
 
-func ToEntities(dtos *[]Room) (*[]domainModel.Room, error) {
-	var entities []domainModel.Room
+func ToEntities(dtos *[]Room) (*[]domain.Room, error) {
+	var entities []domain.Room
 
 	for _, v := range *dtos {
 		entity, err := ToEntity(&v)

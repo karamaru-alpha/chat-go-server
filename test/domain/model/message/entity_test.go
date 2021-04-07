@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	messageDomainModel "github.com/karamaru-alpha/chat-go-server/domain/model/message"
-	roomDomainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
+	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	tdMessageDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
 	tdRoomDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 )
@@ -18,10 +18,10 @@ func TestNewMessage(t *testing.T) {
 
 	tests := []struct {
 		body      string
-		input1    *messageDomainModel.ID
-		input2    *roomDomainModel.ID
-		input3    *messageDomainModel.Body
-		expected1 *messageDomainModel.Message
+		input1    *messageDomain.ID
+		input2    *roomDomain.ID
+		input3    *messageDomain.Body
+		expected1 *messageDomain.Message
 		expected2 error
 	}{
 		{
@@ -63,7 +63,7 @@ func TestNewMessage(t *testing.T) {
 
 		t.Run("NewMessage:"+td.body, func(t *testing.T) {
 
-			output1, output2 := messageDomainModel.NewMessage(td.input1, td.input2, td.input3)
+			output1, output2 := messageDomain.NewMessage(td.input1, td.input2, td.input3)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
