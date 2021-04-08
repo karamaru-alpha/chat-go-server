@@ -42,7 +42,7 @@ func TestHandle(t *testing.T) {
 			title: "【正常系】",
 			before: func() {
 				roomRepository.EXPECT().Find(&tdRoomDomain.Room.ID).Return(&tdRoomDomain.Room.Entity, nil)
-				messageRepository.EXPECT().Create(&tdMessageDomain.Message.Entity).Return(nil)
+				messageRepository.EXPECT().Save(&tdMessageDomain.Message.Entity).Return(nil)
 			},
 			input: application.InputData{
 				RoomID: tdString.Room.ID.Valid,

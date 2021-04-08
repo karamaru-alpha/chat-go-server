@@ -21,7 +21,7 @@ type repositoryImplTester struct {
 	mock           sqlmock.Sqlmock
 }
 
-// TestCreate メッセージを永続化させる処理のテスト
+// TestSave メッセージを永続化させる処理のテスト
 func TestSave(t *testing.T) {
 	t.Parallel()
 
@@ -36,7 +36,7 @@ func TestSave(t *testing.T) {
 	tester.mock.ExpectCommit()
 
 	// 実行
-	err := tester.repositoryImpl.Create(&tdMessageDomain.Message.Entity)
+	err := tester.repositoryImpl.Save(&tdMessageDomain.Message.Entity)
 	assert.NoError(t, err)
 
 	err = tester.mock.ExpectationsWereMet()
