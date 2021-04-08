@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
-	controller "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
+	dto "github.com/karamaru-alpha/chat-go-server/interfaces/dto/room"
 	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
@@ -40,7 +40,7 @@ func TestToProto(t *testing.T) {
 		td := td
 
 		t.Run("ToProto:"+td.title, func(t *testing.T) {
-			output := controller.ToProto(td.input)
+			output := dto.ToProto(td.input)
 
 			assert.Equal(t, td.expected, output)
 		})
@@ -81,7 +81,7 @@ func TestToProtos(t *testing.T) {
 		td := td
 
 		t.Run("ToProtos:"+td.title, func(t *testing.T) {
-			output := controller.ToProtos(td.input)
+			output := dto.ToProtos(td.input)
 
 			assert.Equal(t, td.expected, output)
 		})

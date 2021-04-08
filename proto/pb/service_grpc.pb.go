@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type RoomServicesClient interface {
 	CreateRoom(ctx context.Context, in *CreateRoomRequest, opts ...grpc.CallOption) (*CreateRoomResponse, error)
 	GetRooms(ctx context.Context, in *GetRoomsRequest, opts ...grpc.CallOption) (*GetRoomsResponse, error)
+	JoinRoom(ctx context.Context, in *JoinRoomRequest, opts ...grpc.CallOption) (*JoinRoomResponse, error)
 }
 
 type roomServicesClient struct {
@@ -48,12 +49,22 @@ func (c *roomServicesClient) GetRooms(ctx context.Context, in *GetRoomsRequest, 
 	return out, nil
 }
 
+func (c *roomServicesClient) JoinRoom(ctx context.Context, in *JoinRoomRequest, opts ...grpc.CallOption) (*JoinRoomResponse, error) {
+	out := new(JoinRoomResponse)
+	err := c.cc.Invoke(ctx, "/proto.RoomServices/JoinRoom", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RoomServicesServer is the server API for RoomServices service.
 // All implementations should embed UnimplementedRoomServicesServer
 // for forward compatibility
 type RoomServicesServer interface {
 	CreateRoom(context.Context, *CreateRoomRequest) (*CreateRoomResponse, error)
 	GetRooms(context.Context, *GetRoomsRequest) (*GetRoomsResponse, error)
+	JoinRoom(context.Context, *JoinRoomRequest) (*JoinRoomResponse, error)
 }
 
 // UnimplementedRoomServicesServer should be embedded to have forward compatible implementations.
@@ -65,6 +76,9 @@ func (UnimplementedRoomServicesServer) CreateRoom(context.Context, *CreateRoomRe
 }
 func (UnimplementedRoomServicesServer) GetRooms(context.Context, *GetRoomsRequest) (*GetRoomsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRooms not implemented")
+}
+func (UnimplementedRoomServicesServer) JoinRoom(context.Context, *JoinRoomRequest) (*JoinRoomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method JoinRoom not implemented")
 }
 
 // UnsafeRoomServicesServer may be embedded to opt out of forward compatibility for this service.
@@ -114,6 +128,24 @@ func _RoomServices_GetRooms_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RoomServices_JoinRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JoinRoomRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoomServicesServer).JoinRoom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.RoomServices/JoinRoom",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoomServicesServer).JoinRoom(ctx, req.(*JoinRoomRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RoomServices_ServiceDesc is the grpc.ServiceDesc for RoomServices service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -128,6 +160,10 @@ var RoomServices_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRooms",
 			Handler:    _RoomServices_GetRooms_Handler,
+		},
+		{
+			MethodName: "JoinRoom",
+			Handler:    _RoomServices_JoinRoom_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

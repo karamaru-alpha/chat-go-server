@@ -18,3 +18,11 @@ message GetRoomsRequest {
 message GetRoomsResponse {
     repeated Room rooms = 1;
 }
+
+message JoinRoomRequest {
+    string roomId = 1;
+}
+
+message JoinRoomResponse {
+    repeated Message messages = 1;
+}

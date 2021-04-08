@@ -6,3 +6,9 @@ message Room {
     string id = 1;
     string title = 2;
 }
+
+message Message {
+    string id = 1;
+    string roomId = 2;
+    string body = 3;
+}

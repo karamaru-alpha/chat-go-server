@@ -8,9 +8,11 @@ package room
 import (
 	room4 "github.com/karamaru-alpha/chat-go-server/application/room/create"
 	room5 "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
+	message2 "github.com/karamaru-alpha/chat-go-server/application/room/join"
 	"github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	room3 "github.com/karamaru-alpha/chat-go-server/domain/service/room"
 	"github.com/karamaru-alpha/chat-go-server/infrastructure/mysql"
+	"github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/message"
 	room2 "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
 	room6 "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
 	"github.com/karamaru-alpha/chat-go-server/proto/pb"
@@ -28,6 +30,8 @@ func DI() proto.RoomServicesServer {
 	iDomainService := room3.NewDomainService(iRepository)
 	iInputPort := room4.NewInteractor(iFactory, iRepository, iDomainService)
 	roomIInputPort := room5.NewInteractor(iRepository)
-	roomServicesServer := room6.NewController(iInputPort, roomIInputPort)
+	messageIRepository := message.NewRepositoryImpl(db)
+	messageIInputPort := message2.NewInteractor(messageIRepository)
+	roomServicesServer := room6.NewController(iInputPort, roomIInputPort, messageIInputPort)
 	return roomServicesServer
 }

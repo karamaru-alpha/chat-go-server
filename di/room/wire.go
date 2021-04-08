@@ -7,10 +7,12 @@ import (
 
 	createApplication "github.com/karamaru-alpha/chat-go-server/application/room/create"
 	findAllApplication "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	joinApplication "github.com/karamaru-alpha/chat-go-server/application/room/join"
+	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	domainService "github.com/karamaru-alpha/chat-go-server/domain/service/room"
 	"github.com/karamaru-alpha/chat-go-server/infrastructure/mysql"
-	repositoryImpl "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
+	messageRepositoryImpl "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/message"
+	roomRepositoryImpl "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
 	controller "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
 	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 	"github.com/karamaru-alpha/chat-go-server/util"
@@ -22,8 +24,10 @@ func DI() pb.RoomServicesServer {
 		controller.NewController,
 		createApplication.NewInteractor,
 		findAllApplication.NewInteractor,
-		repositoryImpl.NewRepositoryImpl,
-		domainModel.NewFactory,
+		joinApplication.NewInteractor,
+		roomRepositoryImpl.NewRepositoryImpl,
+		messageRepositoryImpl.NewRepositoryImpl,
+		roomDomain.NewFactory,
 		domainService.NewDomainService,
 		util.NewULIDGenerator,
 		mysql.ConnectGorm,
