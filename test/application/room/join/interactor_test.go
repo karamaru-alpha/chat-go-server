@@ -7,7 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
-	application "github.com/karamaru-alpha/chat-go-server/application/message/find_all"
+	application "github.com/karamaru-alpha/chat-go-server/application/room/join"
 	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	mockDomainModel "github.com/karamaru-alpha/chat-go-server/mock/domain/model/message"
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
@@ -15,7 +15,7 @@ import (
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 
-// TestHandle トークルームを全件取得するアプリケーションサービスのテスト
+// TestHandle トークルーム入室アプリケーションサービスのテスト
 func TestHandle(t *testing.T) {
 	t.Parallel()
 
@@ -34,7 +34,7 @@ func TestHandle(t *testing.T) {
 		expected application.OutputData
 	}{
 		{
-			title: "【正常系】メッセージが1件",
+			title: "【正常系】トークルームのメッセージが1件",
 			before: func() {
 				repository.EXPECT().FindAll(&tdRoomDomain.Room.ID).Return(
 					&[]domainModel.Message{tdDomain.Message.Entity}, nil,

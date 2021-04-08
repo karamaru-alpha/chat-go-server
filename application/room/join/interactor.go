@@ -11,14 +11,14 @@ type interactor struct {
 	repository messageDomain.IRepository
 }
 
-// NewInteractor メッセージ一覧取得アプリケーションサービスのコンストラクタ
+// NewInteractor トークルーム入室アプリケーションサービスのコンストラクタ
 func NewInteractor(r messageDomain.IRepository) IInputPort {
 	return &interactor{
 		repository: r,
 	}
 }
 
-// Handle メッセージ一覧取得アプリケーションサービス
+// Handle トークルーム入室アプリケーションサービス
 func (i interactor) Handle(input InputData) OutputData {
 
 	parsedULID, err := ulid.Parse(input.RoomID)
