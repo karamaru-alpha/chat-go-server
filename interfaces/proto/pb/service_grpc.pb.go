@@ -131,5 +131,5 @@ var RoomServices_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "room.proto",
+	Metadata: "service.proto",
 }
