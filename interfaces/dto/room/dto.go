@@ -7,7 +7,7 @@ import (
 	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 )
 
-// ToProto トークルームエンティティをｇRPCの型に変換
+// ToProto トークルームエンティティをｇRPC型に変換
 func ToProto(entity *domain.Room) *pb.Room {
 	if entity == nil {
 		return nil
@@ -19,7 +19,7 @@ func ToProto(entity *domain.Room) *pb.Room {
 	}
 }
 
-// ToProtos トークルームエンティティのスライスをｇRPCの型に変換
+// ToProtos トークルームエンティティのスライスをｇRPC型に変換
 func ToProtos(entities *[]domain.Room) []*pb.Room {
 	if entities == nil {
 		return nil
