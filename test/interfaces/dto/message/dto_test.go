@@ -1,4 +1,4 @@
-package room_test
+package room
 
 import (
 	"testing"
