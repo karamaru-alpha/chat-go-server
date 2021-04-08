@@ -21,8 +21,8 @@ func NewRepositoryImpl(db *gorm.DB) messageDomain.IRepository {
 	}
 }
 
-// Create メッセージの永続化を行う
-func (r repositoryImpl) Create(entity *messageDomain.Message) error {
+// Save メッセージの永続化を行う
+func (r repositoryImpl) Save(entity *messageDomain.Message) error {
 	dto := ToDTO(entity)
 	return r.db.Create(dto).Error
 }
