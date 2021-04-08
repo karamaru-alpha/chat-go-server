@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "github.com/karamaru-alpha/chat-go-server/interfaces/proto";
+option go_package = "github.com/karamaru-alpha/chat-go-server/proto";
 package proto;
 
 message Room {
