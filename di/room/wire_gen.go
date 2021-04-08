@@ -13,7 +13,7 @@ import (
 	"github.com/karamaru-alpha/chat-go-server/infrastructure/mysql"
 	room2 "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
 	room6 "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
-	"github.com/karamaru-alpha/chat-go-server/interfaces/proto/pb"
+	"github.com/karamaru-alpha/chat-go-server/proto/pb"
 	"github.com/karamaru-alpha/chat-go-server/util"
 )
 

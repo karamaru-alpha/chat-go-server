@@ -12,7 +12,7 @@ import (
 	"github.com/karamaru-alpha/chat-go-server/infrastructure/mysql"
 	repositoryImpl "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
 	controller "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
-	pb "github.com/karamaru-alpha/chat-go-server/interfaces/proto/pb"
+	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 	"github.com/karamaru-alpha/chat-go-server/util"
 )
 

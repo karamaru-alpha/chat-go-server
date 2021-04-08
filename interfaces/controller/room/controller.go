@@ -5,7 +5,7 @@ import (
 
 	createApplication "github.com/karamaru-alpha/chat-go-server/application/room/create"
 	findAllApplication "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
-	pb "github.com/karamaru-alpha/chat-go-server/interfaces/proto/pb"
+	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 )
 
 type controller struct {

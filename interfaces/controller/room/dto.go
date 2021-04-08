@@ -4,7 +4,7 @@ import (
 	"github.com/oklog/ulid"
 
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
-	pb "github.com/karamaru-alpha/chat-go-server/interfaces/proto/pb"
+	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 )
 
 // ToProto トークルームエンティティをｇRPCの型に変換

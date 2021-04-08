@@ -9,7 +9,7 @@ import (
 
 	"github.com/karamaru-alpha/chat-go-server/config"
 	roomDI "github.com/karamaru-alpha/chat-go-server/di/room"
-	pb "github.com/karamaru-alpha/chat-go-server/interfaces/proto/pb"
+	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 )
 
 func main() {
