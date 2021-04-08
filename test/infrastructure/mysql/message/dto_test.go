@@ -94,26 +94,6 @@ func TestToEntity(t *testing.T) {
 			expected1: nil,
 			expected2: errors.New("ulid: bad data size when unmarshaling"),
 		},
-		{
-			title: "【異常系】Bodyが不正値(empty)",
-			input: &infra.Message{
-				ID:     tdString.Message.ID.Valid,
-				RoomID: tdString.Room.ID.Valid,
-				Body:   tdString.Message.Body.Empty,
-			},
-			expected1: nil,
-			expected2: errors.New("MessageBody is empty"),
-		},
-		{
-			title: "【異常系】Bodyが不正値(long)",
-			input: &infra.Message{
-				ID:     tdString.Message.ID.Valid,
-				RoomID: tdString.Room.ID.Valid,
-				Body:   tdString.Message.Body.TooLong,
-			},
-			expected1: nil,
-			expected2: errors.New("MessageBody should be 1 to 255 characters"),
-		},
 	}
 
 	for _, td := range tests {

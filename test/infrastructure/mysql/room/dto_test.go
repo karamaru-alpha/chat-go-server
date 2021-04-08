@@ -72,24 +72,6 @@ func TestToEntity(t *testing.T) {
 			expected1: nil,
 			expected2: errors.New("ulid: bad data size when unmarshaling"),
 		},
-		{
-			title:     "【異常系】タイトルが空文字列",
-			input:     &infra.Room{ID: tdString.Room.ID.Valid, Title: ""},
-			expected1: nil,
-			expected2: errors.New("RoomTitle is null"),
-		},
-		{
-			title:     "【異常系】タイトルが不正値(short)",
-			input:     &infra.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.TooShort},
-			expected1: nil,
-			expected2: errors.New("RoomTitle should be Three to twenty characters"),
-		},
-		{
-			title:     "【異常系】タイトルが不正値(long)",
-			input:     &infra.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.TooLong},
-			expected1: nil,
-			expected2: errors.New("RoomTitle should be Three to twenty characters"),
-		},
 	}
 
 	for _, td := range tests {
@@ -136,16 +118,10 @@ func TestToEntities(t *testing.T) {
 			expected2: nil,
 		},
 		{
-			title:     "【異常系】タイトルが不正値(short)",
-			input:     &[]infra.Room{{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.TooShort}},
+			title:     "【異常系】IDが不正値",
+			input:     &[]infra.Room{{ID: tdString.Room.ID.Invalid, Title: tdString.Room.Title.Valid}},
 			expected1: nil,
-			expected2: errors.New("RoomTitle should be Three to twenty characters"),
-		},
-		{
-			title:     "【異常系】タイトルが不正値(long)",
-			input:     &[]infra.Room{{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.TooLong}},
-			expected1: nil,
-			expected2: errors.New("RoomTitle should be Three to twenty characters"),
+			expected2: errors.New("ulid: bad data size when unmarshaling"),
 		},
 	}
 
