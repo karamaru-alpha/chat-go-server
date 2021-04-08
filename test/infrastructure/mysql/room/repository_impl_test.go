@@ -24,8 +24,7 @@ type repositoryImplTester struct {
 func TestSave(t *testing.T) {
 	t.Parallel()
 
-	// モックの作成
-	tester := repositoryImplTester{}
+	var tester repositoryImplTester
 	tester.setupTest(t)
 
 	tester.mock.ExpectBegin()
@@ -41,29 +40,28 @@ func TestSave(t *testing.T) {
 	err = tester.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
 
-	tester.TeardownTest(t)
+	tester.teardownTest(t)
 }
 
 // TestFindAll トークルームの全件検索+再構築を行う処理のテスト
 func TestFindAll(t *testing.T) {
 	t.Parallel()
 
-	// モックの作成
-	test := repositoryImplTester{}
-	test.setupTest(t)
+	var tester repositoryImplTester
+	tester.setupTest(t)
 
-	test.mock.ExpectQuery("SELECT").WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdString.Room.ID.Valid, tdString.Room.Title.Valid))
+	tester.mock.ExpectQuery("SELECT").WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdString.Room.ID.Valid, tdString.Room.Title.Valid))
 
 	// 実行
-	output, err := test.repositoryImpl.FindAll()
+	output, err := tester.repositoryImpl.FindAll()
 	assert.NoError(t, err)
 
 	assert.Equal(t, &[]domain.Room{tdDomain.Room.Entity}, output)
 
-	err = test.mock.ExpectationsWereMet()
+	err = tester.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
 
-	test.TeardownTest(t)
+	tester.teardownTest(t)
 }
 
 // TestFind トークルームをIDから一件取得・再構築する処理のテスト
@@ -85,29 +83,28 @@ func TestFind(t *testing.T) {
 	err = test.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
 
-	test.TeardownTest(t)
+	test.teardownTest(t)
 }
 
 // TestFindByTitle トークルームをタイトルから一件取得・再構築する処理のテスト
 func TestFindByTitle(t *testing.T) {
 	t.Parallel()
 
-	// モックの作成
-	test := repositoryImplTester{}
-	test.setupTest(t)
+	var tester repositoryImplTester
+	tester.setupTest(t)
 
-	test.mock.ExpectQuery("SELECT").WithArgs(tdString.Room.Title.Valid).WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdString.Room.ID.Valid, tdString.Room.Title.Valid))
+	tester.mock.ExpectQuery("SELECT").WithArgs(tdString.Room.Title.Valid).WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdString.Room.ID.Valid, tdString.Room.Title.Valid))
 
 	// 実行
-	output, err := test.repositoryImpl.FindByTitle(&tdDomain.Room.Title)
+	output, err := tester.repositoryImpl.FindByTitle(&tdDomain.Room.Title)
 	assert.NoError(t, err)
 
 	assert.Equal(t, &tdDomain.Room.Entity, output)
 
-	err = test.mock.ExpectationsWereMet()
+	err = tester.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
 
-	test.TeardownTest(t)
+	tester.teardownTest(t)
 }
 
 func (r *repositoryImplTester) setupTest(t *testing.T) {
@@ -125,6 +122,6 @@ func (r *repositoryImplTester) setupTest(t *testing.T) {
 	r.repositoryImpl = repositoryImpl
 }
 
-func (r *repositoryImplTester) TeardownTest(t *testing.T) {
+func (r *repositoryImplTester) teardownTest(t *testing.T) {
 	r.db.Close()
 }

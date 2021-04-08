@@ -25,20 +25,19 @@ import (
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 
+type controllerTester struct {
+	controller         pb.RoomServicesServer
+	createApplication  *mockCreateApplication.MockIInputPort
+	findAllApplication *mockFindAllApplication.MockIInputPort
+	joinApplication    *mockJoinApplication.MockIInputPort
+}
+
 // TestGetRooms トークルーム一覧取得Controllerのテスト
 func TestGetRooms(t *testing.T) {
 	t.Parallel()
 
-	// go-mockの開始
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	// applicationをモック
-	createUsecase := mockCreateApplication.NewMockIInputPort(ctrl)
-	findAllUsecase := mockFindAllApplication.NewMockIInputPort(ctrl)
-	joinUsecase := mockJoinApplication.NewMockIInputPort(ctrl)
-
-	handler := controller.NewController(createUsecase, findAllUsecase, joinUsecase)
+	var tester controllerTester
+	tester.setupTest(t)
 
 	tests := []struct {
 		title     string
@@ -51,7 +50,7 @@ func TestGetRooms(t *testing.T) {
 		{
 			title: "【正常系】トークルームが1つ",
 			before: func() {
-				findAllUsecase.EXPECT().Handle().Return(findAllApplication.OutputData{
+				tester.findAllApplication.EXPECT().Handle().Return(findAllApplication.OutputData{
 					Rooms: &[]roomDomain.Room{tdRoomDomain.Room.Entity}, Err: nil,
 				})
 			},
@@ -63,7 +62,7 @@ func TestGetRooms(t *testing.T) {
 		{
 			title: "【正常系】トークルームがまだない",
 			before: func() {
-				findAllUsecase.EXPECT().Handle().Return(findAllApplication.OutputData{
+				tester.findAllApplication.EXPECT().Handle().Return(findAllApplication.OutputData{
 					Rooms: nil, Err: nil,
 				})
 			},
@@ -78,9 +77,11 @@ func TestGetRooms(t *testing.T) {
 		td := td
 
 		t.Run("GetRooms:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			td.before()
 
-			output1, output2 := handler.GetRooms(td.input1, td.input2)
+			output1, output2 := tester.controller.GetRooms(td.input1, td.input2)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
@@ -96,11 +97,8 @@ func TestCreateRoom(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	// applicationをモック
-	createUsecase := mockCreateApplication.NewMockIInputPort(ctrl)
-	findAllUsecase := mockFindAllApplication.NewMockIInputPort(ctrl)
-	joinUsecase := mockJoinApplication.NewMockIInputPort(ctrl)
-	handler := controller.NewController(createUsecase, findAllUsecase, joinUsecase)
+	var tester controllerTester
+	tester.setupTest(t)
 
 	tests := []struct {
 		title     string
@@ -112,7 +110,7 @@ func TestCreateRoom(t *testing.T) {
 		{
 			title: "【正常系】トークルーム作成",
 			before: func() {
-				createUsecase.EXPECT().Handle(
+				tester.createApplication.EXPECT().Handle(
 					createApplication.InputData{Title: tdString.Room.Title.Valid},
 				).Return(
 					createApplication.OutputData{Room: &tdRoomDomain.Room.Entity, Err: nil},
@@ -125,7 +123,7 @@ func TestCreateRoom(t *testing.T) {
 		{
 			title: "【異常系】タイトルが不正値(empty)",
 			before: func() {
-				createUsecase.EXPECT().Handle(
+				tester.createApplication.EXPECT().Handle(
 					createApplication.InputData{Title: ""},
 				).Return(
 					createApplication.OutputData{Room: nil, Err: errors.New("error")},
@@ -138,7 +136,7 @@ func TestCreateRoom(t *testing.T) {
 		{
 			title: "【異常系】タイトルが不正値(long)",
 			before: func() {
-				createUsecase.EXPECT().Handle(
+				tester.createApplication.EXPECT().Handle(
 					createApplication.InputData{Title: tdString.Room.Title.TooLong},
 				).Return(
 					createApplication.OutputData{Room: nil, Err: errors.New("error")},
@@ -154,9 +152,11 @@ func TestCreateRoom(t *testing.T) {
 		td := td
 
 		t.Run("CreateRoom:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			td.before()
 
-			output1, output2 := handler.CreateRoom(context.TODO(), td.input)
+			output1, output2 := tester.controller.CreateRoom(context.TODO(), td.input)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
@@ -168,15 +168,8 @@ func TestCreateRoom(t *testing.T) {
 func TestJoinRoom(t *testing.T) {
 	t.Parallel()
 
-	// go-mockの開始
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	// applicationをモック
-	createUsecase := mockCreateApplication.NewMockIInputPort(ctrl)
-	findAllUsecase := mockFindAllApplication.NewMockIInputPort(ctrl)
-	joinUsecase := mockJoinApplication.NewMockIInputPort(ctrl)
-	handler := controller.NewController(createUsecase, findAllUsecase, joinUsecase)
+	var tester controllerTester
+	tester.setupTest(t)
 
 	tests := []struct {
 		title     string
@@ -188,7 +181,7 @@ func TestJoinRoom(t *testing.T) {
 		{
 			title: "【正常系】トークルーム入室",
 			before: func() {
-				joinUsecase.EXPECT().Handle(
+				tester.joinApplication.EXPECT().Handle(
 					joinApplication.InputData{RoomID: tdString.Room.ID.Valid},
 				).Return(
 					joinApplication.OutputData{
@@ -205,7 +198,7 @@ func TestJoinRoom(t *testing.T) {
 		{
 			title: "【異常系】RoomIDが不正値",
 			before: func() {
-				joinUsecase.EXPECT().Handle(
+				tester.joinApplication.EXPECT().Handle(
 					joinApplication.InputData{RoomID: tdString.Room.ID.Invalid},
 				).Return(
 					joinApplication.OutputData{Messages: nil, Err: errors.New("error")},
@@ -218,7 +211,7 @@ func TestJoinRoom(t *testing.T) {
 		{
 			title: "【異常系】RoomIDが空",
 			before: func() {
-				joinUsecase.EXPECT().Handle(
+				tester.joinApplication.EXPECT().Handle(
 					joinApplication.InputData{RoomID: ""},
 				).Return(
 					joinApplication.OutputData{Messages: nil, Err: errors.New("error")},
@@ -234,12 +227,22 @@ func TestJoinRoom(t *testing.T) {
 		td := td
 
 		t.Run("JoinRoom:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			td.before()
 
-			output1, output2 := handler.JoinRoom(context.TODO(), td.input)
+			output1, output2 := tester.controller.JoinRoom(context.TODO(), td.input)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
 		})
 	}
+}
+
+func (c *controllerTester) setupTest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	c.createApplication = mockCreateApplication.NewMockIInputPort(ctrl)
+	c.findAllApplication = mockFindAllApplication.NewMockIInputPort(ctrl)
+	c.joinApplication = mockJoinApplication.NewMockIInputPort(ctrl)
+	c.controller = controller.NewController(c.createApplication, c.findAllApplication, c.joinApplication)
 }

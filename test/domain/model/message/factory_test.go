@@ -1,6 +1,7 @@
 package message
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,11 +27,25 @@ func TestCreate(t *testing.T) {
 		expected2 error
 	}{
 		{
-			body:      "【正常系】",
+			body:      "【正常系】メッセージエンティティ生成",
 			input1:    &tdRoomDomain.Room.Entity,
 			input2:    &tdMessageDomain.Message.Body,
 			expected1: &tdMessageDomain.Message.Entity,
 			expected2: nil,
+		},
+		{
+			body:      "【異常系】Roomがnil",
+			input1:    nil,
+			input2:    &tdMessageDomain.Message.Body,
+			expected1: nil,
+			expected2: errors.New("MessageRoom is not exist"),
+		},
+		{
+			body:      "【異常系】Bodyがnil",
+			input1:    &tdRoomDomain.Room.Entity,
+			input2:    nil,
+			expected1: nil,
+			expected2: errors.New("MessageBody is null"),
 		},
 	}
 
@@ -38,6 +53,8 @@ func TestCreate(t *testing.T) {
 		td := td
 
 		t.Run("Create:"+td.body, func(t *testing.T) {
+			t.Parallel()
+
 			output1, output2 := factory.Create(td.input1, td.input2)
 
 			assert.Equal(t, td.expected1, output1)

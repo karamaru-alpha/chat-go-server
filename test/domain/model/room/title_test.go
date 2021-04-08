@@ -22,7 +22,7 @@ func TestNewTitle(t *testing.T) {
 		expected2 error
 	}{
 		{
-			title:     "【正常系】",
+			title:     "【正常系】トークルームのタイトル生成",
 			input:     tdString.Room.Title.Valid,
 			expected1: &tdDomain.Room.Title,
 			expected2: nil,
@@ -51,6 +51,8 @@ func TestNewTitle(t *testing.T) {
 		td := td
 
 		t.Run("NewTitle:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			output1, output2 := domain.NewTitle(td.input)
 
 			assert.Equal(t, td.expected1, output1)

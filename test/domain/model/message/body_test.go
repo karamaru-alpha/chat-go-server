@@ -22,7 +22,7 @@ func TestNewBody(t *testing.T) {
 		expected2 error
 	}{
 		{
-			body:      "【正常系】",
+			body:      "【正常系】メッセージ本文値オブジェクト生成",
 			input:     tdString.Message.Body.Valid,
 			expected1: &tdDomain.Message.Body,
 			expected2: nil,
@@ -45,6 +45,8 @@ func TestNewBody(t *testing.T) {
 		td := td
 
 		t.Run("NewBody:"+td.body, func(t *testing.T) {
+			t.Parallel()
+
 			output1, output2 := domain.NewBody(td.input)
 
 			assert.Equal(t, td.expected1, output1)

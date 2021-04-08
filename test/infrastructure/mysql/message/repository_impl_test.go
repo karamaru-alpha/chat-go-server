@@ -26,7 +26,7 @@ func TestSave(t *testing.T) {
 	t.Parallel()
 
 	// モックの作成
-	tester := repositoryImplTester{}
+	var tester repositoryImplTester
 	tester.setupTest(t)
 
 	tester.mock.ExpectBegin()
@@ -49,22 +49,21 @@ func TestSave(t *testing.T) {
 func TestFindAll(t *testing.T) {
 	t.Parallel()
 
-	// モックの作成
-	test := repositoryImplTester{}
-	test.setupTest(t)
+	var tester repositoryImplTester
+	tester.setupTest(t)
 
-	test.mock.ExpectQuery("SELECT").WillReturnRows(sqlmock.NewRows([]string{"id", "room_id", "body"}).AddRow(tdString.Message.ID.Valid, tdString.Room.ID.Valid, tdString.Message.Body.Valid))
+	tester.mock.ExpectQuery("SELECT").WillReturnRows(sqlmock.NewRows([]string{"id", "room_id", "body"}).AddRow(tdString.Message.ID.Valid, tdString.Room.ID.Valid, tdString.Message.Body.Valid))
 
 	// 実行
-	output, err := test.repositoryImpl.FindAll(&tdRoomDomain.Room.ID)
+	output, err := tester.repositoryImpl.FindAll(&tdRoomDomain.Room.ID)
 	assert.NoError(t, err)
 
 	assert.Equal(t, &[]domain.Message{tdMessageDomain.Message.Entity}, output)
 
-	err = test.mock.ExpectationsWereMet()
+	err = tester.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
 
-	test.TeardownTest(t)
+	tester.TeardownTest(t)
 }
 
 func (r *repositoryImplTester) setupTest(t *testing.T) {

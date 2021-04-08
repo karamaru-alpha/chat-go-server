@@ -25,7 +25,7 @@ func TestNewMessage(t *testing.T) {
 		expected2 error
 	}{
 		{
-			body:      "【正常系】",
+			body:      "【正常系】メッセージエンティティ生成",
 			input1:    &tdMessageDomain.Message.ID,
 			input2:    &tdRoomDomain.Room.ID,
 			input3:    &tdMessageDomain.Message.Body,
@@ -62,6 +62,8 @@ func TestNewMessage(t *testing.T) {
 		td := td
 
 		t.Run("NewMessage:"+td.body, func(t *testing.T) {
+			t.Parallel()
+
 			output1, output2 := messageDomain.NewMessage(td.input1, td.input2, td.input3)
 
 			assert.Equal(t, td.expected1, output1)

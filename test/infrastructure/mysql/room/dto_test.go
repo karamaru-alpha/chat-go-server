@@ -37,6 +37,8 @@ func TestToDTO(t *testing.T) {
 		td := td
 
 		t.Run("ToDTO:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			output := infra.ToDTO(td.input)
 
 			assert.Equal(t, td.expected, output)
@@ -78,6 +80,8 @@ func TestToEntity(t *testing.T) {
 		td := td
 
 		t.Run("ToEntity:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			output1, output2 := infra.ToEntity(td.input)
 
 			assert.Equal(t, td.expected1, output1)
@@ -129,6 +133,8 @@ func TestToEntities(t *testing.T) {
 		td := td
 
 		t.Run("ToEntities:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			output1, output2 := infra.ToEntities(td.input)
 
 			assert.Equal(t, td.expected1, output1)

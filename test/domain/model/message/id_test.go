@@ -23,7 +23,7 @@ func TestNewID(t *testing.T) {
 		expected2 error
 	}{
 		{
-			title:     "【正常系】",
+			title:     "【正常系】メッセージの識別子生成",
 			input:     &tdULID.Message.ID,
 			expected1: &tdDomain.Message.ID,
 			expected2: nil,
@@ -40,6 +40,8 @@ func TestNewID(t *testing.T) {
 		td := td
 
 		t.Run("NewID:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			output1, output2 := domain.NewID(td.input)
 
 			assert.Equal(t, td.expected1, output1)

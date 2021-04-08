@@ -41,6 +41,8 @@ func TestToProto(t *testing.T) {
 		td := td
 
 		t.Run("ToProto:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			output := dto.ToProto(td.input)
 
 			assert.Equal(t, td.expected, output)
@@ -84,6 +86,8 @@ func TestToProtos(t *testing.T) {
 		td := td
 
 		t.Run("ToProtos:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			output := dto.ToProtos(td.input)
 
 			assert.Equal(t, td.expected, output)

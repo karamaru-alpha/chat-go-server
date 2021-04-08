@@ -1,6 +1,7 @@
 package room
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -23,10 +24,16 @@ func TestCreate(t *testing.T) {
 		expected2 error
 	}{
 		{
-			title:     "【正常系】",
+			title:     "【正常系】トークルームエンティティ生成",
 			input:     &tdDomain.Room.Title,
 			expected1: &tdDomain.Room.Entity,
 			expected2: nil,
+		},
+		{
+			title:     "【異常系】Titleがnil",
+			input:     nil,
+			expected1: nil,
+			expected2: errors.New("RoomTitle is null"),
 		},
 	}
 
@@ -34,6 +41,8 @@ func TestCreate(t *testing.T) {
 		td := td
 
 		t.Run("Create:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			output1, output2 := factory.Create(td.input)
 
 			assert.Equal(t, td.expected1, output1)

@@ -22,7 +22,7 @@ func TestNewRoom(t *testing.T) {
 		expected2 error
 	}{
 		{
-			title:     "【正常系】",
+			title:     "【正常系】トークルームエンティティを生成",
 			input1:    &tdDomain.Room.ID,
 			input2:    &tdDomain.Room.Title,
 			expected1: &tdDomain.Room.Entity,
@@ -48,6 +48,8 @@ func TestNewRoom(t *testing.T) {
 		td := td
 
 		t.Run("NewRoom:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			output1, output2 := domain.NewRoom(td.input1, td.input2)
 
 			assert.Equal(t, td.expected1, output1)

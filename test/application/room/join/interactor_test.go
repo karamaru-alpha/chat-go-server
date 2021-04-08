@@ -8,24 +8,24 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	application "github.com/karamaru-alpha/chat-go-server/application/room/join"
-	domainModel "github.com/karamaru-alpha/chat-go-server/domain/model/message"
-	mockDomainModel "github.com/karamaru-alpha/chat-go-server/mock/domain/model/message"
-	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
+	domain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
+	mockDomain "github.com/karamaru-alpha/chat-go-server/mock/domain/model/message"
+	tdMessageDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
 	tdRoomDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
+
+type interactorTester struct {
+	interactor application.IInputPort
+	repository *mockDomain.MockIRepository
+}
 
 // TestHandle トークルーム入室アプリケーションサービスのテスト
 func TestHandle(t *testing.T) {
 	t.Parallel()
 
-	// go-mockの開始
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	// reposityをモック
-	repository := mockDomainModel.NewMockIRepository(ctrl)
-	interactor := application.NewInteractor(repository)
+	var tester interactorTester
+	tester.setupTest(t)
 
 	tests := []struct {
 		title    string
@@ -36,20 +36,20 @@ func TestHandle(t *testing.T) {
 		{
 			title: "【正常系】トークルームのメッセージが1件",
 			before: func() {
-				repository.EXPECT().FindAll(&tdRoomDomain.Room.ID).Return(
-					&[]domainModel.Message{tdDomain.Message.Entity}, nil,
+				tester.repository.EXPECT().FindAll(&tdRoomDomain.Room.ID).Return(
+					&[]domain.Message{tdMessageDomain.Message.Entity}, nil,
 				)
 			},
 			input: application.InputData{RoomID: tdString.Room.ID.Valid},
 			expected: application.OutputData{
-				Messages: &[]domainModel.Message{tdDomain.Message.Entity},
+				Messages: &[]domain.Message{tdMessageDomain.Message.Entity},
 				Err:      nil,
 			},
 		},
 		{
 			title: "【正常系】該当トークルームのメッセージが存在しない",
 			before: func() {
-				repository.EXPECT().FindAll(&tdRoomDomain.Room.ID).Return(nil, nil)
+				tester.repository.EXPECT().FindAll(&tdRoomDomain.Room.ID).Return(nil, nil)
 			},
 			input: application.InputData{RoomID: tdString.Room.ID.Valid},
 			expected: application.OutputData{
@@ -81,14 +81,21 @@ func TestHandle(t *testing.T) {
 		td := td
 
 		t.Run("Handle:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
 			if td.before != nil {
 				td.before()
 			}
 
-			output := interactor.Handle(td.input)
+			output := tester.interactor.Handle(td.input)
 
 			assert.Equal(t, td.expected, output)
 		})
 	}
+}
 
+func (i *interactorTester) setupTest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	i.repository = mockDomain.NewMockIRepository(ctrl)
+	i.interactor = application.NewInteractor(i.repository)
 }
