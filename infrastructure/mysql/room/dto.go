@@ -35,20 +35,10 @@ func ToEntity(dto *Room) (*domain.Room, error) {
 		return nil, err
 	}
 
-	entityID, err := domain.NewID(&parsedULID)
-	if err != nil {
-		return nil, err
-	}
-
-	entityTitle, err := domain.NewTitle(dto.Title)
-	if err != nil {
-		return nil, err
-	}
-
-	return domain.NewRoom(
-		entityID,
-		entityTitle,
-	)
+	return &domain.Room{
+		ID:    domain.ID(parsedULID),
+		Title: domain.Title(dto.Title),
+	}, nil
 }
 
 // ToEntities DB情報を持った複数の構造体をトークルームエンティティに変換する

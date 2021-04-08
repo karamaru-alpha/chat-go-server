@@ -3,7 +3,7 @@ package message
 import (
 	"github.com/oklog/ulid"
 
-	domain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
+	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 )
 
@@ -15,7 +15,7 @@ type Message struct {
 }
 
 // ToDTO メッセージエンティティをDB情報を持った構造体に変換する
-func ToDTO(entity *domain.Message) *Message {
+func ToDTO(entity *messageDomain.Message) *Message {
 	if entity == nil {
 		return nil
 	}
@@ -28,17 +28,12 @@ func ToDTO(entity *domain.Message) *Message {
 }
 
 // ToEntity DB情報を持った構造体からメッセージエンティティに変換する
-func ToEntity(dto *Message) (*domain.Message, error) {
+func ToEntity(dto *Message) (*messageDomain.Message, error) {
 	if dto == nil {
 		return nil, nil
 	}
 
-	parsedULID, err := ulid.Parse(dto.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	entityID, err := domain.NewID(&parsedULID)
+	parsedMessageULID, err := ulid.Parse(dto.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -48,30 +43,20 @@ func ToEntity(dto *Message) (*domain.Message, error) {
 		return nil, err
 	}
 
-	entityRoomID, err := roomDomain.NewID(&parsedRoomULID)
-	if err != nil {
-		return nil, err
-	}
-
-	entityBody, err := domain.NewBody(dto.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	return domain.NewMessage(
-		entityID,
-		entityRoomID,
-		entityBody,
-	)
+	return &messageDomain.Message{
+		ID:     messageDomain.ID(parsedMessageULID),
+		RoomID: roomDomain.ID(parsedRoomULID),
+		Body:   messageDomain.Body(dto.Body),
+	}, nil
 }
 
 // ToEntity DB情報を持った構造体のスライスをエンティティに変換する
-func ToEntities(dtos *[]Message) (*[]domain.Message, error) {
+func ToEntities(dtos *[]Message) (*[]messageDomain.Message, error) {
 	if dtos == nil {
 		return nil, nil
 	}
 
-	entities := make([]domain.Message, 0, len(*dtos))
+	entities := make([]messageDomain.Message, 0, len(*dtos))
 	for _, v := range *dtos {
 		entity, err := ToEntity(&v)
 		if err != nil {
