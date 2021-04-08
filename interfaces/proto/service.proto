@@ -1,0 +1,10 @@
+syntax = "proto3";
+option go_package = "github.com/karamaru-alpha/chat-go-server/interfaces/proto";
+package proto;
+
+import "message.proto";
+
+service RoomServices {
+    rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse){};
+    rpc GetRooms(GetRoomsRequest) returns (GetRoomsResponse){};
+}
