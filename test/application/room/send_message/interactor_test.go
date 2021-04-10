@@ -1,4 +1,4 @@
-package message
+package room
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
-	application "github.com/karamaru-alpha/chat-go-server/application/message/create"
+	application "github.com/karamaru-alpha/chat-go-server/application/room/send_message"
 	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	mockMessageDomain "github.com/karamaru-alpha/chat-go-server/mock/domain/model/message"
 	mockRoomDomain "github.com/karamaru-alpha/chat-go-server/mock/domain/model/room"

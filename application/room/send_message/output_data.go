@@ -1,4 +1,4 @@
-package message
+package room
 
 import (
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
