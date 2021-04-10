@@ -1,4 +1,4 @@
-package message
+package room
 
 import (
 	"github.com/oklog/ulid"

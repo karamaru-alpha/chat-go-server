@@ -6,15 +6,17 @@ import (
 	createApplication "github.com/karamaru-alpha/chat-go-server/application/room/create"
 	findAllApplication "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
 	joinApplication "github.com/karamaru-alpha/chat-go-server/application/room/join"
+	sendMessageApplication "github.com/karamaru-alpha/chat-go-server/application/room/send_message"
 	messageDTO "github.com/karamaru-alpha/chat-go-server/interfaces/dto/message"
 	roomDTO "github.com/karamaru-alpha/chat-go-server/interfaces/dto/room"
 	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 )
 
 type controller struct {
-	createApplication  createApplication.IInputPort
-	findAllApplication findAllApplication.IInputPort
-	joinApplication    joinApplication.IInputPort
+	createApplication      createApplication.IInputPort
+	findAllApplication     findAllApplication.IInputPort
+	joinApplication        joinApplication.IInputPort
+	sendMessageApplication sendMessageApplication.IInputPort
 }
 
 // NewController gRPC経由のリクエストを捌くControllerのコンストラクタ
@@ -22,11 +24,13 @@ func NewController(
 	c createApplication.IInputPort,
 	f findAllApplication.IInputPort,
 	j joinApplication.IInputPort,
+	s sendMessageApplication.IInputPort,
 ) pb.RoomServicesServer {
 	return &controller{
-		createApplication:  c,
-		findAllApplication: f,
-		joinApplication:    j,
+		createApplication:      c,
+		findAllApplication:     f,
+		joinApplication:        j,
+		sendMessageApplication: s,
 	}
 }
 
@@ -52,6 +56,7 @@ func (c controller) GetRooms(ctx context.Context, _ *pb.GetRoomsRequest) (*pb.Ge
 	return &pb.GetRoomsResponse{Rooms: roomDTO.ToProtos(output.Rooms)}, nil
 }
 
+// JoinRoom トークルーム入室のController
 func (c controller) JoinRoom(ctx context.Context, request *pb.JoinRoomRequest) (*pb.JoinRoomResponse, error) {
 	input := joinApplication.InputData{RoomID: request.RoomId}
 
@@ -61,4 +66,16 @@ func (c controller) JoinRoom(ctx context.Context, request *pb.JoinRoomRequest) (
 	}
 
 	return &pb.JoinRoomResponse{Messages: messageDTO.ToProtos(output.Messages)}, nil
+}
+
+// SendMessage メッセージ送信のController
+func (c controller) SendMessage(ctx context.Context, request *pb.SendMessageRequest) (*pb.SendMessageResponse, error) {
+	input := sendMessageApplication.InputData{RoomID: request.RoomId, Body: request.Body}
+
+	output := c.sendMessageApplication.Handle(input)
+	if output.Err != nil {
+		return nil, output.Err
+	}
+
+	return &pb.SendMessageResponse{}, nil
 }
