@@ -11,6 +11,7 @@ import (
 	createApplication "github.com/karamaru-alpha/chat-go-server/application/room/create"
 	findAllApplication "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
 	joinApplication "github.com/karamaru-alpha/chat-go-server/application/room/join"
+	sendMessageApplication "github.com/karamaru-alpha/chat-go-server/application/room/send_message"
 	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	controller "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
@@ -19,6 +20,7 @@ import (
 	mockCreateApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/create"
 	mockFindAllApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/find_all"
 	mockJoinApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/join"
+	mockSendMessageApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/send_message"
 	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 	tdMessageDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
 	tdRoomDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
@@ -26,10 +28,11 @@ import (
 )
 
 type controllerTester struct {
-	controller         pb.RoomServicesServer
-	createApplication  *mockCreateApplication.MockIInputPort
-	findAllApplication *mockFindAllApplication.MockIInputPort
-	joinApplication    *mockJoinApplication.MockIInputPort
+	controller             pb.RoomServicesServer
+	createApplication      *mockCreateApplication.MockIInputPort
+	findAllApplication     *mockFindAllApplication.MockIInputPort
+	joinApplication        *mockJoinApplication.MockIInputPort
+	sendMessageApplication *mockSendMessageApplication.MockIInputPort
 }
 
 // TestGetRooms トークルーム一覧取得Controllerのテスト
@@ -239,10 +242,113 @@ func TestJoinRoom(t *testing.T) {
 	}
 }
 
+// TestSendMessage トークルームでメッセージ送信するControllerのテスト
+func TestSendMessage(t *testing.T) {
+	t.Parallel()
+
+	var tester controllerTester
+	tester.setupTest(t)
+
+	tests := []struct {
+		title     string
+		before    func()
+		input     *pb.SendMessageRequest
+		expected1 *pb.SendMessageResponse
+		expected2 error
+	}{
+		{
+			title: "【正常系】メッセージ送信",
+			before: func() {
+				tester.sendMessageApplication.EXPECT().Handle(
+					sendMessageApplication.InputData{RoomID: tdString.Room.ID.Valid, Body: tdString.Message.Body.Valid},
+				).Return(
+					sendMessageApplication.OutputData{Message: &tdMessageDomain.Message.Entity, Err: nil},
+				)
+			},
+			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Valid, Body: tdString.Message.Body.Valid},
+			expected1: &pb.SendMessageResponse{},
+			expected2: nil,
+		},
+		{
+			title: "【異常系】メッセージが長すぎる",
+			before: func() {
+				tester.sendMessageApplication.EXPECT().Handle(
+					sendMessageApplication.InputData{RoomID: tdString.Room.ID.Valid, Body: tdString.Message.Body.TooLong},
+				).Return(
+					sendMessageApplication.OutputData{Message: nil, Err: errors.New("error")},
+				)
+			},
+			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Valid, Body: tdString.Message.Body.TooLong},
+			expected1: nil,
+			expected2: errors.New("error"),
+		},
+		{
+			title: "【異常系】メッセージが空",
+			before: func() {
+				tester.sendMessageApplication.EXPECT().Handle(
+					sendMessageApplication.InputData{RoomID: tdString.Room.ID.Valid, Body: tdString.Message.Body.Empty},
+				).Return(
+					sendMessageApplication.OutputData{Message: nil, Err: errors.New("error")},
+				)
+			},
+			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Valid, Body: tdString.Message.Body.Empty},
+			expected1: nil,
+			expected2: errors.New("error"),
+		},
+		{
+			title: "【異常系】RoomIDが不正値",
+			before: func() {
+				tester.sendMessageApplication.EXPECT().Handle(
+					sendMessageApplication.InputData{RoomID: tdString.Room.ID.Invalid, Body: tdString.Message.Body.Valid},
+				).Return(
+					sendMessageApplication.OutputData{Message: nil, Err: errors.New("error")},
+				)
+			},
+			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Invalid, Body: tdString.Message.Body.Valid},
+			expected1: nil,
+			expected2: errors.New("error"),
+		},
+		{
+			title: "【異常系】RoomIDが空",
+			before: func() {
+				tester.sendMessageApplication.EXPECT().Handle(
+					sendMessageApplication.InputData{RoomID: "", Body: tdString.Message.Body.Valid},
+				).Return(
+					sendMessageApplication.OutputData{Message: nil, Err: errors.New("error")},
+				)
+			},
+			input:     &pb.SendMessageRequest{RoomId: "", Body: tdString.Message.Body.Valid},
+			expected1: nil,
+			expected2: errors.New("error"),
+		},
+	}
+
+	for _, td := range tests {
+		td := td
+
+		t.Run("SendMessage:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
+			td.before()
+
+			output1, output2 := tester.controller.SendMessage(context.TODO(), td.input)
+
+			assert.Equal(t, td.expected1, output1)
+			assert.Equal(t, td.expected2, output2)
+		})
+	}
+}
+
 func (c *controllerTester) setupTest(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	c.createApplication = mockCreateApplication.NewMockIInputPort(ctrl)
 	c.findAllApplication = mockFindAllApplication.NewMockIInputPort(ctrl)
 	c.joinApplication = mockJoinApplication.NewMockIInputPort(ctrl)
-	c.controller = controller.NewController(c.createApplication, c.findAllApplication, c.joinApplication)
+	c.sendMessageApplication = mockSendMessageApplication.NewMockIInputPort(ctrl)
+	c.controller = controller.NewController(
+		c.createApplication,
+		c.findAllApplication,
+		c.joinApplication,
+		c.sendMessageApplication,
+	)
 }
