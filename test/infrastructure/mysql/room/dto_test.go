@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
-	infra "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
+	mysql "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
@@ -19,12 +19,12 @@ func TestToDTO(t *testing.T) {
 	tests := []struct {
 		title    string
 		input    *domain.Room
-		expected *infra.Room
+		expected *mysql.Room
 	}{
 		{
 			title:    "【正常系】メッセージエンティティをDB情報を持った構造体に変換",
 			input:    &tdDomain.Room.Entity,
-			expected: &infra.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.Valid},
+			expected: &mysql.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.Valid},
 		},
 		{
 			title:    "【正常系】nilが来たらnilを返す",
@@ -39,7 +39,7 @@ func TestToDTO(t *testing.T) {
 		t.Run("ToDTO:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
-			output := infra.ToDTO(td.input)
+			output := mysql.ToDTO(td.input)
 
 			assert.Equal(t, td.expected, output)
 		})
@@ -52,13 +52,13 @@ func TestToEntity(t *testing.T) {
 
 	tests := []struct {
 		title     string
-		input     *infra.Room
+		input     *mysql.Room
 		expected1 *domain.Room
 		expected2 error
 	}{
 		{
 			title:     "【正常系】DB情報を持った構造体をトークルームエンティティに変換",
-			input:     &infra.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.Valid},
+			input:     &mysql.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.Valid},
 			expected1: &tdDomain.Room.Entity,
 			expected2: nil,
 		},
@@ -70,7 +70,7 @@ func TestToEntity(t *testing.T) {
 		},
 		{
 			title:     "【異常系】IDが不正値",
-			input:     &infra.Room{ID: tdString.Room.ID.Invalid, Title: tdString.Room.Title.Valid},
+			input:     &mysql.Room{ID: tdString.Room.ID.Invalid, Title: tdString.Room.Title.Valid},
 			expected1: nil,
 			expected2: errors.New("ulid: bad data size when unmarshaling"),
 		},
@@ -82,7 +82,7 @@ func TestToEntity(t *testing.T) {
 		t.Run("ToEntity:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
-			output1, output2 := infra.ToEntity(td.input)
+			output1, output2 := mysql.ToEntity(td.input)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
@@ -95,23 +95,23 @@ func TestToEntities(t *testing.T) {
 	t.Parallel()
 
 	// Entityに変換するDTOの準備
-	dto := infra.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.Valid}
+	dto := mysql.Room{ID: tdString.Room.ID.Valid, Title: tdString.Room.Title.Valid}
 
 	tests := []struct {
 		title     string
-		input     *[]infra.Room
+		input     *[]mysql.Room
 		expected1 *[]domain.Room
 		expected2 error
 	}{
 		{
 			title:     "【正常系】1つのDTOをEntityに変換",
-			input:     &[]infra.Room{dto},
+			input:     &[]mysql.Room{dto},
 			expected1: &[]domain.Room{tdDomain.Room.Entity},
 			expected2: nil,
 		},
 		{
 			title:     "【正常系】2つのDTOをEntityに変換",
-			input:     &[]infra.Room{dto, dto},
+			input:     &[]mysql.Room{dto, dto},
 			expected1: &[]domain.Room{tdDomain.Room.Entity, tdDomain.Room.Entity},
 			expected2: nil,
 		},
@@ -123,7 +123,7 @@ func TestToEntities(t *testing.T) {
 		},
 		{
 			title:     "【異常系】IDが不正値",
-			input:     &[]infra.Room{{ID: tdString.Room.ID.Invalid, Title: tdString.Room.Title.Valid}},
+			input:     &[]mysql.Room{{ID: tdString.Room.ID.Invalid, Title: tdString.Room.Title.Valid}},
 			expected1: nil,
 			expected2: errors.New("ulid: bad data size when unmarshaling"),
 		},
@@ -135,7 +135,7 @@ func TestToEntities(t *testing.T) {
 		t.Run("ToEntities:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
-			output1, output2 := infra.ToEntities(td.input)
+			output1, output2 := mysql.ToEntities(td.input)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
