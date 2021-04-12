@@ -1,7 +1,10 @@
 package room
 
+import "context"
+
 // InputData メッセージ作成の入力データ
 type InputData struct {
-	RoomID string
-	Body   string
+	Context context.Context
+	RoomID  string
+	Body    string
 }

@@ -5,6 +5,7 @@
 package mock_message
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -51,15 +52,29 @@ func (mr *MockIRepositoryMockRecorder) FindAll(arg0 interface{}) *gomock.Call {
 }
 
 // Save mocks base method.
-func (m *MockIRepository) Save(arg0 *message.Message) error {
+func (m *MockIRepository) Save(arg0 context.Context, arg1 *message.Message) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Save", arg0)
+	ret := m.ctrl.Call(m, "Save", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Save indicates an expected call of Save.
-func (mr *MockIRepositoryMockRecorder) Save(arg0 interface{}) *gomock.Call {
+func (mr *MockIRepositoryMockRecorder) Save(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockIRepository)(nil).Save), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockIRepository)(nil).Save), arg0, arg1)
+}
+
+// Subscribe mocks base method.
+func (m *MockIRepository) Subscribe(arg0 context.Context, arg1 *room.ID, arg2 chan message.Message) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Subscribe", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Subscribe indicates an expected call of Subscribe.
+func (mr *MockIRepositoryMockRecorder) Subscribe(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Subscribe", reflect.TypeOf((*MockIRepository)(nil).Subscribe), arg0, arg1, arg2)
 }

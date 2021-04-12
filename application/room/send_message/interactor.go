@@ -53,7 +53,7 @@ func (i interactor) Handle(input InputData) OutputData {
 		return OutputData{Err: err}
 	}
 
-	if err = i.messageRepository.Save(message); err != nil {
+	if err = i.messageRepository.Save(input.Context, message); err != nil {
 		return OutputData{Err: err}
 	}
 

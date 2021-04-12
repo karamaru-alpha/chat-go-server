@@ -24,7 +24,7 @@ message JoinRoomRequest {
 }
 
 message JoinRoomResponse {
-    repeated Message messages = 1;
+    Message message = 1;
 }
 
 message SendMessageRequest {

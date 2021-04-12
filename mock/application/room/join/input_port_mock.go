@@ -35,11 +35,9 @@ func (m *MockIInputPort) EXPECT() *MockIInputPortMockRecorder {
 }
 
 // Handle mocks base method.
-func (m *MockIInputPort) Handle(arg0 message.InputData) message.OutputData {
+func (m *MockIInputPort) Handle(arg0 message.InputData) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Handle", arg0)
-	ret0, _ := ret[0].(message.OutputData)
-	return ret0
+	m.ctrl.Call(m, "Handle", arg0)
 }
 
 // Handle indicates an expected call of Handle.

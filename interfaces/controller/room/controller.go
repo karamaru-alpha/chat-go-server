@@ -7,6 +7,7 @@ import (
 	findAllApplication "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
 	joinApplication "github.com/karamaru-alpha/chat-go-server/application/room/join"
 	sendMessageApplication "github.com/karamaru-alpha/chat-go-server/application/room/send_message"
+	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	messageDTO "github.com/karamaru-alpha/chat-go-server/interfaces/dto/message"
 	roomDTO "github.com/karamaru-alpha/chat-go-server/interfaces/dto/room"
 	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
@@ -57,20 +58,36 @@ func (c controller) GetRooms(ctx context.Context, _ *pb.GetRoomsRequest) (*pb.Ge
 }
 
 // JoinRoom トークルーム入室のController
-func (c controller) JoinRoom(ctx context.Context, request *pb.JoinRoomRequest) (*pb.JoinRoomResponse, error) {
-	input := joinApplication.InputData{RoomID: request.RoomId}
+func (c controller) JoinRoom(request *pb.JoinRoomRequest, stream pb.RoomServices_JoinRoomServer) error {
+	messageCh := make(chan messageDomain.Message)
+	errCh := make(chan error)
 
-	output := c.joinApplication.Handle(input)
-	if output.Err != nil {
-		return nil, output.Err
+	input := joinApplication.InputData{
+		Context:   stream.Context(),
+		RoomID:    request.RoomId,
+		MessageCh: messageCh,
+		ErrCh:     errCh,
 	}
 
-	return &pb.JoinRoomResponse{Messages: messageDTO.ToProtos(output.Messages)}, nil
+	go c.joinApplication.Handle(input)
+	go func() {
+		for v := range messageCh {
+			err := stream.Send(&pb.JoinRoomResponse{
+				Message: messageDTO.ToProto(&v),
+			})
+
+			if err != nil {
+				errCh <- err
+			}
+		}
+	}()
+
+	return <-errCh
 }
 
 // SendMessage メッセージ送信のController
 func (c controller) SendMessage(ctx context.Context, request *pb.SendMessageRequest) (*pb.SendMessageResponse, error) {
-	input := sendMessageApplication.InputData{RoomID: request.RoomId, Body: request.Body}
+	input := sendMessageApplication.InputData{Context: ctx, RoomID: request.RoomId, Body: request.Body}
 
 	output := c.sendMessageApplication.Handle(input)
 	if output.Err != nil {

@@ -1,10 +1,13 @@
 package message
 
 import (
+	"context"
 	"regexp"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/alicebob/miniredis/v2"
+	"github.com/go-redis/redis/v8"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 
@@ -18,6 +21,7 @@ import (
 type repositoryImplTester struct {
 	repositoryImpl domain.IRepository
 	db             *gorm.DB
+	redisClient    *redis.Client
 	mock           sqlmock.Sqlmock
 }
 
@@ -36,7 +40,7 @@ func TestSave(t *testing.T) {
 	tester.mock.ExpectCommit()
 
 	// 実行
-	err := tester.repositoryImpl.Save(&tdMessageDomain.Message.Entity)
+	err := tester.repositoryImpl.Save(context.TODO(), &tdMessageDomain.Message.Entity)
 	assert.NoError(t, err)
 
 	err = tester.mock.ExpectationsWereMet()
@@ -69,18 +73,29 @@ func TestFindAll(t *testing.T) {
 func (r *repositoryImplTester) setupTest(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
+	r.mock = mock
 
 	gormDB, err := gorm.Open("mysql", db)
 	assert.NoError(t, err)
 	gormDB.LogMode(true)
-
-	repositoryImpl := repoImpl.NewRepositoryImpl(gormDB)
-
 	r.db = gormDB
-	r.mock = mock
+
+	mockRedis, err := miniredis.Run()
+	assert.NoError(t, err)
+	r.redisClient = redis.NewClient(
+		&redis.Options{
+			Addr: mockRedis.Addr(),
+		},
+	)
+
+	repositoryImpl := repoImpl.NewRepositoryImpl(
+		gormDB,
+		r.redisClient,
+	)
 	r.repositoryImpl = repositoryImpl
 }
 
 func (r *repositoryImplTester) TeardownTest(t *testing.T) {
 	r.db.Close()
+	r.redisClient.Close()
 }
