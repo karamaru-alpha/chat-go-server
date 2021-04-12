@@ -15,14 +15,16 @@ func ConnectGorm() *gorm.DB {
 	DBMS := "mysql"
 	USER := os.Getenv("MYSQL_USER")
 	PASS := os.Getenv("MYSQL_ROOT_PASSWORD")
-	PROTOCOL := "tcp(chat-go-server-db:3306)"
+	CONTAINER_NAME := os.Getenv("MYSQL_CONTAINER_NAME")
+	PORT := os.Getenv("MYSQL_PORT")
 	DBNAME := os.Getenv("MYSQL_DATABASE")
 
 	CONNECT := fmt.Sprintf(
-		"%s:%s@%s/%s?charset=utf8mb4&parseTime=true&loc=Local",
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=Local",
 		USER,
 		PASS,
-		PROTOCOL,
+		CONTAINER_NAME,
+		PORT,
 		DBNAME,
 	)
 
@@ -37,7 +39,7 @@ func ConnectGorm() *gorm.DB {
 			fmt.Print(".")
 			time.Sleep(time.Second)
 			count++
-			if count > 180 {
+			if count > 60 {
 				fmt.Println("")
 				fmt.Println("DB接続失敗")
 				panic(err)
@@ -49,6 +51,5 @@ func ConnectGorm() *gorm.DB {
 	connection.LogMode(true)
 	connection.Set("gorm:table_options", "ENGINE=InnoDB")
 
-	fmt.Println("DB接続成功")
 	return connection
 }
