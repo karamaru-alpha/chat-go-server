@@ -8,6 +8,7 @@ import (
 
 	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+	mysql "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/message"
 )
 
 type repositoryImpl struct {
@@ -23,18 +24,18 @@ func NewRepositoryImpl(db *gorm.DB) messageDomain.IRepository {
 
 // Save メッセージの永続化を行う
 func (r repositoryImpl) Save(entity *messageDomain.Message) error {
-	dto := ToDTO(entity)
+	dto := mysql.ToDTO(entity)
 	return r.db.Create(dto).Error
 }
 
 // FindAll 特定トークルームのメッセージ一覧を取得する
 func (r repositoryImpl) FindAll(roomID *roomDomain.ID) (*[]messageDomain.Message, error) {
-	var dtos []Message
+	var dtos []mysql.Message
 	if err := r.db.Where("room_id = ?", ulid.ULID(*roomID).String()).Find(&dtos).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
 		return nil, err
 	}
-	return ToEntities(&dtos)
+	return mysql.ToEntities(&dtos)
 }
