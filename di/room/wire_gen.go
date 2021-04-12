@@ -14,6 +14,7 @@ import (
 	"github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	room3 "github.com/karamaru-alpha/chat-go-server/domain/service/room"
 	"github.com/karamaru-alpha/chat-go-server/infrastructure/mysql"
+	"github.com/karamaru-alpha/chat-go-server/infrastructure/redis"
 	"github.com/karamaru-alpha/chat-go-server/infrastructure/repository/message"
 	room2 "github.com/karamaru-alpha/chat-go-server/infrastructure/repository/room"
 	room7 "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
@@ -32,7 +33,8 @@ func DI() proto.RoomServicesServer {
 	iDomainService := room3.NewDomainService(iRepository)
 	iInputPort := room4.NewInteractor(iFactory, iRepository, iDomainService)
 	roomIInputPort := room5.NewInteractor(iRepository)
-	messageIRepository := message.NewRepositoryImpl(db)
+	client := redis.NewClient()
+	messageIRepository := message.NewRepositoryImpl(db, client)
 	messageIInputPort := message2.NewInteractor(messageIRepository)
 	messageIFactory := message3.NewFactory(iulidGenerator)
 	iInputPort2 := room6.NewInteractor(messageIFactory, messageIRepository, iRepository)

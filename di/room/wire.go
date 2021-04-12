@@ -13,6 +13,7 @@ import (
 	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	domainService "github.com/karamaru-alpha/chat-go-server/domain/service/room"
 	"github.com/karamaru-alpha/chat-go-server/infrastructure/mysql"
+	"github.com/karamaru-alpha/chat-go-server/infrastructure/redis"
 	messageRepositoryImpl "github.com/karamaru-alpha/chat-go-server/infrastructure/repository/message"
 	roomRepositoryImpl "github.com/karamaru-alpha/chat-go-server/infrastructure/repository/room"
 	controller "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
@@ -35,6 +36,7 @@ func DI() pb.RoomServicesServer {
 		domainService.NewDomainService,
 		util.NewULIDGenerator,
 		mysql.ConnectGorm,
+		redis.NewClient,
 	)
 
 	return nil
