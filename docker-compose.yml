@@ -1,48 +1,54 @@
 version: "3"
 services:
-  db:
-    container_name: chat-go-server-db
+  mysql:
+    container_name: ${MYSQL_CONTAINER_NAME}
     image: mysql
     volumes:
       - ./docker/mysql/db/mysql_data:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./docker/mysql/db/init:/docker-entrypoint-initdb.d
-    ports:
-      - "3306:3306"
     environment:
+      - MYSQL_CONTAINER_NAME
+      - MYSQL_PORT
       - MYSQL_ROOT_PASSWORD
       - MYSQL_DATABASE
       - MYSQL_USER
       - MYSQL_PASSWORD
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
     command: mysqld
 
   redis:
-    container_name: chat-go-server-redis
-    image: "redis:latest"
+    container_name: ${REDIS_CONTAINER_NAME}
+    image: redis
     volumes:
       - ./docker/redis/db/redis_data:/data
     environment:
+      - REDIS_CONTAINER_NAME
       - REDIS_PORT
     ports:
       - "${REDIS_PORT}:${REDIS_PORT}"
     command: redis-server
 
   api:
-    container_name: chat-go-server-api
+    container_name: ${API_CONTAINER_NAME}
     build:
       context: .
       dockerfile: ./docker/api/Dockerfile
     volumes:
       - ./:/go/src/github.com/karamaru-alpha/chat-go-server
     ports:
-      - "8080:8080"
+      - "${PORT}:${PORT}"
     environment:
+      - API_CONTAINER_NAME
+      - MYSQL_CONTAINER_NAME
       - PORT
+      - MYSQL_PORT
       - MYSQL_ROOT_PASSWORD
       - MYSQL_DATABASE
       - MYSQL_USER
       - MYSQL_PASSWORD
       - REDIS_PORT
     depends_on:
-      - db
+      - mysql
       - redis

@@ -4,21 +4,23 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 
 	"google.golang.org/grpc"
 
-	"github.com/karamaru-alpha/chat-go-server/config"
 	roomDI "github.com/karamaru-alpha/chat-go-server/di/room"
 	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 )
 
 func main() {
+	port := os.Getenv("PORT")
+
 	// リスナー登録
-	listen, err := net.Listen("tcp", fmt.Sprintf(":%s", config.Port()))
+	listen, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
-		log.Fatalf("Could not listen @ %v :: %v", config.Port(), err)
+		log.Fatalf("Could not listen @ %v :: %v", port, err)
 	}
-	log.Printf("Listening @ :%s", config.Port())
+	log.Printf("Listening @ :%s", port)
 
 	// gRPC作成
 	grpcServer := grpc.NewServer()

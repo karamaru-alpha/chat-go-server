@@ -1,3 +1,4 @@
 /tmp
 /docker/mysql/db/mysql_data
+/docker/redis/db/redis_data
 .vscode
