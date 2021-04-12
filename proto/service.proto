@@ -7,6 +7,6 @@ import "message.proto";
 service RoomServices {
     rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse){};
     rpc GetRooms(GetRoomsRequest) returns (GetRoomsResponse){};
-    rpc JoinRoom (JoinRoomRequest) returns (JoinRoomResponse){};
+    rpc JoinRoom (JoinRoomRequest) returns (stream JoinRoomResponse){};
     rpc SendMessage(SendMessageRequest) returns(SendMessageResponse){};
 }
