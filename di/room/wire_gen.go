@@ -9,14 +9,14 @@ import (
 	room4 "github.com/karamaru-alpha/chat-go-server/application/room/create"
 	room5 "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
 	message2 "github.com/karamaru-alpha/chat-go-server/application/room/join"
-	message4 "github.com/karamaru-alpha/chat-go-server/application/room/send_message"
+	room6 "github.com/karamaru-alpha/chat-go-server/application/room/send_message"
 	message3 "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	"github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	room3 "github.com/karamaru-alpha/chat-go-server/domain/service/room"
 	"github.com/karamaru-alpha/chat-go-server/infrastructure/mysql"
-	"github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/message"
-	room2 "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
-	room6 "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
+	"github.com/karamaru-alpha/chat-go-server/infrastructure/repository/message"
+	room2 "github.com/karamaru-alpha/chat-go-server/infrastructure/repository/room"
+	room7 "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
 	"github.com/karamaru-alpha/chat-go-server/proto/pb"
 	"github.com/karamaru-alpha/chat-go-server/util"
 )
@@ -35,7 +35,7 @@ func DI() proto.RoomServicesServer {
 	messageIRepository := message.NewRepositoryImpl(db)
 	messageIInputPort := message2.NewInteractor(messageIRepository)
 	messageIFactory := message3.NewFactory(iulidGenerator)
-	iInputPort2 := message4.NewInteractor(messageIFactory, messageIRepository, iRepository)
-	roomServicesServer := room6.NewController(iInputPort, roomIInputPort, messageIInputPort, iInputPort2)
+	iInputPort2 := room6.NewInteractor(messageIFactory, messageIRepository, iRepository)
+	roomServicesServer := room7.NewController(iInputPort, roomIInputPort, messageIInputPort, iInputPort2)
 	return roomServicesServer
 }

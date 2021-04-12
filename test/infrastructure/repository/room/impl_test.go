@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
-	infra "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/room"
+	repoImpl "github.com/karamaru-alpha/chat-go-server/infrastructure/repository/room"
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
@@ -115,7 +115,7 @@ func (r *repositoryImplTester) setupTest(t *testing.T) {
 	assert.NoError(t, err)
 	gormDB.LogMode(true)
 
-	repositoryImpl := infra.NewRepositoryImpl(gormDB)
+	repositoryImpl := repoImpl.NewRepositoryImpl(gormDB)
 
 	r.db = gormDB
 	r.mock = mock
