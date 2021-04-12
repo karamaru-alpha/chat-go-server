@@ -1,6 +1,7 @@
 package room
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -40,11 +41,12 @@ func TestHandle(t *testing.T) {
 			title: "【正常系】",
 			before: func() {
 				tester.roomRepository.EXPECT().Find(&tdRoomDomain.Room.ID).Return(&tdRoomDomain.Room.Entity, nil)
-				tester.messageRepository.EXPECT().Save(&tdMessageDomain.Message.Entity).Return(nil)
+				tester.messageRepository.EXPECT().Save(context.TODO(), &tdMessageDomain.Message.Entity).Return(nil)
 			},
 			input: application.InputData{
-				RoomID: tdString.Room.ID.Valid,
-				Body:   tdString.Message.Body.Valid,
+				Context: context.TODO(),
+				RoomID:  tdString.Room.ID.Valid,
+				Body:    tdString.Message.Body.Valid,
 			},
 			expected: application.OutputData{
 				Message: &tdMessageDomain.Message.Entity,
@@ -57,8 +59,9 @@ func TestHandle(t *testing.T) {
 				tester.roomRepository.EXPECT().Find(&tdRoomDomain.Room.ID).Return(&tdRoomDomain.Room.Entity, nil)
 			},
 			input: application.InputData{
-				RoomID: tdString.Room.ID.Valid,
-				Body:   tdString.Message.Body.Empty,
+				Context: context.TODO(),
+				RoomID:  tdString.Room.ID.Valid,
+				Body:    tdString.Message.Body.Empty,
 			},
 			expected: application.OutputData{
 				Message: nil,
@@ -71,8 +74,9 @@ func TestHandle(t *testing.T) {
 				tester.roomRepository.EXPECT().Find(&tdRoomDomain.Room.ID).Return(&tdRoomDomain.Room.Entity, nil)
 			},
 			input: application.InputData{
-				RoomID: tdString.Room.ID.Valid,
-				Body:   tdString.Message.Body.TooLong,
+				Context: context.TODO(),
+				RoomID:  tdString.Room.ID.Valid,
+				Body:    tdString.Message.Body.TooLong,
 			},
 			expected: application.OutputData{
 				Message: nil,
@@ -82,8 +86,9 @@ func TestHandle(t *testing.T) {
 		{
 			title: "【異常系】ルームIDが空",
 			input: application.InputData{
-				RoomID: "",
-				Body:   tdString.Message.Body.Valid,
+				Context: context.TODO(),
+				RoomID:  "",
+				Body:    tdString.Message.Body.Valid,
 			},
 			expected: application.OutputData{
 				Message: nil,
@@ -93,8 +98,9 @@ func TestHandle(t *testing.T) {
 		{
 			title: "【異常系】ルームIDが不正値",
 			input: application.InputData{
-				RoomID: tdString.Room.ID.Invalid,
-				Body:   tdString.Message.Body.Valid,
+				Context: context.TODO(),
+				RoomID:  tdString.Room.ID.Invalid,
+				Body:    tdString.Message.Body.Valid,
 			},
 			expected: application.OutputData{
 				Message: nil,
@@ -107,8 +113,9 @@ func TestHandle(t *testing.T) {
 				tester.roomRepository.EXPECT().Find(&tdRoomDomain.Room.ID).Return(nil, nil)
 			},
 			input: application.InputData{
-				RoomID: tdString.Room.ID.Valid,
-				Body:   tdString.Message.Body.Valid,
+				Context: context.TODO(),
+				RoomID:  tdString.Room.ID.Valid,
+				Body:    tdString.Message.Body.Valid,
 			},
 			expected: application.OutputData{
 				Message: nil,

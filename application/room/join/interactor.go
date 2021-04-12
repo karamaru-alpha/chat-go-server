@@ -19,22 +19,29 @@ func NewInteractor(r messageDomain.IRepository) IInputPort {
 }
 
 // Handle トークルーム入室アプリケーションサービス
-func (i interactor) Handle(input InputData) OutputData {
+func (i interactor) Handle(input InputData) {
 
+	// RoomIDの生成
 	parsedULID, err := ulid.Parse(input.RoomID)
 	if err != nil {
-		return OutputData{Err: err}
+		input.ErrCh <- err
 	}
-
 	roomID, err := roomDomain.NewID(&parsedULID)
 	if err != nil {
-		return OutputData{Err: err}
+		input.ErrCh <- err
 	}
 
+	// メッセージ一覧を返却
 	messages, err := i.repository.FindAll(roomID)
 	if err != nil {
-		return OutputData{Err: err}
+		input.ErrCh <- err
+	}
+	for _, v := range *messages {
+		input.MessageCh <- v
 	}
 
-	return OutputData{Messages: messages}
+	// 新規メッセージの監視
+	if err = i.repository.Subscribe(input.Context, roomID, input.MessageCh); err != nil {
+		input.ErrCh <- err
+	}
 }
