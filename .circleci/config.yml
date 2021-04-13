@@ -5,13 +5,25 @@ jobs:
       - image: circleci/golang:1.16
     steps:
       - checkout
+
+      - restore_cache:
+          name: Restore go modules cache
+          keys:
+            - go-modules-{{ checksum "go.sum" }}
       - run: go mod download
+      - save_cache:
+          name: Save go modules cache
+          key: go-modules-{{ checksum "go.sum" }}
+          paths:
+            - /go/pkg/mod/cache
+
       - run:
           name: Install golangci-lint@v1.39.0
           command: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.39.0
       - run:
           name: Run golangci-lint
           command: ./bin/golangci-lint run
+
       - run:
           name: Run test
           command: go test ./test/...
