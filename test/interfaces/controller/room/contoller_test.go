@@ -11,9 +11,9 @@ import (
 	createApplication "github.com/karamaru-alpha/chat-go-server/application/room/create"
 	findAllApplication "github.com/karamaru-alpha/chat-go-server/application/room/find_all"
 	sendMessageApplication "github.com/karamaru-alpha/chat-go-server/application/room/send_message"
+	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	controller "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
-	roomDTO "github.com/karamaru-alpha/chat-go-server/interfaces/dto/room"
 	mockCreateApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/create"
 	mockFindAllApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/find_all"
 	mockJoinApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/join"
@@ -21,6 +21,7 @@ import (
 	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 	tdMessageDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
 	tdRoomDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
+	tdRoomPb "github.com/karamaru-alpha/chat-go-server/test/testdata/pb/room"
 	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
 )
 
@@ -51,12 +52,12 @@ func TestGetRooms(t *testing.T) {
 			title: "【正常系】トークルームが1つ",
 			before: func() {
 				tester.findAllApplication.EXPECT().Handle().Return(findAllApplication.OutputData{
-					Rooms: &[]roomDomain.Room{tdRoomDomain.Room.Entity}, Err: nil,
+					Rooms: []roomDomain.Room{tdRoomDomain.Room.Entity}, Err: nil,
 				})
 			},
 			input1:    context.TODO(),
 			input2:    &pb.GetRoomsRequest{},
-			expected1: &pb.GetRoomsResponse{Rooms: roomDTO.ToProtos(&[]roomDomain.Room{tdRoomDomain.Room.Entity})},
+			expected1: &pb.GetRoomsResponse{Rooms: []*pb.Room{&tdRoomPb.Room}},
 			expected2: nil,
 		},
 		{
@@ -68,7 +69,7 @@ func TestGetRooms(t *testing.T) {
 			},
 			input1:    context.TODO(),
 			input2:    &pb.GetRoomsRequest{},
-			expected1: &pb.GetRoomsResponse{Rooms: nil},
+			expected1: &pb.GetRoomsResponse{Rooms: []*pb.Room{}},
 			expected2: nil,
 		},
 	}
@@ -113,11 +114,11 @@ func TestCreateRoom(t *testing.T) {
 				tester.createApplication.EXPECT().Handle(
 					createApplication.InputData{Title: tdString.Room.Title.Valid},
 				).Return(
-					createApplication.OutputData{Room: &tdRoomDomain.Room.Entity, Err: nil},
+					createApplication.OutputData{Room: tdRoomDomain.Room.Entity, Err: nil},
 				)
 			},
 			input:     &pb.CreateRoomRequest{Title: tdString.Room.Title.Valid},
-			expected1: &pb.CreateRoomResponse{Room: roomDTO.ToProto(&tdRoomDomain.Room.Entity)},
+			expected1: &pb.CreateRoomResponse{Room: &tdRoomPb.Room},
 			expected2: nil,
 		},
 		{
@@ -126,7 +127,7 @@ func TestCreateRoom(t *testing.T) {
 				tester.createApplication.EXPECT().Handle(
 					createApplication.InputData{Title: ""},
 				).Return(
-					createApplication.OutputData{Room: nil, Err: errors.New("error")},
+					createApplication.OutputData{Room: roomDomain.Room{}, Err: errors.New("error")},
 				)
 			},
 			input:     &pb.CreateRoomRequest{Title: ""},
@@ -139,7 +140,7 @@ func TestCreateRoom(t *testing.T) {
 				tester.createApplication.EXPECT().Handle(
 					createApplication.InputData{Title: tdString.Room.Title.TooLong},
 				).Return(
-					createApplication.OutputData{Room: nil, Err: errors.New("error")},
+					createApplication.OutputData{Room: roomDomain.Room{}, Err: errors.New("error")},
 				)
 			},
 			input:     &pb.CreateRoomRequest{Title: tdString.Room.Title.TooLong},
@@ -192,7 +193,7 @@ func TestSendMessage(t *testing.T) {
 				tester.sendMessageApplication.EXPECT().Handle(
 					sendMessageApplication.InputData{Context: ctx, RoomID: tdString.Room.ID.Valid, Body: tdString.Message.Body.Valid},
 				).Return(
-					sendMessageApplication.OutputData{Message: &tdMessageDomain.Message.Entity, Err: nil},
+					sendMessageApplication.OutputData{Message: tdMessageDomain.Message.Entity, Err: nil},
 				)
 			},
 			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Valid, Body: tdString.Message.Body.Valid},
@@ -206,7 +207,7 @@ func TestSendMessage(t *testing.T) {
 					sendMessageApplication.InputData{
 						Context: ctx, RoomID: tdString.Room.ID.Valid, Body: tdString.Message.Body.TooLong},
 				).Return(
-					sendMessageApplication.OutputData{Message: nil, Err: errors.New("error")},
+					sendMessageApplication.OutputData{Message: messageDomain.Message{}, Err: errors.New("error")},
 				)
 			},
 			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Valid, Body: tdString.Message.Body.TooLong},
@@ -219,7 +220,7 @@ func TestSendMessage(t *testing.T) {
 				tester.sendMessageApplication.EXPECT().Handle(
 					sendMessageApplication.InputData{Context: ctx, RoomID: tdString.Room.ID.Valid, Body: tdString.Message.Body.Empty},
 				).Return(
-					sendMessageApplication.OutputData{Message: nil, Err: errors.New("error")},
+					sendMessageApplication.OutputData{Message: messageDomain.Message{}, Err: errors.New("error")},
 				)
 			},
 			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Valid, Body: tdString.Message.Body.Empty},
@@ -232,7 +233,7 @@ func TestSendMessage(t *testing.T) {
 				tester.sendMessageApplication.EXPECT().Handle(
 					sendMessageApplication.InputData{Context: ctx, RoomID: tdString.Room.ID.Invalid, Body: tdString.Message.Body.Valid},
 				).Return(
-					sendMessageApplication.OutputData{Message: nil, Err: errors.New("error")},
+					sendMessageApplication.OutputData{Message: messageDomain.Message{}, Err: errors.New("error")},
 				)
 			},
 			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Invalid, Body: tdString.Message.Body.Valid},
@@ -245,7 +246,7 @@ func TestSendMessage(t *testing.T) {
 				tester.sendMessageApplication.EXPECT().Handle(
 					sendMessageApplication.InputData{Context: ctx, RoomID: "", Body: tdString.Message.Body.Valid},
 				).Return(
-					sendMessageApplication.OutputData{Message: nil, Err: errors.New("error")},
+					sendMessageApplication.OutputData{Message: messageDomain.Message{}, Err: errors.New("error")},
 				)
 			},
 			input:     &pb.SendMessageRequest{RoomId: "", Body: tdString.Message.Body.Valid},

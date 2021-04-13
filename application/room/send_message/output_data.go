@@ -6,6 +6,6 @@ import (
 
 // OutputData メッセージ作成のアプリケーションサービスの出力
 type OutputData struct {
-	Message *domain.Message
+	Message domain.Message
 	Err     error
 }

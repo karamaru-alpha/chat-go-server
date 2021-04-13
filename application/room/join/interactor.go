@@ -26,7 +26,7 @@ func (i interactor) Handle(input InputData) {
 	if err != nil {
 		input.ErrCh <- err
 	}
-	roomID, err := roomDomain.NewID(&parsedULID)
+	roomID, err := roomDomain.NewID(parsedULID)
 	if err != nil {
 		input.ErrCh <- err
 	}
@@ -36,7 +36,7 @@ func (i interactor) Handle(input InputData) {
 	if err != nil {
 		input.ErrCh <- err
 	}
-	for _, v := range *messages {
+	for _, v := range messages {
 		input.MessageCh <- v
 	}
 

@@ -33,7 +33,7 @@ func (i interactor) Handle(input InputData) OutputData {
 	if err != nil {
 		return OutputData{Err: err}
 	}
-	roomID, err := roomDomain.NewID(&parsedULID)
+	roomID, err := roomDomain.NewID(parsedULID)
 	if err != nil {
 		return OutputData{Err: err}
 	}

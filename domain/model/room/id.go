@@ -10,12 +10,10 @@ import (
 type ID ulid.ULID
 
 // NewID トークルームIDの値オブジェクトを生成するコンストラクタ
-func NewID(v *ulid.ULID) (*ID, error) {
-
-	if v == nil {
-		return nil, errors.New("RoomID is null")
+func NewID(v ulid.ULID) (ID, error) {
+	if v == (ulid.ULID{}) {
+		return ID{}, errors.New("RoomID is null")
 	}
 
-	id := ID(*v)
-	return &id, nil
+	return ID(v), nil
 }

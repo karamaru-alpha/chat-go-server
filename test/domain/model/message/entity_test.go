@@ -18,42 +18,42 @@ func TestNewMessage(t *testing.T) {
 
 	tests := []struct {
 		body      string
-		input1    *messageDomain.ID
-		input2    *roomDomain.ID
-		input3    *messageDomain.Body
-		expected1 *messageDomain.Message
+		input1    messageDomain.ID
+		input2    roomDomain.ID
+		input3    messageDomain.Body
+		expected1 messageDomain.Message
 		expected2 error
 	}{
 		{
 			body:      "【正常系】メッセージエンティティ生成",
-			input1:    &tdMessageDomain.Message.ID,
-			input2:    &tdRoomDomain.Room.ID,
-			input3:    &tdMessageDomain.Message.Body,
-			expected1: &tdMessageDomain.Message.Entity,
+			input1:    tdMessageDomain.Message.ID,
+			input2:    tdRoomDomain.Room.ID,
+			input3:    tdMessageDomain.Message.Body,
+			expected1: tdMessageDomain.Message.Entity,
 			expected2: nil,
 		},
 		{
-			body:      "【異常系】IDがnil",
-			input1:    nil,
-			input2:    &tdRoomDomain.Room.ID,
-			input3:    &tdMessageDomain.Message.Body,
-			expected1: nil,
+			body:      "【異常系】IDがゼロ値",
+			input1:    messageDomain.ID{},
+			input2:    tdRoomDomain.Room.ID,
+			input3:    tdMessageDomain.Message.Body,
+			expected1: messageDomain.Message{},
 			expected2: errors.New("MessageID is null"),
 		},
 		{
-			body:      "【異常系】RoomIDがnil",
-			input1:    &tdMessageDomain.Message.ID,
-			input2:    nil,
-			input3:    &tdMessageDomain.Message.Body,
-			expected1: nil,
+			body:      "【異常系】RoomIDがゼロ値",
+			input1:    tdMessageDomain.Message.ID,
+			input2:    roomDomain.ID{},
+			input3:    tdMessageDomain.Message.Body,
+			expected1: messageDomain.Message{},
 			expected2: errors.New("MessageRoomID is null"),
 		},
 		{
-			body:      "【異常系】Bodyがnil",
-			input1:    &tdMessageDomain.Message.ID,
-			input2:    &tdRoomDomain.Room.ID,
-			input3:    nil,
-			expected1: nil,
+			body:      "【異常系】Bodyがゼロ値",
+			input1:    tdMessageDomain.Message.ID,
+			input2:    tdRoomDomain.Room.ID,
+			input3:    "",
+			expected1: messageDomain.Message{},
 			expected2: errors.New("MessageBody is null"),
 		},
 	}

@@ -19,20 +19,20 @@ func TestCreate(t *testing.T) {
 
 	tests := []struct {
 		title     string
-		input     *domain.Title
-		expected1 *domain.Room
+		input     domain.Title
+		expected1 domain.Room
 		expected2 error
 	}{
 		{
 			title:     "【正常系】トークルームエンティティ生成",
-			input:     &tdDomain.Room.Title,
-			expected1: &tdDomain.Room.Entity,
+			input:     tdDomain.Room.Title,
+			expected1: tdDomain.Room.Entity,
 			expected2: nil,
 		},
 		{
-			title:     "【異常系】Titleがnil",
-			input:     nil,
-			expected1: nil,
+			title:     "【異常系】Titleが空文字列",
+			input:     "",
+			expected1: domain.Room{},
 			expected2: errors.New("RoomTitle is null"),
 		},
 	}

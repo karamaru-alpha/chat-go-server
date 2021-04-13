@@ -18,31 +18,31 @@ func TestNewTitle(t *testing.T) {
 	tests := []struct {
 		title     string
 		input     string
-		expected1 *domain.Title
+		expected1 domain.Title
 		expected2 error
 	}{
 		{
 			title:     "【正常系】トークルームのタイトル生成",
 			input:     tdString.Room.Title.Valid,
-			expected1: &tdDomain.Room.Title,
+			expected1: tdDomain.Room.Title,
 			expected2: nil,
 		},
 		{
 			title:     "【異常系】タイトルが空",
 			input:     "",
-			expected1: nil,
+			expected1: "",
 			expected2: errors.New("RoomTitle is null"),
 		},
 		{
 			title:     "【異常系】タイトルが短い",
 			input:     tdString.Room.Title.TooShort,
-			expected1: nil,
+			expected1: "",
 			expected2: errors.New("RoomTitle should be Three to twenty characters"),
 		},
 		{
 			title:     "【異常系】タイトルが長い",
 			input:     tdString.Room.Title.TooLong,
-			expected1: nil,
+			expected1: "",
 			expected2: errors.New("RoomTitle should be Three to twenty characters"),
 		},
 	}

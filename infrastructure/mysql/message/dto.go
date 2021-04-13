@@ -15,12 +15,12 @@ type Message struct {
 }
 
 // ToDTO メッセージエンティティをDB情報を持った構造体に変換する
-func ToDTO(entity *messageDomain.Message) *Message {
-	if entity == nil {
-		return nil
+func ToDTO(entity messageDomain.Message) Message {
+	if entity == (messageDomain.Message{}) {
+		return Message{}
 	}
 
-	return &Message{
+	return Message{
 		ID:     ulid.ULID(entity.ID).String(),
 		RoomID: ulid.ULID(entity.RoomID).String(),
 		Body:   string(entity.Body),
@@ -28,22 +28,21 @@ func ToDTO(entity *messageDomain.Message) *Message {
 }
 
 // ToEntity DB情報を持った構造体からメッセージエンティティに変換する
-func ToEntity(dto *Message) (*messageDomain.Message, error) {
-	if dto == nil {
-		return nil, nil
+func ToEntity(dto Message) (messageDomain.Message, error) {
+	if dto == (Message{}) {
+		return messageDomain.Message{}, nil
 	}
 
 	parsedMessageULID, err := ulid.Parse(dto.ID)
 	if err != nil {
-		return nil, err
+		return messageDomain.Message{}, err
 	}
-
 	parsedRoomULID, err := ulid.Parse(dto.RoomID)
 	if err != nil {
-		return nil, err
+		return messageDomain.Message{}, err
 	}
 
-	return &messageDomain.Message{
+	return messageDomain.Message{
 		ID:     messageDomain.ID(parsedMessageULID),
 		RoomID: roomDomain.ID(parsedRoomULID),
 		Body:   messageDomain.Body(dto.Body),
@@ -51,18 +50,19 @@ func ToEntity(dto *Message) (*messageDomain.Message, error) {
 }
 
 // ToEntity DB情報を持った構造体のスライスをエンティティに変換する
-func ToEntities(dtos *[]Message) (*[]messageDomain.Message, error) {
-	if dtos == nil {
+func ToEntities(dtos []Message) ([]messageDomain.Message, error) {
+	if len(dtos) == 0 {
 		return nil, nil
 	}
 
-	entities := make([]messageDomain.Message, 0, len(*dtos))
-	for _, v := range *dtos {
-		entity, err := ToEntity(&v)
+	entities := make([]messageDomain.Message, 0, len(dtos))
+	for _, v := range dtos {
+		entity, err := ToEntity(v)
 		if err != nil {
 			return nil, err
 		}
-		entities = append(entities, *entity)
+		entities = append(entities, entity)
 	}
-	return &entities, nil
+
+	return entities, nil
 }

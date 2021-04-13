@@ -10,6 +10,7 @@ import (
 
 	application "github.com/karamaru-alpha/chat-go-server/application/room/send_message"
 	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
+	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	mockMessageDomain "github.com/karamaru-alpha/chat-go-server/mock/domain/model/message"
 	mockRoomDomain "github.com/karamaru-alpha/chat-go-server/mock/domain/model/room"
 	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
@@ -40,8 +41,8 @@ func TestHandle(t *testing.T) {
 		{
 			title: "【正常系】",
 			before: func() {
-				tester.roomRepository.EXPECT().Find(&tdRoomDomain.Room.ID).Return(&tdRoomDomain.Room.Entity, nil)
-				tester.messageRepository.EXPECT().Save(context.TODO(), &tdMessageDomain.Message.Entity).Return(nil)
+				tester.roomRepository.EXPECT().Find(tdRoomDomain.Room.ID).Return(tdRoomDomain.Room.Entity, nil)
+				tester.messageRepository.EXPECT().Save(context.TODO(), tdMessageDomain.Message.Entity).Return(nil)
 			},
 			input: application.InputData{
 				Context: context.TODO(),
@@ -49,14 +50,14 @@ func TestHandle(t *testing.T) {
 				Body:    tdString.Message.Body.Valid,
 			},
 			expected: application.OutputData{
-				Message: &tdMessageDomain.Message.Entity,
+				Message: tdMessageDomain.Message.Entity,
 				Err:     nil,
 			},
 		},
 		{
 			title: "【異常系】本文が短い(空)",
 			before: func() {
-				tester.roomRepository.EXPECT().Find(&tdRoomDomain.Room.ID).Return(&tdRoomDomain.Room.Entity, nil)
+				tester.roomRepository.EXPECT().Find(tdRoomDomain.Room.ID).Return(tdRoomDomain.Room.Entity, nil)
 			},
 			input: application.InputData{
 				Context: context.TODO(),
@@ -64,14 +65,14 @@ func TestHandle(t *testing.T) {
 				Body:    tdString.Message.Body.Empty,
 			},
 			expected: application.OutputData{
-				Message: nil,
+				Message: messageDomain.Message{},
 				Err:     errors.New("MessageBody is empty"),
 			},
 		},
 		{
 			title: "【異常系】本文が長い",
 			before: func() {
-				tester.roomRepository.EXPECT().Find(&tdRoomDomain.Room.ID).Return(&tdRoomDomain.Room.Entity, nil)
+				tester.roomRepository.EXPECT().Find(tdRoomDomain.Room.ID).Return(tdRoomDomain.Room.Entity, nil)
 			},
 			input: application.InputData{
 				Context: context.TODO(),
@@ -79,7 +80,7 @@ func TestHandle(t *testing.T) {
 				Body:    tdString.Message.Body.TooLong,
 			},
 			expected: application.OutputData{
-				Message: nil,
+				Message: messageDomain.Message{},
 				Err:     errors.New("MessageBody should be 1 to 255 characters"),
 			},
 		},
@@ -91,7 +92,7 @@ func TestHandle(t *testing.T) {
 				Body:    tdString.Message.Body.Valid,
 			},
 			expected: application.OutputData{
-				Message: nil,
+				Message: messageDomain.Message{},
 				Err:     errors.New("ulid: bad data size when unmarshaling"),
 			},
 		},
@@ -103,14 +104,14 @@ func TestHandle(t *testing.T) {
 				Body:    tdString.Message.Body.Valid,
 			},
 			expected: application.OutputData{
-				Message: nil,
+				Message: messageDomain.Message{},
 				Err:     errors.New("ulid: bad data size when unmarshaling"),
 			},
 		},
 		{
 			title: "【異常系】存在しないルームID",
 			before: func() {
-				tester.roomRepository.EXPECT().Find(&tdRoomDomain.Room.ID).Return(nil, nil)
+				tester.roomRepository.EXPECT().Find(tdRoomDomain.Room.ID).Return(roomDomain.Room{}, nil)
 			},
 			input: application.InputData{
 				Context: context.TODO(),
@@ -118,7 +119,7 @@ func TestHandle(t *testing.T) {
 				Body:    tdString.Message.Body.Valid,
 			},
 			expected: application.OutputData{
-				Message: nil,
+				Message: messageDomain.Message{},
 				Err:     errors.New("MessageRoom is not exist"),
 			},
 		},

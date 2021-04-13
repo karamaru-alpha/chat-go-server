@@ -18,22 +18,22 @@ func TestToDTO(t *testing.T) {
 
 	tests := []struct {
 		title    string
-		input    *messageDomain.Message
-		expected *mysql.Message
+		input    messageDomain.Message
+		expected mysql.Message
 	}{
 		{
 			title: "【正常系】メッセージエンティティをDB情報を持った構造体に変換",
-			input: &tdDomain.Message.Entity,
-			expected: &mysql.Message{
+			input: tdDomain.Message.Entity,
+			expected: mysql.Message{
 				ID:     tdString.Message.ID.Valid,
 				RoomID: tdString.Room.ID.Valid,
 				Body:   tdString.Message.Body.Valid,
 			},
 		},
 		{
-			title:    "【正常系】nilが来たらnilを返す",
-			input:    nil,
-			expected: nil,
+			title:    "【正常系】エンティティのゼロ値が来たらからdtoを返す",
+			input:    messageDomain.Message{},
+			expected: mysql.Message{},
 		},
 	}
 
@@ -56,44 +56,44 @@ func TestToEntity(t *testing.T) {
 
 	tests := []struct {
 		title     string
-		input     *mysql.Message
-		expected1 *messageDomain.Message
+		input     mysql.Message
+		expected1 messageDomain.Message
 		expected2 error
 	}{
 		{
 			title: "【正常系】DB情報を持った構造体をメッセージエンティティに変換",
-			input: &mysql.Message{
+			input: mysql.Message{
 				ID:     tdString.Message.ID.Valid,
 				RoomID: tdString.Room.ID.Valid,
 				Body:   tdString.Message.Body.Valid,
 			},
-			expected1: &tdDomain.Message.Entity,
+			expected1: tdDomain.Message.Entity,
 			expected2: nil,
 		},
 		{
-			title:     "【正常系】nilが来たらnilを返す",
-			input:     nil,
-			expected1: nil,
+			title:     "【正常系】'空のdtoが来たらエンティティのゼロ値を返す",
+			input:     mysql.Message{},
+			expected1: messageDomain.Message{},
 			expected2: nil,
 		},
 		{
 			title: "【異常系】IDが不正値",
-			input: &mysql.Message{
+			input: mysql.Message{
 				ID:     tdString.Message.ID.Invalid,
 				RoomID: tdString.Room.ID.Valid,
 				Body:   tdString.Message.Body.Valid,
 			},
-			expected1: nil,
+			expected1: messageDomain.Message{},
 			expected2: errors.New("ulid: bad data size when unmarshaling"),
 		},
 		{
 			title: "【異常系】RoomIDが不正値",
-			input: &mysql.Message{
+			input: mysql.Message{
 				ID:     tdString.Message.ID.Valid,
 				RoomID: tdString.Room.ID.Invalid,
 				Body:   tdString.Message.Body.Valid,
 			},
-			expected1: nil,
+			expected1: messageDomain.Message{},
 			expected2: errors.New("ulid: bad data size when unmarshaling"),
 		},
 	}

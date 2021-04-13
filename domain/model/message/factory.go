@@ -9,7 +9,7 @@ import (
 
 // IFactory メッセージファクトリのインターフェース
 type IFactory interface {
-	Create(*roomDomain.Room, *Body) (*Message, error)
+	Create(roomDomain.Room, Body) (Message, error)
 }
 
 type factory struct {
@@ -24,17 +24,15 @@ func NewFactory(ulidGenerator util.IULIDGenerator) IFactory {
 }
 
 // Create メッセージエンティティの生成処理を担うファクトリ
-func (f factory) Create(room *roomDomain.Room, body *Body) (*Message, error) {
-
-	if room == nil {
-		return nil, errors.New("MessageRoom is not exist")
+func (f factory) Create(room roomDomain.Room, body Body) (Message, error) {
+	if room == (roomDomain.Room{}) {
+		return Message{}, errors.New("MessageRoom is not exist")
 	}
 
-	ulid := f.ulidGenerator.Generate()
-	messageID, err := NewID(&ulid)
+	messageID, err := NewID(f.ulidGenerator.Generate())
 	if err != nil {
-		return nil, err
+		return Message{}, err
 	}
 
-	return NewMessage(messageID, &room.ID, body)
+	return NewMessage(messageID, room.ID, body)
 }

@@ -14,19 +14,16 @@ type Message struct {
 }
 
 // Message メッセージエンティティのコンストラクタ
-func NewMessage(id *ID, roomID *room.ID, body *Body) (*Message, error) {
-
-	if id == nil {
-		return nil, errors.New("MessageID is null")
+func NewMessage(id ID, roomID room.ID, body Body) (Message, error) {
+	if id == (ID{}) {
+		return Message{}, errors.New("MessageID is null")
+	}
+	if roomID == (room.ID{}) {
+		return Message{}, errors.New("MessageRoomID is null")
+	}
+	if body == "" {
+		return Message{}, errors.New("MessageBody is null")
 	}
 
-	if roomID == nil {
-		return nil, errors.New("MessageRoomID is null")
-	}
-
-	if body == nil {
-		return nil, errors.New("MessageBody is null")
-	}
-
-	return &Message{ID: *id, RoomID: *roomID, Body: *body}, nil
+	return Message{ID: id, RoomID: roomID, Body: body}, nil
 }

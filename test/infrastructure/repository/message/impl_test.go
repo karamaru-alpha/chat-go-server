@@ -40,7 +40,7 @@ func TestSave(t *testing.T) {
 	tester.mock.ExpectCommit()
 
 	// 実行
-	err := tester.repositoryImpl.Save(context.TODO(), &tdMessageDomain.Message.Entity)
+	err := tester.repositoryImpl.Save(context.TODO(), tdMessageDomain.Message.Entity)
 	assert.NoError(t, err)
 
 	err = tester.mock.ExpectationsWereMet()
@@ -59,15 +59,23 @@ func TestFindAll(t *testing.T) {
 	tester.mock.ExpectQuery("SELECT").WillReturnRows(sqlmock.NewRows([]string{"id", "room_id", "body"}).AddRow(tdString.Message.ID.Valid, tdString.Room.ID.Valid, tdString.Message.Body.Valid))
 
 	// 実行
-	output, err := tester.repositoryImpl.FindAll(&tdRoomDomain.Room.ID)
+	output, err := tester.repositoryImpl.FindAll(tdRoomDomain.Room.ID)
 	assert.NoError(t, err)
 
-	assert.Equal(t, &[]domain.Message{tdMessageDomain.Message.Entity}, output)
+	assert.Equal(t, []domain.Message{tdMessageDomain.Message.Entity}, output)
 
 	err = tester.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
 
 	tester.TeardownTest(t)
+}
+
+// TODO
+// TestSubscribe メッセージの監視処理をテスト
+func TestSubscribe(t *testing.T) {
+	t.Parallel()
+
+	assert.Equal(t, true, true)
 }
 
 func (r *repositoryImplTester) setupTest(t *testing.T) {

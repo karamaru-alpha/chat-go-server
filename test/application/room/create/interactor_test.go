@@ -37,14 +37,14 @@ func TestHandle(t *testing.T) {
 		{
 			title: "【正常系】トークルーム作成",
 			before: func() {
-				tester.repository.EXPECT().Save(&tdDomain.Room.Entity).Return(nil)
-				tester.repository.EXPECT().FindByTitle(&tdDomain.Room.Title).Return(nil, nil)
+				tester.repository.EXPECT().Save(tdDomain.Room.Entity).Return(nil)
+				tester.repository.EXPECT().FindByTitle(tdDomain.Room.Title).Return(domain.Room{}, nil)
 			},
 			input: application.InputData{
 				Title: tdString.Room.Title.Valid,
 			},
 			expected: application.OutputData{
-				Room: &tdDomain.Room.Entity,
+				Room: tdDomain.Room.Entity,
 				Err:  nil,
 			},
 		},
@@ -54,7 +54,7 @@ func TestHandle(t *testing.T) {
 				Title: "",
 			},
 			expected: application.OutputData{
-				Room: nil,
+				Room: domain.Room{},
 				Err:  errors.New("RoomTitle is null"),
 			},
 		},
@@ -64,7 +64,7 @@ func TestHandle(t *testing.T) {
 				Title: tdString.Room.Title.TooShort,
 			},
 			expected: application.OutputData{
-				Room: nil,
+				Room: domain.Room{},
 				Err:  errors.New("RoomTitle should be Three to twenty characters"),
 			},
 		},
@@ -74,20 +74,20 @@ func TestHandle(t *testing.T) {
 				Title: tdString.Room.Title.TooLong,
 			},
 			expected: application.OutputData{
-				Room: nil,
+				Room: domain.Room{},
 				Err:  errors.New("RoomTitle should be Three to twenty characters"),
 			},
 		},
 		{
 			title: "【異常系】タイトルが重複している",
 			before: func() {
-				tester.repository.EXPECT().FindByTitle(&tdDomain.Room.Title).Return(&tdDomain.Room.Entity, nil)
+				tester.repository.EXPECT().FindByTitle(tdDomain.Room.Title).Return(tdDomain.Room.Entity, nil)
 			},
 			input: application.InputData{
 				Title: tdString.Room.Title.Valid,
 			},
 			expected: application.OutputData{
-				Room: nil,
+				Room: domain.Room{},
 				Err:  errors.New("RoomTitle is duplicated"),
 			},
 		},

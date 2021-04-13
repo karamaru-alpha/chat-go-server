@@ -6,6 +6,6 @@ import (
 
 // OutputData トークルームを全件取得するアプリケーションサービスの出力値
 type OutputData struct {
-	Rooms *[]domain.Room
+	Rooms []domain.Room
 	Err   error
 }
