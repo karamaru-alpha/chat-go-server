@@ -2,32 +2,19 @@ package testdata
 
 import (
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
-	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
+
+	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/room"
 	tdULID "github.com/karamaru-alpha/chat-go-server/test/testdata/ulid"
 )
 
-// Room トークルームエンティティにまつわるテストデータ
-var Room = struct {
-	Entity domain.Room
-	ID     domain.ID
-	Title  domain.Title
-}{
-	Entity: genEntity(),
-	ID:     genID(),
-	Title:  genTitle(),
+// Entity トークルームエンティティのテストデータ
+var Entity = domain.Room{
+	ID:    ID,
+	Title: Title,
 }
 
-func genEntity() domain.Room {
-	return domain.Room{
-		ID:    genID(),
-		Title: genTitle(),
-	}
-}
+// ID トークルームエンティティ識別子値オブジェクトのテストデータ
+var ID = domain.ID(tdULID.ULID)
 
-func genID() domain.ID {
-	return domain.ID(tdULID.Room.ID)
-}
-
-func genTitle() domain.Title {
-	return domain.Title(tdString.Room.Title.Valid)
-}
+// Title トークルームタイトルのテストデータ
+var Title = domain.Title(tdString.Title.Valid)

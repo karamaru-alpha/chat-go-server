@@ -2,11 +2,14 @@ package testdata
 
 import (
 	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
-	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
+
+	tdCommonString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/common"
+	tdMessageString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/message"
 )
 
+// Message メッセージのgRPC型テストデータ
 var Message = pb.Message{
-	Id:     tdString.Message.ID.Valid,
-	RoomId: tdString.Room.ID.Valid,
-	Body:   tdString.Message.Body.Valid,
+	Id:     tdCommonString.ULID.Valid,
+	RoomId: tdCommonString.ULID.Valid,
+	Body:   tdMessageString.Body.Valid,
 }
