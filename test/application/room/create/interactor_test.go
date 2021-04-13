@@ -9,42 +9,43 @@ import (
 
 	application "github.com/karamaru-alpha/chat-go-server/application/room/create"
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
-	domainService "github.com/karamaru-alpha/chat-go-server/domain/service/room"
+
 	mockDomain "github.com/karamaru-alpha/chat-go-server/mock/domain/model/room"
-	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
+	mockDomainService "github.com/karamaru-alpha/chat-go-server/mock/domain/service/room"
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
-	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
+	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/room"
 )
 
-type interactorTester struct {
+type testHandler struct {
 	interactor application.IInputPort
-	repository *mockDomain.MockIRepository
+
+	factory       *mockDomain.MockIFactory
+	repository    *mockDomain.MockIRepository
+	domainService *mockDomainService.MockIDomainService
 }
 
 // TestHandle トークルームを作成するアプリケーションサービスのテスト
 func TestHandle(t *testing.T) {
 	t.Parallel()
 
-	var tester interactorTester
-	tester.setupTest(t)
-
 	tests := []struct {
 		title    string
-		before   func()
+		before   func(testHandler)
 		input    application.InputData
 		expected application.OutputData
 	}{
 		{
 			title: "【正常系】トークルーム作成",
-			before: func() {
-				tester.repository.EXPECT().Save(tdDomain.Room.Entity).Return(nil)
-				tester.repository.EXPECT().FindByTitle(tdDomain.Room.Title).Return(domain.Room{}, nil)
+			before: func(h testHandler) {
+				h.factory.EXPECT().Create(tdDomain.Title).Return(tdDomain.Entity, nil)
+				h.domainService.EXPECT().Exists(tdDomain.Entity).Return(false, nil)
+				h.repository.EXPECT().Save(tdDomain.Entity).Return(nil)
 			},
 			input: application.InputData{
-				Title: tdString.Room.Title.Valid,
+				Title: tdString.Title.Valid,
 			},
 			expected: application.OutputData{
-				Room: tdDomain.Room.Entity,
+				Room: tdDomain.Entity,
 				Err:  nil,
 			},
 		},
@@ -61,7 +62,7 @@ func TestHandle(t *testing.T) {
 		{
 			title: "【異常系】タイトルが短い",
 			input: application.InputData{
-				Title: tdString.Room.Title.TooShort,
+				Title: tdString.Title.TooShort,
 			},
 			expected: application.OutputData{
 				Room: domain.Room{},
@@ -71,7 +72,7 @@ func TestHandle(t *testing.T) {
 		{
 			title: "【異常系】タイトルが長い",
 			input: application.InputData{
-				Title: tdString.Room.Title.TooLong,
+				Title: tdString.Title.TooLong,
 			},
 			expected: application.OutputData{
 				Room: domain.Room{},
@@ -80,11 +81,12 @@ func TestHandle(t *testing.T) {
 		},
 		{
 			title: "【異常系】タイトルが重複している",
-			before: func() {
-				tester.repository.EXPECT().FindByTitle(tdDomain.Room.Title).Return(tdDomain.Room.Entity, nil)
+			before: func(h testHandler) {
+				h.factory.EXPECT().Create(tdDomain.Title).Return(tdDomain.Entity, nil)
+				h.domainService.EXPECT().Exists(tdDomain.Entity).Return(true, nil)
 			},
 			input: application.InputData{
-				Title: tdString.Room.Title.Valid,
+				Title: tdString.Title.Valid,
 			},
 			expected: application.OutputData{
 				Room: domain.Room{},
@@ -99,8 +101,11 @@ func TestHandle(t *testing.T) {
 		t.Run("Handle:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
+			var tester testHandler
+			tester.setupTest(t)
+
 			if td.before != nil {
-				td.before()
+				td.before(tester)
 			}
 
 			output := tester.interactor.Handle(td.input)
@@ -110,12 +115,15 @@ func TestHandle(t *testing.T) {
 	}
 }
 
-func (i *interactorTester) setupTest(t *testing.T) {
+func (h *testHandler) setupTest(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	i.repository = mockDomain.NewMockIRepository(ctrl)
-	i.interactor = application.NewInteractor(
-		domain.NewFactory(mockUtil.NewULIDGenerator()),
-		i.repository,
-		domainService.NewDomainService(i.repository),
+	h.factory = mockDomain.NewMockIFactory(ctrl)
+	h.repository = mockDomain.NewMockIRepository(ctrl)
+	h.domainService = mockDomainService.NewMockIDomainService(ctrl)
+
+	h.interactor = application.NewInteractor(
+		h.factory,
+		h.repository,
+		h.domainService,
 	)
 }

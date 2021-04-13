@@ -13,16 +13,19 @@ import (
 
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	repoImpl "github.com/karamaru-alpha/chat-go-server/infrastructure/repository/message"
+
 	tdMessageDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
 	tdRoomDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
-	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
+	tdCommonString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/common"
+	tdMessageString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/message"
 )
 
-type repositoryImplTester struct {
+type testHandler struct {
 	repositoryImpl domain.IRepository
-	db             *gorm.DB
-	redisClient    *redis.Client
-	mock           sqlmock.Sqlmock
+
+	db          *gorm.DB
+	redisClient *redis.Client
+	mock        sqlmock.Sqlmock
 }
 
 // TestSave メッセージを永続化させる処理のテスト
@@ -30,17 +33,17 @@ func TestSave(t *testing.T) {
 	t.Parallel()
 
 	// モックの作成
-	var tester repositoryImplTester
+	var tester testHandler
 	tester.setupTest(t)
 
 	tester.mock.ExpectBegin()
 	tester.mock.ExpectExec(
 		regexp.QuoteMeta("INSERT INTO `messages` (`id`,`room_id`,`body`)"),
-	).WithArgs(tdString.Message.ID.Valid, tdString.Room.ID.Valid, tdString.Message.Body.Valid).WillReturnResult(sqlmock.NewResult(1, 1))
+	).WithArgs(tdCommonString.ULID.Valid, tdCommonString.ULID.Valid, tdMessageString.Body.Valid).WillReturnResult(sqlmock.NewResult(1, 1))
 	tester.mock.ExpectCommit()
 
 	// 実行
-	err := tester.repositoryImpl.Save(context.TODO(), tdMessageDomain.Message.Entity)
+	err := tester.repositoryImpl.Save(context.TODO(), tdMessageDomain.Entity)
 	assert.NoError(t, err)
 
 	err = tester.mock.ExpectationsWereMet()
@@ -53,16 +56,16 @@ func TestSave(t *testing.T) {
 func TestFindAll(t *testing.T) {
 	t.Parallel()
 
-	var tester repositoryImplTester
+	var tester testHandler
 	tester.setupTest(t)
 
-	tester.mock.ExpectQuery("SELECT").WillReturnRows(sqlmock.NewRows([]string{"id", "room_id", "body"}).AddRow(tdString.Message.ID.Valid, tdString.Room.ID.Valid, tdString.Message.Body.Valid))
+	tester.mock.ExpectQuery("SELECT").WillReturnRows(sqlmock.NewRows([]string{"id", "room_id", "body"}).AddRow(tdCommonString.ULID.Valid, tdCommonString.ULID.Valid, tdMessageString.Body.Valid))
 
 	// 実行
-	output, err := tester.repositoryImpl.FindAll(tdRoomDomain.Room.ID)
+	output, err := tester.repositoryImpl.FindAll(tdRoomDomain.ID)
 	assert.NoError(t, err)
 
-	assert.Equal(t, []domain.Message{tdMessageDomain.Message.Entity}, output)
+	assert.Equal(t, []domain.Message{tdMessageDomain.Entity}, output)
 
 	err = tester.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
@@ -78,7 +81,7 @@ func TestSubscribe(t *testing.T) {
 	assert.Equal(t, true, true)
 }
 
-func (r *repositoryImplTester) setupTest(t *testing.T) {
+func (r *testHandler) setupTest(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	r.mock = mock
@@ -103,7 +106,7 @@ func (r *repositoryImplTester) setupTest(t *testing.T) {
 	r.repositoryImpl = repositoryImpl
 }
 
-func (r *repositoryImplTester) TeardownTest(t *testing.T) {
+func (r *testHandler) TeardownTest(t *testing.T) {
 	r.db.Close()
 	r.redisClient.Close()
 }

@@ -8,44 +8,43 @@ import (
 
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	domainService "github.com/karamaru-alpha/chat-go-server/domain/service/room"
+
 	mockDomain "github.com/karamaru-alpha/chat-go-server/mock/domain/model/room"
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 )
 
-type domainServiceTester struct {
+type testHandler struct {
 	domainService domainService.IDomainService
-	repository    *mockDomain.MockIRepository
+
+	repository *mockDomain.MockIRepository
 }
 
 // TestExists トークルームの重複チェックを担うドメインサービスのテスト
 func TestExists(t *testing.T) {
 	t.Parallel()
 
-	var tester domainServiceTester
-	tester.setupTest(t)
-
 	tests := []struct {
 		title     string
-		before    func()
+		before    func(testHandler)
 		input     domain.Room
 		expected1 bool
 		expected2 error
 	}{
 		{
 			title: "【正常系】該当タイトルのトークルームが存在しない",
-			before: func() {
-				tester.repository.EXPECT().FindByTitle(tdDomain.Room.Title).Return(domain.Room{}, nil)
+			before: func(h testHandler) {
+				h.repository.EXPECT().FindByTitle(tdDomain.Title).Return(domain.Room{}, nil)
 			},
-			input:     tdDomain.Room.Entity,
+			input:     tdDomain.Entity,
 			expected1: false,
 			expected2: nil,
 		},
 		{
 			title: "【正常系】該当タイトルのトークルームが存在する",
-			before: func() {
-				tester.repository.EXPECT().FindByTitle(tdDomain.Room.Title).Return(tdDomain.Room.Entity, nil)
+			before: func(h testHandler) {
+				h.repository.EXPECT().FindByTitle(tdDomain.Title).Return(tdDomain.Entity, nil)
 			},
-			input:     tdDomain.Room.Entity,
+			input:     tdDomain.Entity,
 			expected1: true,
 			expected2: nil,
 		},
@@ -57,7 +56,10 @@ func TestExists(t *testing.T) {
 		t.Run("Exists:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
-			td.before()
+			var tester testHandler
+			tester.setupTest(t)
+
+			td.before(tester)
 
 			output1, output2 := tester.domainService.Exists(td.input)
 
@@ -67,8 +69,9 @@ func TestExists(t *testing.T) {
 	}
 }
 
-func (d *domainServiceTester) setupTest(t *testing.T) {
+func (d *testHandler) setupTest(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	d.repository = mockDomain.NewMockIRepository(ctrl)
+
 	d.domainService = domainService.NewDomainService(d.repository)
 }

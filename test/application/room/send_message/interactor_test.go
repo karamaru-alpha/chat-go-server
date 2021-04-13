@@ -11,58 +11,59 @@ import (
 	application "github.com/karamaru-alpha/chat-go-server/application/room/send_message"
 	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+
 	mockMessageDomain "github.com/karamaru-alpha/chat-go-server/mock/domain/model/message"
 	mockRoomDomain "github.com/karamaru-alpha/chat-go-server/mock/domain/model/room"
-	mockUtil "github.com/karamaru-alpha/chat-go-server/mock/util"
 	tdMessageDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
 	tdRoomDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
-	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
+	tdCommonString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/common"
+	tdMessageString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/message"
 )
 
-type interactorTester struct {
-	interactor        application.IInputPort
+type testHandler struct {
+	interactor application.IInputPort
+
+	factory           *mockMessageDomain.MockIFactory
 	messageRepository *mockMessageDomain.MockIRepository
 	roomRepository    *mockRoomDomain.MockIRepository
 }
 
-// TestHandle トークルームを作成するアプリケーションサービスのテスト
+// TestHandle トークルームルームでメッセージを送信するアプリケーションサービスのテスト
 func TestHandle(t *testing.T) {
 	t.Parallel()
 
-	var tester interactorTester
-	tester.setupTest(t)
-
 	tests := []struct {
 		title    string
-		before   func()
+		before   func(testHandler)
 		input    application.InputData
 		expected application.OutputData
 	}{
 		{
-			title: "【正常系】",
-			before: func() {
-				tester.roomRepository.EXPECT().Find(tdRoomDomain.Room.ID).Return(tdRoomDomain.Room.Entity, nil)
-				tester.messageRepository.EXPECT().Save(context.TODO(), tdMessageDomain.Message.Entity).Return(nil)
+			title: "【正常系】トークルームでメッセージを送信する",
+			before: func(h testHandler) {
+				h.roomRepository.EXPECT().Find(tdRoomDomain.ID).Return(tdRoomDomain.Entity, nil)
+				h.factory.EXPECT().Create(tdRoomDomain.Entity, tdMessageDomain.Body).Return(tdMessageDomain.Entity, nil)
+				h.messageRepository.EXPECT().Save(context.TODO(), tdMessageDomain.Entity).Return(nil)
 			},
 			input: application.InputData{
 				Context: context.TODO(),
-				RoomID:  tdString.Room.ID.Valid,
-				Body:    tdString.Message.Body.Valid,
+				RoomID:  tdCommonString.ULID.Valid,
+				Body:    tdMessageString.Body.Valid,
 			},
 			expected: application.OutputData{
-				Message: tdMessageDomain.Message.Entity,
+				Message: tdMessageDomain.Entity,
 				Err:     nil,
 			},
 		},
 		{
 			title: "【異常系】本文が短い(空)",
-			before: func() {
-				tester.roomRepository.EXPECT().Find(tdRoomDomain.Room.ID).Return(tdRoomDomain.Room.Entity, nil)
+			before: func(h testHandler) {
+				h.roomRepository.EXPECT().Find(tdRoomDomain.ID).Return(tdRoomDomain.Entity, nil)
 			},
 			input: application.InputData{
 				Context: context.TODO(),
-				RoomID:  tdString.Room.ID.Valid,
-				Body:    tdString.Message.Body.Empty,
+				RoomID:  tdCommonString.ULID.Valid,
+				Body:    tdMessageString.Body.Empty,
 			},
 			expected: application.OutputData{
 				Message: messageDomain.Message{},
@@ -71,13 +72,13 @@ func TestHandle(t *testing.T) {
 		},
 		{
 			title: "【異常系】本文が長い",
-			before: func() {
-				tester.roomRepository.EXPECT().Find(tdRoomDomain.Room.ID).Return(tdRoomDomain.Room.Entity, nil)
+			before: func(h testHandler) {
+				h.roomRepository.EXPECT().Find(tdRoomDomain.ID).Return(tdRoomDomain.Entity, nil)
 			},
 			input: application.InputData{
 				Context: context.TODO(),
-				RoomID:  tdString.Room.ID.Valid,
-				Body:    tdString.Message.Body.TooLong,
+				RoomID:  tdCommonString.ULID.Valid,
+				Body:    tdMessageString.Body.TooLong,
 			},
 			expected: application.OutputData{
 				Message: messageDomain.Message{},
@@ -89,7 +90,7 @@ func TestHandle(t *testing.T) {
 			input: application.InputData{
 				Context: context.TODO(),
 				RoomID:  "",
-				Body:    tdString.Message.Body.Valid,
+				Body:    tdMessageString.Body.Valid,
 			},
 			expected: application.OutputData{
 				Message: messageDomain.Message{},
@@ -100,8 +101,8 @@ func TestHandle(t *testing.T) {
 			title: "【異常系】ルームIDが不正値",
 			input: application.InputData{
 				Context: context.TODO(),
-				RoomID:  tdString.Room.ID.Invalid,
-				Body:    tdString.Message.Body.Valid,
+				RoomID:  tdCommonString.ULID.Invalid,
+				Body:    tdMessageString.Body.Valid,
 			},
 			expected: application.OutputData{
 				Message: messageDomain.Message{},
@@ -110,13 +111,14 @@ func TestHandle(t *testing.T) {
 		},
 		{
 			title: "【異常系】存在しないルームID",
-			before: func() {
-				tester.roomRepository.EXPECT().Find(tdRoomDomain.Room.ID).Return(roomDomain.Room{}, nil)
+			before: func(h testHandler) {
+				h.roomRepository.EXPECT().Find(tdRoomDomain.ID).Return(roomDomain.Room{}, nil)
+				h.factory.EXPECT().Create(roomDomain.Room{}, tdMessageDomain.Body).Return(messageDomain.Message{}, errors.New("MessageRoom is not exist"))
 			},
 			input: application.InputData{
 				Context: context.TODO(),
-				RoomID:  tdString.Room.ID.Valid,
-				Body:    tdString.Message.Body.Valid,
+				RoomID:  tdCommonString.ULID.Valid,
+				Body:    tdMessageString.Body.Valid,
 			},
 			expected: application.OutputData{
 				Message: messageDomain.Message{},
@@ -131,8 +133,11 @@ func TestHandle(t *testing.T) {
 		t.Run("Handle:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
+			var tester testHandler
+			tester.setupTest(t)
+
 			if td.before != nil {
-				td.before()
+				td.before(tester)
 			}
 
 			output := tester.interactor.Handle(td.input)
@@ -142,13 +147,15 @@ func TestHandle(t *testing.T) {
 	}
 }
 
-func (i *interactorTester) setupTest(t *testing.T) {
+func (h *testHandler) setupTest(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	i.messageRepository = mockMessageDomain.NewMockIRepository(ctrl)
-	i.roomRepository = mockRoomDomain.NewMockIRepository(ctrl)
-	i.interactor = application.NewInteractor(
-		messageDomain.NewFactory(mockUtil.NewULIDGenerator()),
-		i.messageRepository,
-		i.roomRepository,
+	h.factory = mockMessageDomain.NewMockIFactory(ctrl)
+	h.messageRepository = mockMessageDomain.NewMockIRepository(ctrl)
+	h.roomRepository = mockRoomDomain.NewMockIRepository(ctrl)
+
+	h.interactor = application.NewInteractor(
+		h.factory,
+		h.messageRepository,
+		h.roomRepository,
 	)
 }

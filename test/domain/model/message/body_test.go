@@ -7,8 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
+
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
-	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
+	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/message"
 )
 
 // TestNewBody メッセージ本文の値オブジェクトコンストラクタのテスト
@@ -23,19 +24,19 @@ func TestNewBody(t *testing.T) {
 	}{
 		{
 			body:      "【正常系】メッセージ本文値オブジェクト生成",
-			input:     tdString.Message.Body.Valid,
-			expected1: tdDomain.Message.Body,
+			input:     tdString.Body.Valid,
+			expected1: tdDomain.Body,
 			expected2: nil,
 		},
 		{
 			body:      "【異常系】本文が空文字列",
-			input:     tdString.Message.Body.Empty,
+			input:     tdString.Body.Empty,
 			expected1: "",
 			expected2: errors.New("MessageBody is empty"),
 		},
 		{
 			body:      "【異常系】本文が長い",
-			input:     tdString.Message.Body.TooLong,
+			input:     tdString.Body.TooLong,
 			expected1: "",
 			expected2: errors.New("MessageBody should be 1 to 255 characters"),
 		},
