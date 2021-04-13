@@ -8,8 +8,10 @@ import (
 
 	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	mysql "github.com/karamaru-alpha/chat-go-server/infrastructure/mysql/message"
+
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
-	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
+	tdCommonString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/common"
+	tdMessageString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/message"
 )
 
 // TestToDTO メッセージエンティティをDB情報を持った構造体に変換する処理のテスト
@@ -23,11 +25,11 @@ func TestToDTO(t *testing.T) {
 	}{
 		{
 			title: "【正常系】メッセージエンティティをDB情報を持った構造体に変換",
-			input: tdDomain.Message.Entity,
+			input: tdDomain.Entity,
 			expected: mysql.Message{
-				ID:     tdString.Message.ID.Valid,
-				RoomID: tdString.Room.ID.Valid,
-				Body:   tdString.Message.Body.Valid,
+				ID:     tdCommonString.ULID.Valid,
+				RoomID: tdCommonString.ULID.Valid,
+				Body:   tdMessageString.Body.Valid,
 			},
 		},
 		{
@@ -63,11 +65,11 @@ func TestToEntity(t *testing.T) {
 		{
 			title: "【正常系】DB情報を持った構造体をメッセージエンティティに変換",
 			input: mysql.Message{
-				ID:     tdString.Message.ID.Valid,
-				RoomID: tdString.Room.ID.Valid,
-				Body:   tdString.Message.Body.Valid,
+				ID:     tdCommonString.ULID.Valid,
+				RoomID: tdCommonString.ULID.Valid,
+				Body:   tdMessageString.Body.Valid,
 			},
-			expected1: tdDomain.Message.Entity,
+			expected1: tdDomain.Entity,
 			expected2: nil,
 		},
 		{
@@ -79,9 +81,9 @@ func TestToEntity(t *testing.T) {
 		{
 			title: "【異常系】IDが不正値",
 			input: mysql.Message{
-				ID:     tdString.Message.ID.Invalid,
-				RoomID: tdString.Room.ID.Valid,
-				Body:   tdString.Message.Body.Valid,
+				ID:     tdCommonString.ULID.Invalid,
+				RoomID: tdCommonString.ULID.Valid,
+				Body:   tdMessageString.Body.Valid,
 			},
 			expected1: messageDomain.Message{},
 			expected2: errors.New("ulid: bad data size when unmarshaling"),
@@ -89,9 +91,9 @@ func TestToEntity(t *testing.T) {
 		{
 			title: "【異常系】RoomIDが不正値",
 			input: mysql.Message{
-				ID:     tdString.Message.ID.Valid,
-				RoomID: tdString.Room.ID.Invalid,
-				Body:   tdString.Message.Body.Valid,
+				ID:     tdCommonString.ULID.Valid,
+				RoomID: tdCommonString.ULID.Invalid,
+				Body:   tdMessageString.Body.Valid,
 			},
 			expected1: messageDomain.Message{},
 			expected2: errors.New("ulid: bad data size when unmarshaling"),

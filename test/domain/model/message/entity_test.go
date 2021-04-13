@@ -8,6 +8,7 @@ import (
 
 	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
+
 	tdMessageDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
 	tdRoomDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 )
@@ -26,32 +27,32 @@ func TestNewMessage(t *testing.T) {
 	}{
 		{
 			body:      "【正常系】メッセージエンティティ生成",
-			input1:    tdMessageDomain.Message.ID,
-			input2:    tdRoomDomain.Room.ID,
-			input3:    tdMessageDomain.Message.Body,
-			expected1: tdMessageDomain.Message.Entity,
+			input1:    tdMessageDomain.ID,
+			input2:    tdRoomDomain.ID,
+			input3:    tdMessageDomain.Body,
+			expected1: tdMessageDomain.Entity,
 			expected2: nil,
 		},
 		{
 			body:      "【異常系】IDがゼロ値",
 			input1:    messageDomain.ID{},
-			input2:    tdRoomDomain.Room.ID,
-			input3:    tdMessageDomain.Message.Body,
+			input2:    tdRoomDomain.ID,
+			input3:    tdMessageDomain.Body,
 			expected1: messageDomain.Message{},
 			expected2: errors.New("MessageID is null"),
 		},
 		{
 			body:      "【異常系】RoomIDがゼロ値",
-			input1:    tdMessageDomain.Message.ID,
+			input1:    tdMessageDomain.ID,
 			input2:    roomDomain.ID{},
-			input3:    tdMessageDomain.Message.Body,
+			input3:    tdMessageDomain.Body,
 			expected1: messageDomain.Message{},
 			expected2: errors.New("MessageRoomID is null"),
 		},
 		{
 			body:      "【異常系】Bodyがゼロ値",
-			input1:    tdMessageDomain.Message.ID,
-			input2:    tdRoomDomain.Room.ID,
+			input1:    tdMessageDomain.ID,
+			input2:    tdRoomDomain.ID,
 			input3:    "",
 			expected1: messageDomain.Message{},
 			expected2: errors.New("MessageBody is null"),

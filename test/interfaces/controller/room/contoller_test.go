@@ -14,19 +14,24 @@ import (
 	messageDomain "github.com/karamaru-alpha/chat-go-server/domain/model/message"
 	roomDomain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	controller "github.com/karamaru-alpha/chat-go-server/interfaces/controller/room"
+	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
+
 	mockCreateApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/create"
 	mockFindAllApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/find_all"
 	mockJoinApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/join"
 	mockSendMessageApplication "github.com/karamaru-alpha/chat-go-server/mock/application/room/send_message"
-	pb "github.com/karamaru-alpha/chat-go-server/proto/pb"
 	tdMessageDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/message"
 	tdRoomDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
 	tdRoomPb "github.com/karamaru-alpha/chat-go-server/test/testdata/pb/room"
-	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
+	tdCommonString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/common"
+	tdMessageString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/message"
+	tdRoomString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/room"
 )
 
-type controllerTester struct {
-	controller             pb.RoomServicesServer
+type testHandler struct {
+	controller pb.RoomServicesServer
+
+	context                context.Context
 	createApplication      *mockCreateApplication.MockIInputPort
 	findAllApplication     *mockFindAllApplication.MockIInputPort
 	joinApplication        *mockJoinApplication.MockIInputPort
@@ -37,38 +42,32 @@ type controllerTester struct {
 func TestGetRooms(t *testing.T) {
 	t.Parallel()
 
-	var tester controllerTester
-	tester.setupTest(t)
-
 	tests := []struct {
 		title     string
-		before    func()
-		input1    context.Context
-		input2    *pb.GetRoomsRequest
+		before    func(testHandler)
+		input     *pb.GetRoomsRequest
 		expected1 *pb.GetRoomsResponse
 		expected2 error
 	}{
 		{
 			title: "【正常系】トークルームが1つ",
-			before: func() {
-				tester.findAllApplication.EXPECT().Handle().Return(findAllApplication.OutputData{
-					Rooms: []roomDomain.Room{tdRoomDomain.Room.Entity}, Err: nil,
+			before: func(h testHandler) {
+				h.findAllApplication.EXPECT().Handle().Return(findAllApplication.OutputData{
+					Rooms: []roomDomain.Room{tdRoomDomain.Entity}, Err: nil,
 				})
 			},
-			input1:    context.TODO(),
-			input2:    &pb.GetRoomsRequest{},
+			input:     &pb.GetRoomsRequest{},
 			expected1: &pb.GetRoomsResponse{Rooms: []*pb.Room{&tdRoomPb.Room}},
 			expected2: nil,
 		},
 		{
 			title: "【正常系】トークルームがまだない",
-			before: func() {
-				tester.findAllApplication.EXPECT().Handle().Return(findAllApplication.OutputData{
+			before: func(h testHandler) {
+				h.findAllApplication.EXPECT().Handle().Return(findAllApplication.OutputData{
 					Rooms: nil, Err: nil,
 				})
 			},
-			input1:    context.TODO(),
-			input2:    &pb.GetRoomsRequest{},
+			input:     &pb.GetRoomsRequest{},
 			expected1: &pb.GetRoomsResponse{Rooms: []*pb.Room{}},
 			expected2: nil,
 		},
@@ -80,9 +79,12 @@ func TestGetRooms(t *testing.T) {
 		t.Run("GetRooms:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
-			td.before()
+			var tester testHandler
+			tester.setupTest(t)
 
-			output1, output2 := tester.controller.GetRooms(td.input1, td.input2)
+			td.before(tester)
+
+			output1, output2 := tester.controller.GetRooms(tester.context, td.input)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
@@ -98,33 +100,30 @@ func TestCreateRoom(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	var tester controllerTester
-	tester.setupTest(t)
-
 	tests := []struct {
 		title     string
-		before    func()
+		before    func(testHandler)
 		input     *pb.CreateRoomRequest
 		expected1 *pb.CreateRoomResponse
 		expected2 error
 	}{
 		{
 			title: "【正常系】トークルーム作成",
-			before: func() {
-				tester.createApplication.EXPECT().Handle(
-					createApplication.InputData{Title: tdString.Room.Title.Valid},
+			before: func(h testHandler) {
+				h.createApplication.EXPECT().Handle(
+					createApplication.InputData{Title: tdRoomString.Title.Valid},
 				).Return(
-					createApplication.OutputData{Room: tdRoomDomain.Room.Entity, Err: nil},
+					createApplication.OutputData{Room: tdRoomDomain.Entity, Err: nil},
 				)
 			},
-			input:     &pb.CreateRoomRequest{Title: tdString.Room.Title.Valid},
+			input:     &pb.CreateRoomRequest{Title: tdRoomString.Title.Valid},
 			expected1: &pb.CreateRoomResponse{Room: &tdRoomPb.Room},
 			expected2: nil,
 		},
 		{
 			title: "【異常系】タイトルが不正値(empty)",
-			before: func() {
-				tester.createApplication.EXPECT().Handle(
+			before: func(h testHandler) {
+				h.createApplication.EXPECT().Handle(
 					createApplication.InputData{Title: ""},
 				).Return(
 					createApplication.OutputData{Room: roomDomain.Room{}, Err: errors.New("error")},
@@ -136,14 +135,14 @@ func TestCreateRoom(t *testing.T) {
 		},
 		{
 			title: "【異常系】タイトルが不正値(long)",
-			before: func() {
-				tester.createApplication.EXPECT().Handle(
-					createApplication.InputData{Title: tdString.Room.Title.TooLong},
+			before: func(h testHandler) {
+				h.createApplication.EXPECT().Handle(
+					createApplication.InputData{Title: tdRoomString.Title.TooLong},
 				).Return(
 					createApplication.OutputData{Room: roomDomain.Room{}, Err: errors.New("error")},
 				)
 			},
-			input:     &pb.CreateRoomRequest{Title: tdString.Room.Title.TooLong},
+			input:     &pb.CreateRoomRequest{Title: tdRoomString.Title.TooLong},
 			expected1: nil,
 			expected2: errors.New("error"),
 		},
@@ -155,9 +154,12 @@ func TestCreateRoom(t *testing.T) {
 		t.Run("CreateRoom:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
-			td.before()
+			var tester testHandler
+			tester.setupTest(t)
 
-			output1, output2 := tester.controller.CreateRoom(context.TODO(), td.input)
+			td.before(tester)
+
+			output1, output2 := tester.controller.CreateRoom(tester.context, td.input)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
@@ -177,79 +179,98 @@ func TestJoinRoom(t *testing.T) {
 func TestSendMessage(t *testing.T) {
 	t.Parallel()
 
-	var tester controllerTester
+	var tester testHandler
 	tester.setupTest(t)
 
 	tests := []struct {
 		title     string
-		before    func(context.Context)
+		before    func(testHandler)
 		input     *pb.SendMessageRequest
 		expected1 *pb.SendMessageResponse
 		expected2 error
 	}{
 		{
 			title: "【正常系】メッセージ送信",
-			before: func(ctx context.Context) {
-				tester.sendMessageApplication.EXPECT().Handle(
-					sendMessageApplication.InputData{Context: ctx, RoomID: tdString.Room.ID.Valid, Body: tdString.Message.Body.Valid},
+			before: func(h testHandler) {
+				h.sendMessageApplication.EXPECT().Handle(
+					sendMessageApplication.InputData{
+						Context: h.context,
+						RoomID:  tdCommonString.ULID.Valid,
+						Body:    tdMessageString.Body.Valid,
+					},
 				).Return(
-					sendMessageApplication.OutputData{Message: tdMessageDomain.Message.Entity, Err: nil},
+					sendMessageApplication.OutputData{Message: tdMessageDomain.Entity, Err: nil},
 				)
 			},
-			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Valid, Body: tdString.Message.Body.Valid},
+			input:     &pb.SendMessageRequest{RoomId: tdCommonString.ULID.Valid, Body: tdMessageString.Body.Valid},
 			expected1: &pb.SendMessageResponse{},
 			expected2: nil,
 		},
 		{
 			title: "【異常系】メッセージが長すぎる",
-			before: func(ctx context.Context) {
-				tester.sendMessageApplication.EXPECT().Handle(
+			before: func(h testHandler) {
+				h.sendMessageApplication.EXPECT().Handle(
 					sendMessageApplication.InputData{
-						Context: ctx, RoomID: tdString.Room.ID.Valid, Body: tdString.Message.Body.TooLong},
+						Context: h.context,
+						RoomID:  tdCommonString.ULID.Valid,
+						Body:    tdMessageString.Body.TooLong,
+					},
 				).Return(
 					sendMessageApplication.OutputData{Message: messageDomain.Message{}, Err: errors.New("error")},
 				)
 			},
-			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Valid, Body: tdString.Message.Body.TooLong},
+			input:     &pb.SendMessageRequest{RoomId: tdCommonString.ULID.Valid, Body: tdMessageString.Body.TooLong},
 			expected1: nil,
 			expected2: errors.New("error"),
 		},
 		{
 			title: "【異常系】メッセージが空",
-			before: func(ctx context.Context) {
-				tester.sendMessageApplication.EXPECT().Handle(
-					sendMessageApplication.InputData{Context: ctx, RoomID: tdString.Room.ID.Valid, Body: tdString.Message.Body.Empty},
+			before: func(h testHandler) {
+				h.sendMessageApplication.EXPECT().Handle(
+					sendMessageApplication.InputData{
+						Context: h.context,
+						RoomID:  tdCommonString.ULID.Valid,
+						Body:    tdMessageString.Body.Empty,
+					},
 				).Return(
 					sendMessageApplication.OutputData{Message: messageDomain.Message{}, Err: errors.New("error")},
 				)
 			},
-			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Valid, Body: tdString.Message.Body.Empty},
+			input:     &pb.SendMessageRequest{RoomId: tdCommonString.ULID.Valid, Body: tdMessageString.Body.Empty},
 			expected1: nil,
 			expected2: errors.New("error"),
 		},
 		{
 			title: "【異常系】RoomIDが不正値",
-			before: func(ctx context.Context) {
-				tester.sendMessageApplication.EXPECT().Handle(
-					sendMessageApplication.InputData{Context: ctx, RoomID: tdString.Room.ID.Invalid, Body: tdString.Message.Body.Valid},
+			before: func(h testHandler) {
+				h.sendMessageApplication.EXPECT().Handle(
+					sendMessageApplication.InputData{
+						Context: h.context,
+						RoomID:  tdCommonString.ULID.Invalid,
+						Body:    tdMessageString.Body.Valid,
+					},
 				).Return(
 					sendMessageApplication.OutputData{Message: messageDomain.Message{}, Err: errors.New("error")},
 				)
 			},
-			input:     &pb.SendMessageRequest{RoomId: tdString.Room.ID.Invalid, Body: tdString.Message.Body.Valid},
+			input:     &pb.SendMessageRequest{RoomId: tdCommonString.ULID.Invalid, Body: tdMessageString.Body.Valid},
 			expected1: nil,
 			expected2: errors.New("error"),
 		},
 		{
 			title: "【異常系】RoomIDが空",
-			before: func(ctx context.Context) {
-				tester.sendMessageApplication.EXPECT().Handle(
-					sendMessageApplication.InputData{Context: ctx, RoomID: "", Body: tdString.Message.Body.Valid},
+			before: func(h testHandler) {
+				h.sendMessageApplication.EXPECT().Handle(
+					sendMessageApplication.InputData{
+						Context: h.context,
+						RoomID:  "",
+						Body:    tdMessageString.Body.Valid,
+					},
 				).Return(
 					sendMessageApplication.OutputData{Message: messageDomain.Message{}, Err: errors.New("error")},
 				)
 			},
-			input:     &pb.SendMessageRequest{RoomId: "", Body: tdString.Message.Body.Valid},
+			input:     &pb.SendMessageRequest{RoomId: "", Body: tdMessageString.Body.Valid},
 			expected1: nil,
 			expected2: errors.New("error"),
 		},
@@ -261,10 +282,11 @@ func TestSendMessage(t *testing.T) {
 		t.Run("SendMessage:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
-			ctx := context.TODO()
-			td.before(ctx)
+			var tester testHandler
+			tester.setupTest(t)
+			td.before(tester)
 
-			output1, output2 := tester.controller.SendMessage(ctx, td.input)
+			output1, output2 := tester.controller.SendMessage(tester.context, td.input)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)
@@ -272,12 +294,15 @@ func TestSendMessage(t *testing.T) {
 	}
 }
 
-func (c *controllerTester) setupTest(t *testing.T) {
+func (c *testHandler) setupTest(t *testing.T) {
+	c.context = context.TODO()
+
 	ctrl := gomock.NewController(t)
 	c.createApplication = mockCreateApplication.NewMockIInputPort(ctrl)
 	c.findAllApplication = mockFindAllApplication.NewMockIInputPort(ctrl)
 	c.joinApplication = mockJoinApplication.NewMockIInputPort(ctrl)
 	c.sendMessageApplication = mockSendMessageApplication.NewMockIInputPort(ctrl)
+
 	c.controller = controller.NewController(
 		c.createApplication,
 		c.findAllApplication,

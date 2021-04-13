@@ -10,11 +10,13 @@ import (
 
 	domain "github.com/karamaru-alpha/chat-go-server/domain/model/room"
 	repoImpl "github.com/karamaru-alpha/chat-go-server/infrastructure/repository/room"
+
 	tdDomain "github.com/karamaru-alpha/chat-go-server/test/testdata/domain/room"
-	tdString "github.com/karamaru-alpha/chat-go-server/test/testdata/string"
+	tdCommonString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/common"
+	tdRoomString "github.com/karamaru-alpha/chat-go-server/test/testdata/string/room"
 )
 
-type repositoryImplTester struct {
+type testHandler struct {
 	repositoryImpl domain.IRepository
 	db             *gorm.DB
 	mock           sqlmock.Sqlmock
@@ -24,17 +26,17 @@ type repositoryImplTester struct {
 func TestSave(t *testing.T) {
 	t.Parallel()
 
-	var tester repositoryImplTester
+	var tester testHandler
 	tester.setupTest(t)
 
 	tester.mock.ExpectBegin()
 	tester.mock.ExpectExec(
 		regexp.QuoteMeta("INSERT INTO `rooms` (`id`,`title`)"),
-	).WithArgs(tdString.Room.ID.Valid, tdString.Room.Title.Valid).WillReturnResult(sqlmock.NewResult(1, 1))
+	).WithArgs(tdCommonString.ULID.Valid, tdRoomString.Title.Valid).WillReturnResult(sqlmock.NewResult(1, 1))
 	tester.mock.ExpectCommit()
 
 	// 実行
-	err := tester.repositoryImpl.Save(tdDomain.Room.Entity)
+	err := tester.repositoryImpl.Save(tdDomain.Entity)
 	assert.NoError(t, err)
 
 	err = tester.mock.ExpectationsWereMet()
@@ -47,16 +49,16 @@ func TestSave(t *testing.T) {
 func TestFindAll(t *testing.T) {
 	t.Parallel()
 
-	var tester repositoryImplTester
+	var tester testHandler
 	tester.setupTest(t)
 
-	tester.mock.ExpectQuery("SELECT").WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdString.Room.ID.Valid, tdString.Room.Title.Valid))
+	tester.mock.ExpectQuery("SELECT").WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdCommonString.ULID.Valid, tdRoomString.Title.Valid))
 
 	// 実行
 	output, err := tester.repositoryImpl.FindAll()
 	assert.NoError(t, err)
 
-	assert.Equal(t, []domain.Room{tdDomain.Room.Entity}, output)
+	assert.Equal(t, []domain.Room{tdDomain.Entity}, output)
 
 	err = tester.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
@@ -69,16 +71,16 @@ func TestFind(t *testing.T) {
 	t.Parallel()
 
 	// モックの作成
-	test := repositoryImplTester{}
+	test := testHandler{}
 	test.setupTest(t)
 
-	test.mock.ExpectQuery("SELECT").WithArgs(tdString.Room.ID.Valid).WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdString.Room.ID.Valid, tdString.Room.Title.Valid))
+	test.mock.ExpectQuery("SELECT").WithArgs(tdCommonString.ULID.Valid).WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdCommonString.ULID.Valid, tdRoomString.Title.Valid))
 
 	// 実行
-	output, err := test.repositoryImpl.Find(tdDomain.Room.ID)
+	output, err := test.repositoryImpl.Find(tdDomain.ID)
 	assert.NoError(t, err)
 
-	assert.Equal(t, tdDomain.Room.Entity, output)
+	assert.Equal(t, tdDomain.Entity, output)
 
 	err = test.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
@@ -90,16 +92,16 @@ func TestFind(t *testing.T) {
 func TestFindByTitle(t *testing.T) {
 	t.Parallel()
 
-	var tester repositoryImplTester
+	var tester testHandler
 	tester.setupTest(t)
 
-	tester.mock.ExpectQuery("SELECT").WithArgs(tdString.Room.Title.Valid).WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdString.Room.ID.Valid, tdString.Room.Title.Valid))
+	tester.mock.ExpectQuery("SELECT").WithArgs(tdRoomString.Title.Valid).WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdCommonString.ULID.Valid, tdRoomString.Title.Valid))
 
 	// 実行
-	output, err := tester.repositoryImpl.FindByTitle(tdDomain.Room.Title)
+	output, err := tester.repositoryImpl.FindByTitle(tdDomain.Title)
 	assert.NoError(t, err)
 
-	assert.Equal(t, tdDomain.Room.Entity, output)
+	assert.Equal(t, tdDomain.Entity, output)
 
 	err = tester.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
@@ -107,7 +109,7 @@ func TestFindByTitle(t *testing.T) {
 	tester.teardownTest(t)
 }
 
-func (r *repositoryImplTester) setupTest(t *testing.T) {
+func (r *testHandler) setupTest(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 
@@ -122,6 +124,6 @@ func (r *repositoryImplTester) setupTest(t *testing.T) {
 	r.repositoryImpl = repositoryImpl
 }
 
-func (r *repositoryImplTester) teardownTest(t *testing.T) {
+func (r *testHandler) teardownTest(t *testing.T) {
 	r.db.Close()
 }
