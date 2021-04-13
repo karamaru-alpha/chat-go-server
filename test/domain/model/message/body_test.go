@@ -18,25 +18,25 @@ func TestNewBody(t *testing.T) {
 	tests := []struct {
 		body      string
 		input     string
-		expected1 *domain.Body
+		expected1 domain.Body
 		expected2 error
 	}{
 		{
 			body:      "【正常系】メッセージ本文値オブジェクト生成",
 			input:     tdString.Message.Body.Valid,
-			expected1: &tdDomain.Message.Body,
+			expected1: tdDomain.Message.Body,
 			expected2: nil,
 		},
 		{
-			body:      "【異常系】本文が空",
+			body:      "【異常系】本文が空文字列",
 			input:     tdString.Message.Body.Empty,
-			expected1: nil,
+			expected1: "",
 			expected2: errors.New("MessageBody is empty"),
 		},
 		{
 			body:      "【異常系】本文が長い",
 			input:     tdString.Message.Body.TooLong,
-			expected1: nil,
+			expected1: "",
 			expected2: errors.New("MessageBody should be 1 to 255 characters"),
 		},
 	}

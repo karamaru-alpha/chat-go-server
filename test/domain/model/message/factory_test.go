@@ -21,30 +21,30 @@ func TestCreate(t *testing.T) {
 
 	tests := []struct {
 		body      string
-		input1    *roomDomain.Room
-		input2    *messageDomain.Body
-		expected1 *messageDomain.Message
+		input1    roomDomain.Room
+		input2    messageDomain.Body
+		expected1 messageDomain.Message
 		expected2 error
 	}{
 		{
 			body:      "【正常系】メッセージエンティティ生成",
-			input1:    &tdRoomDomain.Room.Entity,
-			input2:    &tdMessageDomain.Message.Body,
-			expected1: &tdMessageDomain.Message.Entity,
+			input1:    tdRoomDomain.Room.Entity,
+			input2:    tdMessageDomain.Message.Body,
+			expected1: tdMessageDomain.Message.Entity,
 			expected2: nil,
 		},
 		{
-			body:      "【異常系】Roomがnil",
-			input1:    nil,
-			input2:    &tdMessageDomain.Message.Body,
-			expected1: nil,
+			body:      "【異常系】Roomがゼロ値",
+			input1:    roomDomain.Room{},
+			input2:    tdMessageDomain.Message.Body,
+			expected1: messageDomain.Message{},
 			expected2: errors.New("MessageRoom is not exist"),
 		},
 		{
-			body:      "【異常系】Bodyがnil",
-			input1:    &tdRoomDomain.Room.Entity,
-			input2:    nil,
-			expected1: nil,
+			body:      "【異常系】Bodyがゼロ値",
+			input1:    tdRoomDomain.Room.Entity,
+			input2:    "",
+			expected1: messageDomain.Message{},
 			expected2: errors.New("MessageBody is null"),
 		},
 	}

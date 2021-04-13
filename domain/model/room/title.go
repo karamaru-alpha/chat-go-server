@@ -9,16 +9,13 @@ import (
 type Title string
 
 // NewTitle トークルーム名の値オブジェクトを生成するコンストラクタ
-func NewTitle(v string) (*Title, error) {
-
+func NewTitle(v string) (Title, error) {
 	if v == "" {
-		return nil, errors.New("RoomTitle is null")
+		return "", errors.New("RoomTitle is null")
 	}
-
 	if utf8.RuneCountInString(v) < 3 || utf8.RuneCountInString(v) > 50 {
-		return nil, errors.New("RoomTitle should be Three to twenty characters")
+		return "", errors.New("RoomTitle should be Three to twenty characters")
 	}
 
-	title := Title(v)
-	return &title, nil
+	return Title(v), nil
 }

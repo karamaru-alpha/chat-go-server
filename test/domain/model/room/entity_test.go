@@ -16,30 +16,30 @@ func TestNewRoom(t *testing.T) {
 
 	tests := []struct {
 		title     string
-		input1    *domain.ID
-		input2    *domain.Title
-		expected1 *domain.Room
+		input1    domain.ID
+		input2    domain.Title
+		expected1 domain.Room
 		expected2 error
 	}{
 		{
 			title:     "【正常系】トークルームエンティティを生成",
-			input1:    &tdDomain.Room.ID,
-			input2:    &tdDomain.Room.Title,
-			expected1: &tdDomain.Room.Entity,
+			input1:    tdDomain.Room.ID,
+			input2:    tdDomain.Room.Title,
+			expected1: tdDomain.Room.Entity,
 			expected2: nil,
 		},
 		{
-			title:     "【異常系】IDがnil",
-			input1:    nil,
-			input2:    &tdDomain.Room.Title,
-			expected1: nil,
+			title:     "【異常系】IDがゼロ値",
+			input1:    domain.ID{},
+			input2:    tdDomain.Room.Title,
+			expected1: domain.Room{},
 			expected2: errors.New("RoomID is null"),
 		},
 		{
-			title:     "【異常系】Titleがnil",
-			input1:    &tdDomain.Room.ID,
-			input2:    nil,
-			expected1: nil,
+			title:     "【異常系】Titleが空文字列",
+			input1:    tdDomain.Room.ID,
+			input2:    "",
+			expected1: domain.Room{},
 			expected2: errors.New("RoomTitle is null"),
 		},
 	}

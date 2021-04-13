@@ -1,6 +1,8 @@
 package room
 
-import "errors"
+import (
+	"errors"
+)
 
 // Room トークルームを表現するエンティティ
 type Room struct {
@@ -9,14 +11,13 @@ type Room struct {
 }
 
 // NewRoom Roomエンティティを構築するコンストラクタ
-func NewRoom(id *ID, title *Title) (*Room, error) {
-
-	if id == nil {
-		return nil, errors.New("RoomID is null")
+func NewRoom(id ID, title Title) (Room, error) {
+	if id == (ID{}) {
+		return Room{}, errors.New("RoomID is null")
 	}
-	if title == nil {
-		return nil, errors.New("RoomTitle is null")
+	if title == "" {
+		return Room{}, errors.New("RoomTitle is null")
 	}
 
-	return &Room{ID: *id, Title: *title}, nil
+	return Room{ID: id, Title: title}, nil
 }

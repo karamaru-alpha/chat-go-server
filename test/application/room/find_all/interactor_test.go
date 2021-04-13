@@ -32,10 +32,10 @@ func TestHandle(t *testing.T) {
 		{
 			title: "【正常系】トークルーム全検索",
 			before: func() {
-				tester.repository.EXPECT().FindAll().Return(&[]domain.Room{tdDomain.Room.Entity}, nil)
+				tester.repository.EXPECT().FindAll().Return([]domain.Room{tdDomain.Room.Entity}, nil)
 			},
 			expected: application.OutputData{
-				Rooms: &[]domain.Room{tdDomain.Room.Entity},
+				Rooms: []domain.Room{tdDomain.Room.Entity},
 				Err:   nil,
 			},
 		},

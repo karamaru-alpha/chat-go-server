@@ -27,25 +27,25 @@ func TestExists(t *testing.T) {
 	tests := []struct {
 		title     string
 		before    func()
-		input     *domain.Room
+		input     domain.Room
 		expected1 bool
 		expected2 error
 	}{
 		{
 			title: "【正常系】該当タイトルのトークルームが存在しない",
 			before: func() {
-				tester.repository.EXPECT().FindByTitle(&tdDomain.Room.Title).Return(nil, nil)
+				tester.repository.EXPECT().FindByTitle(tdDomain.Room.Title).Return(domain.Room{}, nil)
 			},
-			input:     &tdDomain.Room.Entity,
+			input:     tdDomain.Room.Entity,
 			expected1: false,
 			expected2: nil,
 		},
 		{
 			title: "【正常系】該当タイトルのトークルームが存在する",
 			before: func() {
-				tester.repository.EXPECT().FindByTitle(&tdDomain.Room.Title).Return(&tdDomain.Room.Entity, nil)
+				tester.repository.EXPECT().FindByTitle(tdDomain.Room.Title).Return(tdDomain.Room.Entity, nil)
 			},
-			input:     &tdDomain.Room.Entity,
+			input:     tdDomain.Room.Entity,
 			expected1: true,
 			expected2: nil,
 		},

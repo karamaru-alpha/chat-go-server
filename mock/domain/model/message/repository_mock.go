@@ -37,10 +37,10 @@ func (m *MockIRepository) EXPECT() *MockIRepositoryMockRecorder {
 }
 
 // FindAll mocks base method.
-func (m *MockIRepository) FindAll(arg0 *room.ID) (*[]message.Message, error) {
+func (m *MockIRepository) FindAll(arg0 room.ID) ([]message.Message, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindAll", arg0)
-	ret0, _ := ret[0].(*[]message.Message)
+	ret0, _ := ret[0].([]message.Message)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -52,7 +52,7 @@ func (mr *MockIRepositoryMockRecorder) FindAll(arg0 interface{}) *gomock.Call {
 }
 
 // Save mocks base method.
-func (m *MockIRepository) Save(arg0 context.Context, arg1 *message.Message) error {
+func (m *MockIRepository) Save(arg0 context.Context, arg1 message.Message) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -66,7 +66,7 @@ func (mr *MockIRepositoryMockRecorder) Save(arg0, arg1 interface{}) *gomock.Call
 }
 
 // Subscribe mocks base method.
-func (m *MockIRepository) Subscribe(arg0 context.Context, arg1 *room.ID, arg2 chan message.Message) error {
+func (m *MockIRepository) Subscribe(arg0 context.Context, arg1 room.ID, arg2 chan message.Message) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Subscribe", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)

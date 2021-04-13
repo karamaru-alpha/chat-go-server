@@ -18,20 +18,20 @@ func TestNewID(t *testing.T) {
 
 	tests := []struct {
 		title     string
-		input     *ulid.ULID
-		expected1 *domain.ID
+		input     ulid.ULID
+		expected1 domain.ID
 		expected2 error
 	}{
 		{
 			title:     "【正常系】メッセージの識別子生成",
-			input:     &tdULID.Message.ID,
-			expected1: &tdDomain.Message.ID,
+			input:     tdULID.Message.ID,
+			expected1: tdDomain.Message.ID,
 			expected2: nil,
 		},
 		{
-			title:     "【異常系】引数がnil",
-			input:     nil,
-			expected1: nil,
+			title:     "【異常系】ulidがゼロ値",
+			input:     ulid.ULID{},
+			expected1: domain.ID{},
 			expected2: errors.New("MessageID is null"),
 		},
 	}

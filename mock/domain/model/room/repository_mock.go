@@ -35,10 +35,10 @@ func (m *MockIRepository) EXPECT() *MockIRepositoryMockRecorder {
 }
 
 // Find mocks base method.
-func (m *MockIRepository) Find(arg0 *room.ID) (*room.Room, error) {
+func (m *MockIRepository) Find(arg0 room.ID) (room.Room, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0)
-	ret0, _ := ret[0].(*room.Room)
+	ret0, _ := ret[0].(room.Room)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -50,10 +50,10 @@ func (mr *MockIRepositoryMockRecorder) Find(arg0 interface{}) *gomock.Call {
 }
 
 // FindAll mocks base method.
-func (m *MockIRepository) FindAll() (*[]room.Room, error) {
+func (m *MockIRepository) FindAll() ([]room.Room, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindAll")
-	ret0, _ := ret[0].(*[]room.Room)
+	ret0, _ := ret[0].([]room.Room)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -65,10 +65,10 @@ func (mr *MockIRepositoryMockRecorder) FindAll() *gomock.Call {
 }
 
 // FindByTitle mocks base method.
-func (m *MockIRepository) FindByTitle(arg0 *room.Title) (*room.Room, error) {
+func (m *MockIRepository) FindByTitle(arg0 room.Title) (room.Room, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindByTitle", arg0)
-	ret0, _ := ret[0].(*room.Room)
+	ret0, _ := ret[0].(room.Room)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -80,7 +80,7 @@ func (mr *MockIRepositoryMockRecorder) FindByTitle(arg0 interface{}) *gomock.Cal
 }
 
 // Save mocks base method.
-func (m *MockIRepository) Save(arg0 *room.Room) error {
+func (m *MockIRepository) Save(arg0 room.Room) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", arg0)
 	ret0, _ := ret[0].(error)

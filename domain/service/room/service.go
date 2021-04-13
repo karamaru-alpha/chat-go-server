@@ -6,7 +6,7 @@ import (
 
 // IDomainService ドメインサービスのインターフェース
 type IDomainService interface {
-	Exists(*domainModel.Room) (bool, error)
+	Exists(domainModel.Room) (bool, error)
 }
 
 type domainService struct {
@@ -21,9 +21,9 @@ func NewDomainService(r domainModel.IRepository) IDomainService {
 }
 
 // Exists トークルーム重複判定のドメインサービス
-func (s domainService) Exists(room *domainModel.Room) (bool, error) {
+func (s domainService) Exists(room domainModel.Room) (bool, error) {
 
-	room, err := s.repository.FindByTitle(&room.Title)
+	room, err := s.repository.FindByTitle(room.Title)
 
-	return room != nil, err
+	return room != domainModel.Room{}, err
 }

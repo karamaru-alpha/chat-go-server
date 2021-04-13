@@ -18,20 +18,20 @@ func TestNewID(t *testing.T) {
 
 	tests := []struct {
 		title     string
-		input     *ulid.ULID
-		expected1 *domain.ID
+		input     ulid.ULID
+		expected1 domain.ID
 		expected2 error
 	}{
 		{
 			title:     "【正常系】トークルームの識別子を生成",
-			input:     &tdULID.Room.ID,
-			expected1: &tdDomain.Room.ID,
+			input:     tdULID.Room.ID,
+			expected1: tdDomain.Room.ID,
 			expected2: nil,
 		},
 		{
 			title:     "【異常系】引数がnil",
-			input:     nil,
-			expected1: nil,
+			input:     ulid.ULID{},
+			expected1: domain.ID{},
 			expected2: errors.New("RoomID is null"),
 		},
 	}

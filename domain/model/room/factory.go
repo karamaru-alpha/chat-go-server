@@ -6,7 +6,7 @@ import (
 
 // IFactory Roomエンティティの生成処理を担うFactoryのインターフェース
 type IFactory interface {
-	Create(*Title) (*Room, error)
+	Create(Title) (Room, error)
 }
 
 type factory struct {
@@ -21,13 +21,10 @@ func NewFactory(ulidGenerator util.IULIDGenerator) IFactory {
 }
 
 // Create Roomエンティティの生成処理を担うファクトリ
-func (f factory) Create(title *Title) (*Room, error) {
-
-	ulid := f.ulidGenerator.Generate()
-
-	roomID, err := NewID(&ulid)
+func (f factory) Create(title Title) (Room, error) {
+	roomID, err := NewID(f.ulidGenerator.Generate())
 	if err != nil {
-		return nil, err
+		return Room{}, err
 	}
 
 	return NewRoom(roomID, title)

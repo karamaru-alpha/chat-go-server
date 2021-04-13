@@ -34,7 +34,7 @@ func TestSave(t *testing.T) {
 	tester.mock.ExpectCommit()
 
 	// 実行
-	err := tester.repositoryImpl.Save(&tdDomain.Room.Entity)
+	err := tester.repositoryImpl.Save(tdDomain.Room.Entity)
 	assert.NoError(t, err)
 
 	err = tester.mock.ExpectationsWereMet()
@@ -56,7 +56,7 @@ func TestFindAll(t *testing.T) {
 	output, err := tester.repositoryImpl.FindAll()
 	assert.NoError(t, err)
 
-	assert.Equal(t, &[]domain.Room{tdDomain.Room.Entity}, output)
+	assert.Equal(t, []domain.Room{tdDomain.Room.Entity}, output)
 
 	err = tester.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
@@ -75,10 +75,10 @@ func TestFind(t *testing.T) {
 	test.mock.ExpectQuery("SELECT").WithArgs(tdString.Room.ID.Valid).WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdString.Room.ID.Valid, tdString.Room.Title.Valid))
 
 	// 実行
-	output, err := test.repositoryImpl.Find(&tdDomain.Room.ID)
+	output, err := test.repositoryImpl.Find(tdDomain.Room.ID)
 	assert.NoError(t, err)
 
-	assert.Equal(t, &tdDomain.Room.Entity, output)
+	assert.Equal(t, tdDomain.Room.Entity, output)
 
 	err = test.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
@@ -96,10 +96,10 @@ func TestFindByTitle(t *testing.T) {
 	tester.mock.ExpectQuery("SELECT").WithArgs(tdString.Room.Title.Valid).WillReturnRows(sqlmock.NewRows([]string{"id", "title"}).AddRow(tdString.Room.ID.Valid, tdString.Room.Title.Valid))
 
 	// 実行
-	output, err := tester.repositoryImpl.FindByTitle(&tdDomain.Room.Title)
+	output, err := tester.repositoryImpl.FindByTitle(tdDomain.Room.Title)
 	assert.NoError(t, err)
 
-	assert.Equal(t, &tdDomain.Room.Entity, output)
+	assert.Equal(t, tdDomain.Room.Entity, output)
 
 	err = tester.mock.ExpectationsWereMet()
 	assert.NoError(t, err)
