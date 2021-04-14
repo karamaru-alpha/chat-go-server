@@ -64,15 +64,22 @@ $ make reset_migration
 ### `interafces/controller/`
 - リクエストを整形しアプリケーションサービスに伝搬、出力のレスポンスも担う(controller/presenter)
 
-### その他
+## その他
 
-## `proto/`
+### `proto/`
 - protoファイル定義・自動生成コード
 
-## `mock/`
+### `util/`
+- どの層にも属さない共通処理
+
+### `di/`
+- wireを用いて依存性注入を行う
+
+### `mock/`
 - gomockでモックした関数
 
-## `test/`
+### `test/`
 - モックを利用したユニットテスト
 
-
+### `docker/`
+- docker情報
