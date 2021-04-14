@@ -33,6 +33,9 @@ $ make reset_migration
 ### `domain/service/`
 - ドメインサービス
 
+
+※トークルームとメッセージは別集約として扱う(リポジトリから集約単位でI/Oする際、メッセージの数が多すぎるため)
+
 ## Infrastructure層
 - Domain層で定義したRepositoryを実現する
 
