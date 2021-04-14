@@ -24,33 +24,33 @@ $ make reset_migration
 # 構成
 ## Domain層
 - ドメインモデルの定義・ライフサイクルの表現
-### domain/model/
+### `domain/model/`
 - エンティティ
 - 値オブジェクト
 - ファクトリ
 - リポジトリ
 
-### domain/service/
+### `domain/service/`
 - ドメインサービス
 
 ## Infrastructure層
 - Domain層で定義したRepositoryを実現する
 
-### infrastructure/repository/
+### `infrastructure/repository/`
 - Domain層で定義したRepositoryの実装クラス
 
-### infrastructure/mysql/
+### `infrastructure/mysql/`
 - mysqlとのコネクション確保
 - DBデータ⇆Entityの変換を行う独自のFactory(DTO)
 
-### infrastructure/redis/
+### `infrastructure/redis/`
 - redisのコネクション確保
 
 
 ## Application層
 - Domain情報を駆使して、ユースケースを進行させる
 
-### application/${USECASE_NAME}/
+### `application/${USECASE_NAME}/`
 - 入力値(InputData)
 - 出力値(OutputData)
 - ユースケースを実現するinteractor
@@ -58,18 +58,18 @@ $ make reset_migration
 
 
 ## Interfaces層
-### interafces/controller/
+### `interafces/controller/`
 - リクエストを整形しアプリケーションサービスに伝搬、出力のレスポンスも担う(controller/presenter)
 
-----------------------------------
+### その他
 
-## proto/
+## `proto/`
 - protoファイル定義・自動生成コード
 
-## mock/
+## `mock/`
 - gomockでモックした関数
 
-## test/
+## `test/`
 - モックを利用したユニットテスト
 
 
