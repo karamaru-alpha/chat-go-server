@@ -38,13 +38,13 @@ func TestNewTitle(t *testing.T) {
 			title:     "【異常系】タイトルが短い",
 			input:     tdString.Title.TooShort,
 			expected1: "",
-			expected2: errors.New("RoomTitle should be Three to twenty characters"),
+			expected2: errors.New("RoomTitle should be 3 to 50 characters"),
 		},
 		{
 			title:     "【異常系】タイトルが長い",
 			input:     tdString.Title.TooLong,
 			expected1: "",
-			expected2: errors.New("RoomTitle should be Three to twenty characters"),
+			expected2: errors.New("RoomTitle should be 3 to 50 characters"),
 		},
 	}
 

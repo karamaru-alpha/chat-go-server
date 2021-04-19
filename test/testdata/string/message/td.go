@@ -1,6 +1,10 @@
 package testdata
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/karamaru-alpha/chat-go-server/domain/model/message"
+)
 
 // Body メッセージ本文に関連する文字列テストデータ
 var Body = struct {
@@ -8,5 +12,5 @@ var Body = struct {
 }{
 	Valid:   "valid_message_body",
 	Empty:   "",
-	TooLong: strings.Repeat("a", 256),
+	TooLong: strings.Repeat("a", message.BODY_MAX_LEN+1),
 }

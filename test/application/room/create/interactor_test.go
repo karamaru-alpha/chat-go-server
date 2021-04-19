@@ -66,7 +66,7 @@ func TestHandle(t *testing.T) {
 			},
 			expected: application.OutputData{
 				Room: domain.Room{},
-				Err:  errors.New("RoomTitle should be Three to twenty characters"),
+				Err:  errors.New("RoomTitle should be 3 to 50 characters"),
 			},
 		},
 		{
@@ -76,7 +76,7 @@ func TestHandle(t *testing.T) {
 			},
 			expected: application.OutputData{
 				Room: domain.Room{},
-				Err:  errors.New("RoomTitle should be Three to twenty characters"),
+				Err:  errors.New("RoomTitle should be 3 to 50 characters"),
 			},
 		},
 		{
